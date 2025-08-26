@@ -305,22 +305,16 @@
   \setcounter{numof@lectureunits}{0}
   \setcounter{numof@practiceunits}{0}
   \setcounter{numof@practiceelunits}{0}
-%   \xdef\lcredit{\course@\romannumeral\csname courseindex\endcsname @courseltp[1]}
-  % \xdef\tcredit{\course@\romannumeral\csname courseindex\endcsname @courseltp[2]}
-  % \xdef\pcredit{\course@\romannumeral\csname courseindex\endcsname @courseltp[3]}
   \newcommand*{\numofcos}[1][4]{##1}%
   \newcommand*{\lecturecredit}[1]{\immediate\write\@mainaux{\string\gdef\string\course@\romannumeral#1@courseltp{{##1,\myb,\myc}}}}%
   \newcommand*{\tutorialcredit}[1]{\immediate\write\@mainaux{\string\gdef\string\course@\romannumeral#1@courseltp{{\mya,##1,\myc}}}}%
   \newcommand*{\practicecredit}[1]{\immediate\write\@mainaux{\string\gdef\string\course@\romannumeral#1@courseltp{{\mya,\myb,##1}}}}%
   \def\category##1{\immediate\write\@mainaux
     {\string\gdef\string\course@\romannumeral#1@category{##1}}}%
-%   \newcommand*{\category}[1]{\def\@category{##1}}%
   \newcommand*{\commonto}[1]{\immediate\write\@mainaux
     {\string\gdef\string\course@\romannumeral#1@commonto{##1}}}%
   \newcommand*{\stream}[1]{\immediate\write\@mainaux
     {\string\gdef\string\course@\romannumeral#1@stream{##1}}}%
-%   \newcommand*{\stream}[1]{\\immediate\write\@mainaux
-%     {\string\gdef\string\course@\romannumeral#1@stream{##1}}}%
   \newcommand*{\ciemarks}[1]{\immediate\write\@mainaux
     {\string\gdef\string\course@\romannumeral#1@ciemarks{##1}}}%
   \newcommand*{\seemarks}[1]{\immediate\write\@mainaux
@@ -443,7 +437,6 @@
     % Store all Data
     \immediate\write\@mainaux
         {\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @lectureunit@\roman{numof@lectureunits}@hour{#1}}%
-      % \edef\tmp{\course@\romannumeral\csname courseindex\endcsname @lectureunit@\roman{numof@lectureunits}@content}
     \immediate\write\@mainaux
         {\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @lectureunit@\roman{numof@lectureunits}@content{\unexpanded{#2}}}%
   \fi
@@ -583,7 +576,6 @@
                 \expandafter{\number\numexpr(1)\expandafter\relax\expandafter}%
                 \expandafter{\number\numexpr(#2)\relax}%
             }
-    % \global\lecturefalse
     \fi
     \ifpractice
         \ifnum#3<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
@@ -591,7 +583,7 @@
             \hline
             \begin{tabular}{>{\raggedright\arraybackslash}p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}}
             \textbf
-            }%course@\romannumeral\csname courseindex\endcsname @practiceeltitle
+            }%
             {\unexpanded{\expandafter{\csname course@\romannumeral#1@practicetitle\endcsname}}}
             \unexpanded{%
             \setlist[enumerate]{topsep=0em,itemsep=0.125em}
@@ -602,7 +594,6 @@
             \expandafter{\number\numexpr(#3)\relax}%
             \unexpanded{%
                 \end{enumerate}
-            % \end{minipage}
                 \end{tabular}%
             \\%
             }
@@ -614,7 +605,7 @@
             \hline
             \begin{tabular}{>{\raggedright\arraybackslash}p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}}
             \textbf
-            }%course@\romannumeral\csname courseindex\endcsname @practiceeltitle
+            }%
             {\unexpanded{\expandafter{\csname course@\romannumeral#1@practiceeltitle\endcsname}}}
             \unexpanded{%
             \setlist[enumerate]{topsep=0em,itemsep=0.125em}
@@ -625,7 +616,6 @@
             \expandafter{\number\numexpr(#4)\relax}%
             \unexpanded{%
                 \end{enumerate}
-            % \end{minipage}
                 \end{tabular}%
             \\%
             }
@@ -670,7 +660,6 @@
                               }%
                 \hline
                 ##1. & \MakeTextUppercase{\expandafter{\csname course@\romannumeral##1@coursecode\endcsname}} & \expandafter{\csname course@\romannumeral##1@coursetitle\endcsname} & \expandafter\Pgnum{##1}\\
-                % \x. & \MakeTextUppercase{\expanded{\csname course@\romannumeral\csname x\endcsname @coursecode\endcsname}} & \expanded{\csname course@\romannumeral\csname x\endcsname @coursetitle\endcsname} & \expandafter\Pgnum{##1}\\
       \end{tabular}\\
     }%
   }% End of scartctable
@@ -733,16 +722,14 @@
     {\csname course@\romannumeral#1@pgnum\endcsname}
     % {\read@pgnum}%
 }% pointsinrange
-% \def\read@pgnum{\csname course@\romannumeral#1@pgnum\endcsname}
+
 %----------------AtBeginDocument------------------------------
 % \AtBeginDocument{%
 
 % }
 %----------------AtEndDocument------------------------------
 \AtEndDocument{%
-% \centering{\Large\textbf{\MakeTextUppercase{Index}}}
   \def\myX{1}
-  % \def\x{2}
   \gdef\printsemester{\MakeTextUppercase{\romannumeral\csname course@\romannumeral\csname myX\endcsname @coursesem\endcsname}}
   \mainindextable{\arabic{numof@courses}}
   
