@@ -20,8 +20,8 @@ The process flow is given below
 \end{document}
 ```
 2. Based on the course code, generate a template file named <course-code>.tex
-LP									LO							LT							PO
 ```
+	LP									LO							LT							PO
 \begin{course}{1}                   \begin{course}{1}           \begin{course}{1}           \begin{course}{1}           
     \category{}                         \category{}                 \category{}                 \category{}             
     \commonto{}                         \commonto{}                 \commonto{}                 \commonto{}             
