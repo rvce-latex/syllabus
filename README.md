@@ -20,19 +20,26 @@ The process flow is given below
 \end{document}
 ```
 2. Based on the course code, generate a template file named <course-code>.tex
+LP									LO							LT							PO
 ```
-\begin{course}{1}
- \category{}
- \commonto{}
- \stream{}
- \ciemarks{}
- \seemarks{}
- \seeduration{}
- \totalhours{}
- \prerequisites{}
- \begin{units}
-  \unit[4]{sample}
- \end{units}
+\begin{course}{1}                   \begin{course}{1}           \begin{course}{1}           \begin{course}{1}           
+    \category{}                         \category{}                 \category{}                 \category{}             
+    \commonto{}                         \commonto{}                 \commonto{}                 \commonto{}             
+    \stream{}                           \stream{}                   \stream{}                   \stream{}               
+    \ciemarks{}                         \ciemarks{}                 \ciemarks{}                 \ciemarks{}             
+    \seemarks{}                         \seemarks{}                 \seemarks{}                 \seemarks{}             
+    \seeduration{}                      \seeduration{}              \seeduration{}              \seeduration{}          
+    \totalhours{}                       \totalhours{}               \totalhours{}               \totalhours{}           
+    \prerequisites{}                    \prerequisites{}            \prerequisites{}            \prerequisites{}        
+    \begin{units}                       \begin{units}               \begin{units}               \begin{practicals}           
+        \unit[4]{sample}                    \unit[4]{sample}            \unit[4]{sample}            \practicetitle{Hardware}
+    \end{units}                         \end{units}                 \end{units}                     \experiment{Design}             
+    \begin{practicals}              \end{course}                \end{course}                        \practiceeltitle{Outcome}
+        \practicetitle{Hardware}                                                                    \experiment[EL]{Design}
+        \experiment{Design}                                                                     \end{practicals}
+        \practiceeltitle{Outcome}                                                           \end{course}
+        \experiment[EL]{Design}
+    \end{practicals}
 \end{course}
 ```
 3. The subject experts will define the course details like, unit-wise hours and contents for lecture, list of experiments for practice
