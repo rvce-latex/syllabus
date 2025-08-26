@@ -50,6 +50,7 @@
 \setlength{\textheight}{9.5in}
 
 % -------------------- Definitions ---------------------------
+%------------------------------- [if] stmt-------------------------------------
 %% Conditional ifs
 \newif\ifprerequisite
 \newif\ifpractice
@@ -186,10 +187,8 @@
 
 % \point@toks holds the commands to print the points at the proper location on the page (except that it's not used by the \qformat option).
 \newtoks\point@toks
-%------------------------------- [if] stmt-------------------------------------
-\newif\if@includecourse
-\@includecoursefalse
-%--------------------------------------------------------------------
+
+%--------------------------------- Environment -----------------------------------
 
 \newenvironment{scheme}[1]{%
   % Environment for courses
@@ -752,11 +751,11 @@
       \global\tutorialfalse
     \fi
     \edef\nlec{\csname course@\romannumeral\csname x\endcsname @numoflectureunits\endcsname}
-	\edef\nprac{\csname course@\romannumeral\csname x\endcsname @numofpracticeunits\endcsname}
-	\edef\npel{\csname course@\romannumeral\csname x\endcsname @numofpracticeelunits\endcsname}
+    \edef\nprac{\csname course@\romannumeral\csname x\endcsname @numofpracticeunits\endcsname}
+    \edef\npel{\csname course@\romannumeral\csname x\endcsname @numofpracticeelunits\endcsname}
     \clearpage% Forces a page break.
     \input{Template.tex}
-    \typeout{The number of lecture units:\nlec\space\iflecture 1\else 0\fi, practice:\nprac\space\ifpractice 1\else 0\fi, practiceel:\npel\space\ifpracticeel 1\else 0\fi\space for the course:\course@code }
+    % \typeout{The number of lecture units:\nlec\space\iflecture 1\else 0\fi, practice:\nprac\space\ifpractice 1\else 0\fi, practiceel:\npel\space\ifpracticeel 1\else 0\fi\space for the course:\course@code }
     % \input{temp.tex}
     % Reset after every page/course
     % \prerequisitefalse
