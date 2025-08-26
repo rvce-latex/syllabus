@@ -13,6 +13,9 @@
 .*.lb
 
 ## Intermediate documents:
+*.tex
+!Main.tex
+!Template.tex
 *.dvi
 *.xdv
 *-converted-to.*

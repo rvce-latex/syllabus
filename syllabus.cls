@@ -84,7 +84,6 @@
 % ------------------------------------------------------------
 \newcommand\checkint[1]{%
     \ifnum#1=\numexpr#1\relax
-        \typeout{#1 is an integer.}%
         \ifnum#1>3\relax
           \ClassError{syllabus}{#1 is not a valid integer.\MessageBreak}{Use 1 :For Theory; 2 :For Theory+Lab; 3 :For Practical alone.\MessageBreak}%
         \fi
@@ -103,29 +102,45 @@
 \newcommand\checkcoursetype[1]{%
   \edef\coursetypeupper{#1}%
   \ifx\coursetypeupper\po\relax
+    % setting for <course-code>.tex
+    \global\lecturefalse
+    \global\practicetrue
+    \global\tutorialfalse
+    % setting for Template.tex
     \immediate\write\@mainaux{\string\gdef\string\course@\romannumeral\value{numof@courses}@lecturestatus{0}}
     \immediate\write\@mainaux{\string\gdef\string\course@\romannumeral\value{numof@courses}@practicestatus{1}}
     \immediate\write\@mainaux{\string\gdef\string\course@\romannumeral\value{numof@courses}@tutorialstatus{0}}
     \def\ltp{{0,0,2}}
-    \typeout{From PO type, the status of L:\iflecture 1\else 0\fi, T:\iftutorial 1\else 0\fi\space and\space\ifpractice 1\else 0\fi. }
   \else\ifx\coursetypeupper\lo\relax
+    % setting for <course-code>.tex
+    \global\lecturetrue
+    \global\practicefalse
+    \global\tutorialfalse
+    % setting for Template.tex
     \immediate\write\@mainaux{\string\gdef\string\course@\romannumeral\value{numof@courses}@lecturestatus{1}}
     \immediate\write\@mainaux{\string\gdef\string\course@\romannumeral\value{numof@courses}@practicestatus{0}}
     \immediate\write\@mainaux{\string\gdef\string\course@\romannumeral\value{numof@courses}@tutorialstatus{0}}
     \def\ltp{{4,0,0}}
-    \typeout{From LO type, the status of L:\iflecture 1\else 0\fi, T:\iftutorial 1\else 0\fi\space and\space\ifpractice 1\else 0\fi. }
   \else\ifx\coursetypeupper\lt\relax
+    % setting for <course-code>.tex
+    \global\lecturetrue
+    \global\practicefalse
+    \global\tutorialtrue
+    % setting for Template.tex
     \immediate\write\@mainaux{\string\gdef\string\course@\romannumeral\value{numof@courses}@lecturestatus{1}}
     \immediate\write\@mainaux{\string\gdef\string\course@\romannumeral\value{numof@courses}@practicestatus{0}}
     \immediate\write\@mainaux{\string\gdef\string\course@\romannumeral\value{numof@courses}@tutorialstatus{1}}
     \def\ltp{{3,1,0}}
-    \typeout{From LT type, the status of L:\iflecture 1\else 0\fi, T:\iftutorial 1\else 0\fi\space and\space\ifpractice 1\else 0\fi. }
   \else\ifx\coursetypeupper\lp\relax
+    % setting for <course-code>.tex
+    \global\lecturetrue
+    \global\practicetrue
+    \global\tutorialfalse
+    % setting for Template.tex
     \immediate\write\@mainaux{\string\gdef\string\course@\romannumeral\value{numof@courses}@lecturestatus{1}}
     \immediate\write\@mainaux{\string\gdef\string\course@\romannumeral\value{numof@courses}@practicestatus{1}}
     \immediate\write\@mainaux{\string\gdef\string\course@\romannumeral\value{numof@courses}@tutorialstatus{0}}
     \def\ltp{{3,0,1}}
-    \typeout{From LP type, the status of L:\iflecture 1\else 0\fi, T:\iftutorial 1\else 0\fi\space and\space\ifpractice 1\else 0\fi. }
   \else\ifx\coursetypeupper\EL\relax
     % OK
   \else
@@ -331,7 +346,7 @@
 %   \begingroup 
     \newenvironment{units}{
       \def\unit{%
-        % \addtocounter{numof@lectureunits}{1}
+        \addtocounter{numof@lectureunits}{1}
          \ifhmode
           % Remove any skips at the end of the previous paragraph that might cause a blank line, and then end that paragraph:
           \unskip\unskip \par
@@ -422,7 +437,8 @@
 \def\@readunits[#1]#2{%
   \def\@type{#1}
   \checkunithour{\@type}
-  \addtocounter{numof@lectureunits}{1}
+  % \addtocounter{numof@lectureunits}{1}
+  \typeout{Im inside readunits with counter value \space\value{numof@lectureunits}}
   \if@filesw
     % Store all Data
     \immediate\write\@mainaux
@@ -560,6 +576,7 @@
       }%
     %wnd of%3#
     \iflecture
+        \typeout{Setting LO, LP, LT and #2}
         \ifnum#2<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
             {
                 \expandafter\@lecloop
@@ -750,13 +767,12 @@
     \else
       \global\tutorialfalse
     \fi
+    \edef\currentcoursenum{\x}
     \edef\nlec{\csname course@\romannumeral\csname x\endcsname @numoflectureunits\endcsname}
     \edef\nprac{\csname course@\romannumeral\csname x\endcsname @numofpracticeunits\endcsname}
     \edef\npel{\csname course@\romannumeral\csname x\endcsname @numofpracticeelunits\endcsname}
     \clearpage% Forces a page break.
     \input{Template.tex}
-    % \typeout{The number of lecture units:\nlec\space\iflecture 1\else 0\fi, practice:\nprac\space\ifpractice 1\else 0\fi, practiceel:\npel\space\ifpracticeel 1\else 0\fi\space for the course:\course@code }
-    % \input{temp.tex}
     % Reset after every page/course
     % \prerequisitefalse
     % \practicefalse
