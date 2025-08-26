@@ -1,0 +1,6 @@
+%\foreach \x in {1,...,\arabic{numof@courses}}{%
+%	\edef\nlec{\csname course@\romannumeral\csname coursenum\endcsname @numoflectureunits\endcsname}
+%	\edef\nprac{\csname course@\romannumeral\csname coursenum\endcsname @numofpracticeunits\endcsname}
+%	\edef\npel{\csname course@\romannumeral\csname coursenum\endcsname @numofpracticeelunits\endcsname}
+	\xpandtable{\x}{\nlec}{\nprac}{\npel}{1}%
+%}
