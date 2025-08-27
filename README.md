@@ -1,5 +1,7 @@
 # syllabus
 This is the class file meant to create syllabus book.
+1. Create a table of content containing course code, course title and its page number.
+1. Supports adding references to the course, by adding citation in `Reference.bib` and using its corresponding cite key.
 
 ## Idea:
 The process flow is given below
@@ -34,21 +36,26 @@ The process flow is given below
     \begin{units}                       \begin{units}               \begin{units}               \begin{practicals}           
         \unit[4]{sample}                    \unit[4]{sample}            \unit[4]{sample}            \practicetitle{Hardware}
     \end{units}                         \end{units}                 \end{units}                     \experiment{Design}             
-    \begin{practicals}              \end{course}                \end{course}                        \practiceeltitle{Outcome}
-        \practicetitle{Hardware}                                                                    \experiment[EL]{Design}
-        \experiment{Design}                                                                     \end{practicals}
-        \practiceeltitle{Outcome}                                                           \end{course}
-        \experiment[EL]{Design}
-    \end{practicals}
+    \begin{practicals}                  \begin{courseoutcomes}      \begin{courseoutcomes}          \practiceeltitle{Outcome}
+        \practicetitle{Hardware}            \co{sample}                 \co{sample}                 \experiment[EL]{Design}
+        \experiment{Design}             \end{courseoutcomes}        \end{courseoutcomes}        \end{practicals}
+        \practiceeltitle{Outcome}       \begin{references}          \begin{references}          \begin{courseoutcomes}
+        \experiment[EL]{Design}             \reference{Razavi2000}      \reference{Razavi2000}      \co{sample}
+    \end{practicals}                    \end{references}            \end{references}            \end{courseoutcomes}
+    \begin{courseoutcomes}          \end{course}                \end{course}                    \begin{references}
+        \co{sample}                                                                                 \reference{Razavi2000}
+    \end{courseoutcomes}                                                                        \end{references}
+    \begin{references}                                                                      \end{course}
+    %Add citation key defined in reference.bib file in the current directory
+    %As an example, a predefined key is added here under \referencecommand.
+        \reference{Razavi2000}
+    \end{references}
 \end{course}
 ```
 3. The subject experts will define the course details like, unit-wise hours and contents for lecture, list of experiments for practice
 4. Read the contents of <course-code>.tex and including practicals and store this information onto aux file.
-5. Define a Template.tex file, so that the date is read back from aux file and build a table.
-```
-\xpandtable{2}{2}{1}{1}{1}
-```
+5. Read the Data from aux file and build a table.
 
-## Features to be added:
-1. Create a table of content containing course code, course title and its page number.
-1. Need to add suppport for adding references to the course, which is based on cite key.
+## Yet...
+1. Need to add header and footer
+2. Scheme table after toc page
