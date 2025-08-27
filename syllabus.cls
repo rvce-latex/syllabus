@@ -74,7 +74,8 @@
 \newcounter{numof@lectureunits}
 \newcounter{numof@practiceunits}
 \newcounter{numof@practiceelunits}
-\newcounter{numof@coursecos}
+\newcounter{numof@cos}
+\newcounter{numof@refs}
 \newcounter{temp@counter}
 
 %% Environment
@@ -217,10 +218,9 @@
         \gdef\course@code{##1}
         % Defaults - Move it to course environment
         \practiceelfalse
-        \setcounter{numof@lectureunits}{0}
-        \setcounter{numof@practiceunits}{0}
-        \setcounter{numof@practiceelunits}{0}
-        \setcounter{numof@coursecos}{0}
+        % \setcounter{numof@lectureunits}{0}
+        % \setcounter{numof@practiceunits}{0}
+        % \setcounter{numof@practiceelunits}{0}
         \def\coursetitle{
             % \edef\thecoursetitle{p@course\value{numof@courses}}
             \process@course
@@ -283,6 +283,16 @@
             \immediate\write\coursefile{\space\space\string\experiment[EL]{For EL experiment}}
             \immediate\write\coursefile{\space\string\end{practicals}}
           \fi
+          \immediate\write\coursefile{\space\string\begin{courseoutcomes}}
+          \immediate\write\coursefile{\space\space\string\co{sample}}
+          \immediate\write\coursefile{\space\string\end{courseoutcomes}}
+          % 
+          \immediate\write\coursefile{\space\string\begin{references}}
+          \immediate\write\coursefile{ \@percentchar\string Add citation key defined in reference.bib file in the current directory}
+          \immediate\write\coursefile{ \@percentchar\string As an example, a predefined key is added here under \string\reference command.}
+          \immediate\write\coursefile{\space\space\string\reference{Razavi2000}}
+          \immediate\write\coursefile{\space\string\end{references}}
+          % 
           \immediate\write\coursefile{\string\end{course}}
           % \writecourseheader
           \immediate\closeout\coursefile
@@ -298,14 +308,16 @@
 
 \newenvironment{course}[1]{%
   \def\courseindex{#1}
-  \pgfmathsetmacro{\mya}{\expandafter{\csname course@\romannumeral#1@courseltp\endcsname[0]}}
-  \pgfmathsetmacro{\myb}{\expandafter{\csname course@\romannumeral#1@courseltp\endcsname[1]}}
-  \pgfmathsetmacro{\myc}{\expandafter{\csname course@\romannumeral#1@courseltp\endcsname[2]}}
-  \typeout{The value of lcredit is:\space\mya,\space\myb,\space\myc}
+  % Reset thecounters
   \setcounter{numof@lectureunits}{0}
   \setcounter{numof@practiceunits}{0}
   \setcounter{numof@practiceelunits}{0}
-  \newcommand*{\numofcos}[1][4]{##1}%
+  \setcounter{numof@cos}{0}
+  \setcounter{numof@refs}{0}
+  % \newcommand*{\numofcos}[1][4]{%
+  %   \setcounter{numof@cos}{0}
+  %   \addtocounter{numof@cos}{##1}
+  % }
   \newcommand*{\lecturecredit}[1]{\immediate\write\@mainaux{\string\gdef\string\course@\romannumeral#1@courseltp{{##1,\myb,\myc}}}}%
   \newcommand*{\tutorialcredit}[1]{\immediate\write\@mainaux{\string\gdef\string\course@\romannumeral#1@courseltp{{\mya,##1,\myc}}}}%
   \newcommand*{\practicecredit}[1]{\immediate\write\@mainaux{\string\gdef\string\course@\romannumeral#1@courseltp{{\mya,\myb,##1}}}}%
@@ -370,6 +382,27 @@
       }
     }% End of 1st arg of units environment
     { }% End of 2nd arg of units environment
+    % 
+    \newenvironment{courseoutcomes}{%
+      \def\co{%
+         \ifhmode
+          % Remove any skips at the end of the previous paragraph that might cause a blank line, and then end that paragraph:
+          \unskip\unskip \par
+        \fi
+        \@doco%
+      }
+    }% End of 1st arg of course outcome environment
+    {}% End of 2nd arg of course outcome environment
+    \newenvironment{references}{%
+      \def\reference{%
+         \ifhmode
+          % Remove any skips at the end of the previous paragraph that might cause a blank line, and then end that paragraph:
+          \unskip\unskip \par
+        \fi
+        \@doref%
+      }
+    }% End of 1st arg of course outcome environment
+    {}% End of 2nd arg of course outcome environment
 }% End of 1st argument of course environment
 {
   \ifprerequisite
@@ -384,6 +417,10 @@
     {\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @numofpracticeunits{\arabic{numof@practiceunits}}}%
   \immediate\write\@mainaux
     {\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @numofpracticeelunits{\arabic{numof@practiceelunits}}}%
+  \immediate\write\@mainaux
+    {\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @numofcourseoutcomes{\arabic{numof@cos}}}%
+  \immediate\write\@mainaux
+    {\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @numofreferences{\arabic{numof@refs}}}%
 %   \immediate\write\@mainaux
 %     {\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @pgnum{\noexpand\thepage}}%
     \protected@write\@auxout{}{\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @pgnum{\thepage}}
@@ -407,6 +444,23 @@
 }
 \def\@dopractice{\@ifnextchar[{\@readpracticeel}%
                           {\@readpractice}%
+}
+%-------------------------------@do definitions---------------------------
+\def\@doco#1{%
+  \addtocounter{numof@cos}{1}
+  \if@filesw
+      % Store all Data
+      \immediate\write\@mainaux
+          {\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @co@\romannumeral\value{numof@cos}@content{#1}}%
+  \fi
+}
+\def\@doref#1{%
+  \addtocounter{numof@refs}{1}
+  \if@filesw
+      % Store all Data
+      \immediate\write\@mainaux
+          {\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @ref@\romannumeral\value{numof@refs}@content{#1}}%
+  \fi
 }
 %-------------------------------@readpoints[#1]---------------------------
 \def\@readpoints[#1]#2{% #2: define course title
@@ -432,7 +486,7 @@
   \def\@type{#1}
   \checkunithour{\@type}
   % \addtocounter{numof@lectureunits}{1}
-  \typeout{Im inside readunits with counter value \space\value{numof@lectureunits}}
+  % \typeout{Im inside readunits with counter value \space\value{numof@lectureunits}}
   \if@filesw
     % Store all Data
     \immediate\write\@mainaux
@@ -451,7 +505,7 @@
   \if@filesw
     % Store all Data
     \immediate\write\@mainaux
-        {\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @practiceelunitcontent@\roman{numof@practiceelunits}{#2}}%
+        {\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @practiceelunit@\roman{numof@practiceelunits}@content{#2}}%
   \fi
 }% @readpracticeel
 
@@ -459,21 +513,21 @@
   \addtocounter{numof@practiceunits}{1}
   \if@filesw
     \immediate\write\@mainaux
-        {\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @practiceunitcontent@\roman{numof@practiceunits}{#1}}%
+        {\string\gdef\string\course@\romannumeral\csname courseindex\endcsname @practiceunit@\roman{numof@practiceunits}@content{#1}}%
   \fi
 }% @readpractice
 
 %----------------Template commands------------------------------
 
-\newcommand{\xpandtable}[5]{%
+\newcommand{\xpandtable}[7]{% 1: numofscheme; 2: numofcourse; 3: numoflec; 4: numofprac; 5: numofpracel; 6: numofref; 7: numofcos
   \begingroup
   \def\@scartchlectable##1{%
     % \iflecture
     % {%
       \unexpanded{%
-        \begin{tabular}{p{\dimexpr0.8\textwidth-2\tabcolsep-1.8\arrayrulewidth\relax}|%
-                        >{\raggedleft\arraybackslash}p{\dimexpr0.2\textwidth-2\tabcolsep-1.2\arrayrulewidth\relax}%
-                      }%
+        \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}p{\dimexpr0.95\textwidth\relax}|%
+                        >{\centering\arraybackslash}p{\dimexpr0.2\textwidth-2\tabcolsep-1.2\arrayrulewidth\relax}%
+                      @{}}%
         \hline
         \centering
       }%
@@ -482,7 +536,7 @@
         &%
         \textbf
       }{%
-        \unexpanded{\expandafter{\csname course@\romannumeral#1@lectureunit@\romannumeral##1@hour\endcsname}}%
+        \unexpanded{\expandafter{\csname course@\romannumeral#2@lectureunit@\romannumeral##1@hour\endcsname}\quad Hours}%
       }
       \unexpanded{%
         \\%
@@ -492,22 +546,36 @@
       }{%
       \unexpanded{\begin{minipage}[b]{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}}
       \unexpanded{\setlist[itemize]{topsep=0pt,itemsep=0.125em}}
-        \unexpanded{\expandafter{\csname course@\romannumeral#1@lectureunit@\romannumeral##1@content\endcsname}}
+        \unexpanded{\expandafter{\csname course@\romannumeral#2@lectureunit@\romannumeral##1@content\endcsname}}
          \unexpanded{\end{minipage}}
       }%
       \unexpanded{%
         % \end{minipage}
       \\%
       % \hline
-        \end{tabular}%
+        \end{tabular*}%
         \\%
       }%
   }% End of scartctable
   \def\@scartchpractable##1{%
-    % \ifpractice
-    % {%
       \unexpanded{%
-        \item \expandafter{\csname course@\romannumeral#1@practiceunitcontent@\romannumeral##1\endcsname}%
+        \item \expandafter{\csname course@\romannumeral#2@practiceunit@\romannumeral##1@content\endcsname}%
+      }%
+  }% End of scartctable
+  \def\@scartchpraceltable##1{%
+      \unexpanded{%
+        \item \expandafter{\csname course@\romannumeral#2@practiceelunit@\romannumeral##1@content\endcsname}%
+      }%
+  }% End of scartctable
+  \def\@scartchoutcometable##1{%
+      \unexpanded{%
+        \item \expandafter{\csname course@\romannumeral#2@co@\romannumeral##1@content\endcsname}%
+      }%
+  }% End of scartctable
+  \def\@scartchreftable##1{%
+      \unexpanded{%
+        \item \fullcite{\expanded{\csname course@\romannumeral#2@ref@\romannumeral##1@content\endcsname}}%
+        % \item \expanded{\csname course@\romannumeral#2@ref@\romannumeral##1@content\endcsname}%
       }%
   }% End of scartctable
   \expanded{% 
@@ -525,7 +593,7 @@
         \endlastfoot
       }%
       \unexpanded{%
-        \begin{tabular}{>{\centering\arraybackslash}p{\dimexpr\textwidth\relax}}%
+        \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}>{\centering\arraybackslash}p{\dimexpr1.15\textwidth\relax}@{}}%
             \hline
           \textbf
       }%
@@ -535,78 +603,56 @@
         \hline%
           \textbf
       }%
-      {\unexpanded\expandafter{\csname course@\romannumeral#1@coursetitle\endcsname}}
+      {\unexpanded\expandafter{\csname course@\romannumeral#2@coursetitle\endcsname}}
       \unexpanded{%
         \\%
           \textbf
       }%
-      {\unexpanded\expandafter{\csname course@\romannumeral#1@category\endcsname}}
+      {\unexpanded\expandafter{\csname course@\romannumeral#2@category\endcsname}}
       \unexpanded{%
         \\%
           \textbf
       }%
-      {\unexpanded\expandafter{\csname course@\romannumeral#1@stream\endcsname}}
+      {\unexpanded\expandafter{\csname course@\romannumeral#2@stream\endcsname}}
       \unexpanded{%
         \\%
-        \end{tabular}%
+        \end{tabular*}%
         \\%
       }%
       \unexpanded{%
-        \begin{tabular}{p{\dimexpr0.2\textwidth-\tabcolsep-0.4\arrayrulewidth\relax}|%
-                        p{\dimexpr0.2\textwidth-\tabcolsep-0.4\arrayrulewidth\relax}|%
-                        p{\dimexpr0.2\textwidth-\tabcolsep-0.4\arrayrulewidth\relax}|%
-                        p{\dimexpr0.2\textwidth-\tabcolsep-0.4\arrayrulewidth\relax}|%
-                        p{\dimexpr0.2\textwidth-\tabcolsep-0.4\arrayrulewidth\relax}}%
+        \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}>{\centering\arraybackslash}p{\dimexpr0.2\textwidth-2\tabcolsep-0.4\arrayrulewidth\relax}|%
+                        p{\dimexpr0.2\textwidth\relax}|%
+                        p{\dimexpr0.2\textwidth-2\tabcolsep-0.4\arrayrulewidth\relax}|%
+                        p{\dimexpr0.2\textwidth-2\tabcolsep-0.4\arrayrulewidth\relax}|%
+                        p{\dimexpr0.2\textwidth\relax}@{}}%
       \hline%
-      \textbf{Course Code}&\textbf{:}\space\MakeTextUppercase{\csname course@\romannumeral#1@coursecode\endcsname} & & \textbf{CIE} & \textbf{:}\space{\csname course@\romannumeral#1@ciemarks\endcsname}\space Marks\\%
-      \textbf{Credit\space L:T:P}&\textbf{:}\space{\csname course@\romannumeral#1@courseltp\endcsname} & & \textbf{SEE} & \textbf{:}\space{\csname course@\romannumeral#1@seemarks\endcsname}\space Marks\\%
-      \textbf{Total Hours}&\textbf{:}\space{\csname course@\romannumeral#1@totalhours\endcsname} & & \textbf{SEE Duration} & \textbf{:}\space{\csname course@\romannumeral#1@seeduration\endcsname}\space Hours\\%
+      \textbf{Course Code}&\textbf{:}\space\MakeTextUppercase{\csname course@\romannumeral#2@coursecode\endcsname} & & \textbf{CIE} & \textbf{:}\space{\csname course@\romannumeral#2@ciemarks\endcsname}\space Marks\\%
+      \textbf{Credit\space L:T:P}&\textbf{:}\space{\csname course@\romannumeral#2@courseltp\endcsname} & & \textbf{SEE} & \textbf{:}\space{\csname course@\romannumeral#2@seemarks\endcsname}\space Marks\\%
+      \textbf{Total Hours}&\textbf{:}\space{\csname course@\romannumeral#2@totalhours\endcsname} & & \textbf{SEE Duration} & \textbf{:}\space{\csname course@\romannumeral#2@seeduration\endcsname}\space Hours\\%
       \hline%
       }
       \unexpanded{%
-        \end{tabular}%
+        \end{tabular*}%
         \\
       }%
     %wnd of%3#
-    \iflecture
-        \typeout{Setting LO, LP, LT and #2}
-        \ifnum#2<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
-            {
-                \expandafter\@lecloop
-                \expandafter{\number\numexpr(1)\expandafter\relax\expandafter}%
-                \expandafter{\number\numexpr(#2)\relax}%
-            }
-    \fi
-    \ifpractice
-        \ifnum#3<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
-            {\unexpanded{%
-            \hline
-            \begin{tabular}{>{\raggedright\arraybackslash}p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}}
-            \textbf
-            }%
-            {\unexpanded{\expandafter{\csname course@\romannumeral#1@practicetitle\endcsname}}}
-            \unexpanded{%
-            \setlist[enumerate]{topsep=0em,itemsep=0.125em}
-            \begin{enumerate}
-            }%
-            \expandafter\@pracloop
-            \expandafter{\number\numexpr(1)\expandafter\relax\expandafter}%
-            \expandafter{\number\numexpr(#3)\relax}%
-            \unexpanded{%
-                \end{enumerate}
-                \end{tabular}%
-            \\%
-            }
+    \iflecture%
+      \ifnum#3<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
+        {
+          \expandafter\@lecloop
+          \expandafter{\number\numexpr(1)\expandafter\relax\expandafter}%
+          \expandafter{\number\numexpr(#3)\relax}%
         }
     \fi
-    \ifpracticeel
-        \ifnum#4<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
-            {\unexpanded{%
-            \hline
-            \begin{tabular}{>{\raggedright\arraybackslash}p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}}
+    \ifpractice%
+      \ifnum#4<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
+        {
+          \unexpanded{%
+            % \hline
+            \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}p{\dimexpr1.15\textwidth\relax}@{}}
             \textbf
             }%
-            {\unexpanded{\expandafter{\csname course@\romannumeral#1@practiceeltitle\endcsname}}}
+            {\unexpanded{\space\expandafter{\csname course@\romannumeral#2@practicetitle\endcsname}}}
             \unexpanded{%
             \setlist[enumerate]{topsep=0em,itemsep=0.125em}
             \begin{enumerate}
@@ -616,12 +662,83 @@
             \expandafter{\number\numexpr(#4)\relax}%
             \unexpanded{%
                 \end{enumerate}
-                \end{tabular}%
+                \end{tabular*}%
             \\%
             }
         }
     \fi
-
+    \ifpracticeel%
+      \ifnum#5<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
+        {
+          \unexpanded{%
+            % \hline
+            \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}>{\raggedright\arraybackslash}p{\dimexpr\textwidth\relax}@{}}
+            \textbf
+            }%
+            {\unexpanded{\expandafter{\space\csname course@\romannumeral#2@practiceeltitle\endcsname}}}
+            \unexpanded{%
+            \setlist[enumerate]{topsep=0em,itemsep=0.125em}
+            \begin{enumerate}
+            }%
+            \expandafter\@pracelloop
+            \expandafter{\number\numexpr(1)\expandafter\relax\expandafter}%
+            \expandafter{\number\numexpr(#5)\relax}%
+            \unexpanded{%
+                \end{enumerate}
+                \end{tabular*}%
+            \\%
+            }
+        }
+    \fi
+    % course outcomes
+    \ifnum#7<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
+    {
+      \unexpanded{%
+      % \hline
+      \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}p{\dimexpr\textwidth\relax}@{}}
+        \hline
+      \textbf
+      }%
+      {\unexpanded{\space Course Outcomes: After completing the course, the students will be able to:}}
+      \unexpanded{%
+      \\
+      \hline
+      \setlist[enumerate]{topsep=-1em,itemsep=0.125em}
+      \begin{enumerate}[leftmargin=35pt,label=\textbf{CO\arabic*:}]
+      }%
+      \expandafter\@outcomeloop
+      \expandafter{\number\numexpr(1)\expandafter\relax\expandafter}%
+      \expandafter{\number\numexpr(#7)\relax}%
+      \unexpanded{%
+        \end{enumerate}
+        \end{tabular*}%
+      \\%
+      }
+    }
+    % % References
+    \ifnum#6<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
+    {
+      \unexpanded{%
+      \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}>{\raggedright\arraybackslash}p{\dimexpr\textwidth\relax}@{}}
+      \hline
+      \textbf
+      }%
+      {\unexpanded{\space References}}
+      \unexpanded{%
+      \\
+       \hline%
+      \setlist[enumerate]{topsep=-1em,itemsep=0.125em}
+      \begin{enumerate}
+      }%
+      \expandafter\@refloop
+      \expandafter{\number\numexpr(1)\expandafter\relax\expandafter}%
+      \expandafter{\number\numexpr(#6)\relax}%
+      \unexpanded{%
+        \end{enumerate}
+        \end{tabular*}%
+      \\%
+      }
+    }
     %#5%
     \unexpanded{
       \ifhmode
@@ -645,6 +762,27 @@
   {%
     \@scartchpractable{#1}%
     \expandafter\@pracloop\expandafter{\number\numexpr#1+1}{#2}%
+  }%
+}%
+\newcommand\@pracelloop[2]{%
+  \ifnum#1>#2 \expandafter\@gobble\else\expandafter\@firstofone\fi
+  {%
+    \@scartchpraceltable{#1}%
+    \expandafter\@pracelloop\expandafter{\number\numexpr#1+1}{#2}%
+  }%
+}%
+\newcommand\@refloop[2]{%
+  \ifnum#1>#2 \expandafter\@gobble\else\expandafter\@firstofone\fi
+  {%
+    \@scartchreftable{#1}%
+    \expandafter\@refloop\expandafter{\number\numexpr#1+1}{#2}%
+  }%
+}%
+\newcommand\@outcomeloop[2]{%
+  \ifnum#1>#2 \expandafter\@gobble\else\expandafter\@firstofone\fi
+  {%
+    \@scartchoutcometable{#1}%
+    \expandafter\@outcomeloop\expandafter{\number\numexpr#1+1}{#2}%
   }%
 }%
 
@@ -714,7 +852,7 @@
     \expandafter\@mainloop\expandafter{\number\numexpr#1+1}{#2}%
   }%
 }%
-% \def\Pgnum#1{\csname course@\romannumeral#1@pgnum\endcsname}
+% \def\Pgnum#1{\csname course@\romannumeral#2@pgnum\endcsname}
 \def\Pgnum#1{%
 %   \def\coursepagenumber{#1}%
   \@ifundefined{course@\romannumeral#1@pgnum}%
@@ -754,12 +892,17 @@
     \else
       \global\tutorialfalse
     \fi
+    \edef\nscheme{\myX}
     \edef\currentcoursenum{\x}
     \edef\nlec{\csname course@\romannumeral\csname x\endcsname @numoflectureunits\endcsname}
     \edef\nprac{\csname course@\romannumeral\csname x\endcsname @numofpracticeunits\endcsname}
     \edef\npel{\csname course@\romannumeral\csname x\endcsname @numofpracticeelunits\endcsname}
+    \edef\nref{\csname course@\romannumeral\csname x\endcsname @numofreferences\endcsname}
+    \edef\nco{\csname course@\romannumeral\csname x\endcsname @numofcourseoutcomes\endcsname}
+    \typeout{num of \nscheme,\space\currentcoursenum,\space\nlec,\space\nprac,\space\npel,\space\nref,\space\nco}
     \clearpage% Forces a page break.
-    \input{Template.tex}
+    \xpandtable{\nscheme}{\currentcoursenum}{\nlec}{\nprac}{\npel}{\nref}{\nco}%
+    % \input{Template.tex}
     % Reset after every page/course
     % \prerequisitefalse
     % \practicefalse
