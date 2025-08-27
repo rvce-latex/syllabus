@@ -37,19 +37,111 @@
 \RequirePackage{longtable}
 \RequirePackage{pgf}
 \RequirePackage{pgffor}
+\RequirePackage{fancyhdr}
 % Helper: Convert to uppercase
 \RequirePackage{textcase} % for \MakeTextUppercase
 \RequirePackage{array}
 \RequirePackage{enumitem}
 
 % -------------------- Page setup ---------------------------
-\setlength{\oddsidemargin}{-0.25in}
-\setlength{\evensidemargin}{-0.25in}
-\setlength{\textwidth}{6in}
-\setlength{\topmargin}{-0.25in}
-\setlength{\textheight}{9.5in}
+%                         *****************
+%                         ** PAGE LAYOUT **
+%                         *****************
+
+
+% We set the parameters in terms of \paperwidth and \paperheight
+% so that the options
+
+% a4paper
+% a5paper
+% b5paper
+% letterpaper
+% legalpaper
+% executivepaper
+% landscape
+
+% will all work:
+
+\setlength{\textwidth}{\paperwidth}
+\addtolength{\textwidth}{-2in}
+\setlength{\oddsidemargin}{0pt}
+\setlength{\evensidemargin}{0pt}
+
+\setlength{\headheight}{15pt}
+\setlength{\headsep}{15pt}
+\setlength{\topmargin}{0in}
+\addtolength{\topmargin}{-\headheight}
+\addtolength{\topmargin}{-\headsep}
+\setlength{\footskip}{29pt}
+\setlength{\textheight}{\paperheight}
+\addtolength{\textheight}{-2.2in}
+
+\setlength{\marginparwidth}{.5in}
+\setlength{\marginparsep}{5pt}
+
+%%%%%%%%%%%%%%%%%% Page Style %%%%%%%%%%%%%%%%%%%%%%%%
+%
+\fancypagestyle{mplain}{%              
+    \fancyhf{}%                            
+    \renewcommand{\headrulewidth}{0pt}%    
+    \renewcommand{\footrulewidth}{0.2pt}%
+    % \ifPG
+    % \fancyfoot[C] {\@mastersInSF\, in \@PGprgName, Department of \@departmentSF,\space\@acadYear}%
+    % \else
+    % \fancyfoot[L] {UG\space\ifMinor Minor\else Major\fi\space Project Report}%
+    % \fancyfoot[C] {Department of \@departmentSF,\space\@acadYear}%
+    % \fi
+    \pagenumbering{arabic}
+    \setcounter{page}{1}
+    \setcounter{section}{0}
+    \renewcommand{\thesection}{\arabic{section}}
+    \fancyfoot[R] {\thepage}%
+    \fancyhead[L] {%
+      % 
+      \begin{minipage}{0.35\textwidth}
+        \vspace{-2em}
+        \includegraphics[width=\textwidth]{./Images/LogoL}% non c'è l'ambiente figure.
+      \end{minipage}%
+    }%
+    \fancyhead[R] {%
+      % 
+      \begin{minipage}{0.65\textwidth}
+        \vspace{-4em}
+        % \hspace{8em}
+       \hfill \includegraphics[width=\textwidth]{./Images/LogoR}% non c'è l'ambiente figure.
+      \end{minipage}%
+    }%
+}
+\fancypagestyle{emptypg}{%              
+    \fancyhf{}%                            
+    \renewcommand{\headrulewidth}{0.2pt}%    
+    \renewcommand{\footrulewidth}{0.2pt}%
+    \fancyfoot[R] {}%   
+    \fancyhead[C] {RV College of Engineering\textsuperscript{\small\textregistered}, Bengaluru - 560059}%
+}
+\fancypagestyle{fplain}{%              
+    \fancyhf{}%                            
+    \renewcommand{\headrulewidth}{0.2pt}%    
+    \renewcommand{\footrulewidth}{0.2pt}%
+%	\fancyhead[L]{\vrule depth \textheight \toc}%
+    \setcounter{page}{1}
+    \pagenumbering{roman}
+    \fancyfoot[C] {\thepage}%
+}
 
 % -------------------- Definitions ---------------------------
+\newcommand*{\academicYear}[1]{\gdef\@acadYear{#1}}
+\newcommand*{\@acadYear}{\texttt{\string\academicYear} \texttt{currently not set. Please fix this.}}
+
+% Department & program cmd set
+\newcommand*{\Department}[2][ECE]{\gdef\@departmentSF{#1}\gdef\@departmentLF{#2}}
+\newcommand*{\@departmentSF}{\texttt{Department Name ShortForm is not defined.} \texttt{ Fix this by placing inside square brackets.}}
+\newcommand*{\@departmentLF}{\texttt{Department Name LongForm is not defined.} \texttt{ Fix this by placing inside curly brackets.}}
+\newcommand*{\MastersIn}[2][M.Tech]{\gdef\@mastersInSF{#1}\relax \def\@mastersInLF{#2}\relax}
+\newcommand*{\@mastersInSF}{\texttt{Masters ShortForm is not defined.} \texttt{ Fix this by placing inside square brackets.}}
+\newcommand*{\@mastersInLF}{\texttt{Masters LongForm is not defined.} \texttt{ Fix this by placing inside curly brackets.}}
+\newcommand*{\pgProgramName}[1]{\gdef\@PGprgName{#1} }
+\newcommand*{\@PGprgName}{\texttt{\string\pgProgramName} \texttt{currently not set. Please fix this.}}
 %------------------------------- [if] stmt-------------------------------------
 %% Conditional ifs
 \newif\ifprerequisite
@@ -525,7 +617,7 @@
     % \iflecture
     % {%
       \unexpanded{%
-        \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}p{\dimexpr0.95\textwidth\relax}|%
+        \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{\dimexpr0.8\textwidth\relax}|%
                         >{\centering\arraybackslash}p{\dimexpr0.2\textwidth-2\tabcolsep-1.2\arrayrulewidth\relax}%
                       @{}}%
         \hline
@@ -593,7 +685,7 @@
         \endlastfoot
       }%
       \unexpanded{%
-        \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}>{\centering\arraybackslash}p{\dimexpr1.15\textwidth\relax}@{}}%
+        \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}>{\centering\arraybackslash}p{\dimexpr\textwidth\relax}@{}}%
             \hline
           \textbf
       }%
@@ -620,7 +712,7 @@
         \\%
       }%
       \unexpanded{%
-        \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}>{\centering\arraybackslash}p{\dimexpr0.2\textwidth-2\tabcolsep-0.4\arrayrulewidth\relax}|%
+        \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}>{\centering\arraybackslash}p{\dimexpr0.2\textwidth-2\tabcolsep-0.4\arrayrulewidth\relax}|%
                         p{\dimexpr0.2\textwidth\relax}|%
                         p{\dimexpr0.2\textwidth-2\tabcolsep-0.4\arrayrulewidth\relax}|%
                         p{\dimexpr0.2\textwidth-2\tabcolsep-0.4\arrayrulewidth\relax}|%
@@ -649,7 +741,7 @@
         {
           \unexpanded{%
             % \hline
-            \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}p{\dimexpr1.15\textwidth\relax}@{}}
+            \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{\dimexpr\textwidth\relax}@{}}
             \textbf
             }%
             {\unexpanded{\space\expandafter{\csname course@\romannumeral#2@practicetitle\endcsname}}}
@@ -672,7 +764,7 @@
         {
           \unexpanded{%
             % \hline
-            \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}>{\raggedright\arraybackslash}p{\dimexpr\textwidth\relax}@{}}
+            \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}>{\raggedright\arraybackslash}p{\dimexpr\textwidth\relax}@{}}
             \textbf
             }%
             {\unexpanded{\expandafter{\space\csname course@\romannumeral#2@practiceeltitle\endcsname}}}
@@ -695,7 +787,7 @@
     {
       \unexpanded{%
       % \hline
-      \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}p{\dimexpr\textwidth\relax}@{}}
+      \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{\dimexpr\textwidth\relax}@{}}
         \hline
       \textbf
       }%
@@ -719,7 +811,7 @@
     \ifnum#6<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
     {
       \unexpanded{%
-      \begin{tabular*}{1.15\textwidth}{@{\extracolsep{\fill}}>{\raggedright\arraybackslash}p{\dimexpr\textwidth\relax}@{}}
+      \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}>{\raggedright\arraybackslash}p{\dimexpr\textwidth\relax}@{}}
       \hline
       \textbf
       }%
@@ -793,7 +885,7 @@
     \unexpanded{%
       \begin{tabular}{>{\centering\arraybackslash}p{\dimexpr0.05\textwidth-0.5\tabcolsep-0.25\arrayrulewidth\relax}|%
                         >{\centering\arraybackslash}p{\dimexpr0.2\textwidth-0.5\tabcolsep-0.25\arrayrulewidth\relax}|%
-                        p{\dimexpr0.75\textwidth-0.5\tabcolsep-0.25\arrayrulewidth\relax}|%
+                        p{\dimexpr0.5\textwidth-0.5\tabcolsep-0.25\arrayrulewidth\relax}|%
                                 >{\centering\arraybackslash}p{\dimexpr0.1\textwidth-0.5\tabcolsep-0.25\arrayrulewidth\relax}%
                               }%
                 \hline
@@ -818,7 +910,7 @@
       \unexpanded{
         \begin{tabular}{p{\dimexpr0.05\textwidth-0.5\tabcolsep-0.25\arrayrulewidth\relax}|%
                       p{\dimexpr0.2\textwidth-0.5\tabcolsep-0.25\arrayrulewidth\relax}|%
-                      p{\dimexpr0.75\textwidth-0.5\tabcolsep-0.25\arrayrulewidth\relax}|%
+                      p{\dimexpr0.5\textwidth-0.5\tabcolsep-0.25\arrayrulewidth\relax}|%
                               >{\raggedleft\arraybackslash}p{\dimexpr0.1\textwidth-0.5\tabcolsep-0.25\arrayrulewidth\relax}%
                             }%
               \hline%
@@ -867,10 +959,14 @@
 % }
 %----------------AtEndDocument------------------------------
 \AtEndDocument{%
+  \newpage
+  \pagestyle{fplain}
   \def\myX{1}
   \gdef\printsemester{\MakeTextUppercase{\romannumeral\csname course@\romannumeral\csname myX\endcsname @coursesem\endcsname}}
   \mainindextable{\arabic{numof@courses}}
-  
+  \cleardoublepage
+  % 
+  \pagestyle{mplain}
   \foreach \x in {1,...,\arabic{numof@courses}}{%
     \edef\course@code{\csname course@\romannumeral\csname x\endcsname @coursecode\endcsname}
     \input{\course@code.tex}
