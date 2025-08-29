@@ -149,13 +149,14 @@
 \newif\ifpracticeel
 \newif\iftutorial
 \newif\iflecture
+\newif\ifpgnumout
 % Defaults:
 \prerequisitefalse
 \practicefalse
 \practiceelfalse
 \tutorialfalse
 \lecturefalse
-
+\pgnumoutfalse
 %% Counters
 \newcounter{latest@course}
 \newcounter{numof@courses}
@@ -170,9 +171,9 @@
 \newcounter{numof@refs}
 \newcounter{temp@counter}
 
-%% Environment
+%% course file
 \newwrite\coursefile
-\newread\readcoursefile
+
 
 % ------------------------------------------------------------
 \newcommand\checkint[1]{%
@@ -276,25 +277,26 @@
       % \string\PgInfo -> literal string \PgInfo
       %% \write\@mainaux{\string\PgInfo{mylabel}{\noexpand\thepage}} -> \write\@mainaux{\PgInfo{mylabel}{<current page>}}
     \reserved@a% Calls \reserved@a, which actually performs the \write
+    \typeout{Pginfo write: \reserved@a}
   \endgroup
 }
 
-\def\PgInfo#1#2{\expandafter\gdef\csname Pg@#1\endcsname{#2}}
+\def\PgInfo#1#2{\expandafter\gdef\csname #1@pgnum\endcsname{#2}}
 % When LaTeX rereads the .aux file, this gets executed: "\PgInfo{Q1}{5}", which defines the control sequence \Pg@Q1 as: "\gdef\Pg@Q1{5}"
-\def\PgInfo@get#1{\csname Pg@#1\endcsname}
+\def\PgInfo@get#1{\csname course@\romannumeral#1@pgnum\endcsname}
 % \PgInfo@get{Q1} → \csname Pg@Q1\endcsname → expands to 5
 %--------------------------------------------------------------------
 %----------------- newtoks -------------------------
 % In TeX, \toks registers (short for token list registers) are used to store sequences of tokens, i.e., the input text as parsed by TeX before expansion. 
 % They're very useful for temporarily holding macro arguments, code snippets, or even building complex constructions that are to be evaluated later.
 \newtoks\pageinfo@commands
-\newtoks\lecturerowstok
+% \newtoks\lecturerowstok
 
-% \pagepoint@commands holds the commands to manage the counting of the number of points defined on each page.
-\newtoks\pagepoint@commands
+% % \pagepoint@commands holds the commands to manage the counting of the number of points defined on each page.
+% \newtoks\pagepoint@commands
 
-% \point@toks holds the commands to print the points at the proper location on the page (except that it's not used by the \qformat option).
-\newtoks\point@toks
+% % \point@toks holds the commands to print the points at the proper location on the page (except that it's not used by the \qformat option).
+% \newtoks\point@toks
 
 %--------------------------------- Environment -----------------------------------
 
@@ -310,24 +312,11 @@
         \gdef\course@code{##1}
         % Defaults - Move it to course environment
         \practiceelfalse
-        % \setcounter{numof@lectureunits}{0}
-        % \setcounter{numof@practiceunits}{0}
-        % \setcounter{numof@practiceelunits}{0}
         \def\coursetitle{
             % \edef\thecoursetitle{p@course\value{numof@courses}}
             \process@course
           }
         \def\process@course{%
-          % \pageinfo@commands={%
-          %   \edef\@courselabel{course@\arabic{numof@courses}}%
-          %   \PgInfo@write{\@courselabel}%
-          %   \begingroup % to confine the change to \@currentlabel
-          %     \def\@currentlabel{\thecoursetitle}%
-          %     \label{\@courselabel}%
-          %   \endgroup
-          %   \the\pagepoint@commands
-          %   \global \pageinfo@commands={}%
-          % }% pageinfo@commands
           \ifhmode
             % Remove any skips at the end of the previous paragraph that might cause a blank line, and then end that paragraph:
             \unskip\unskip \par
@@ -414,7 +403,8 @@
   \newcommand*{\tutorialcredit}[1]{\immediate\write\@mainaux{\string\gdef\string\course@\romannumeral#1@courseltp{{\mya,##1,\myc}}}}%
   \newcommand*{\practicecredit}[1]{\immediate\write\@mainaux{\string\gdef\string\course@\romannumeral#1@courseltp{{\mya,\myb,##1}}}}%
   \def\category##1{\immediate\write\@mainaux
-    {\string\gdef\string\course@\romannumeral#1@category{##1}}}%
+    {\string\gdef\string\course@\romannumeral#1@category{##1}}%
+  }%
   \newcommand*{\commonto}[1]{\immediate\write\@mainaux
     {\string\gdef\string\course@\romannumeral#1@commonto{##1}}}%
   \newcommand*{\stream}[1]{\immediate\write\@mainaux
@@ -441,7 +431,7 @@
       \fi
     \fi
   }%
-%   \begingroup 
+
     \newenvironment{units}{
       \def\unit{%
         \addtocounter{numof@lectureunits}{1}
@@ -725,6 +715,7 @@
       }
       \unexpanded{%
         \end{tabular*}%
+        % \the\pageinfo@commands%
         \\
       }%
     %wnd of%3#
@@ -837,6 +828,7 @@
       \\
       \fi
       \end{longtable}%
+      \pagebreak% Need to get proper page number
     }
   }%
 }
@@ -889,7 +881,7 @@
                                 >{\centering\arraybackslash}p{\dimexpr0.1\textwidth-0.5\tabcolsep-0.25\arrayrulewidth\relax}%
                               }%
                 \hline
-                ##1. & \MakeTextUppercase{\expandafter{\csname course@\romannumeral##1@coursecode\endcsname}} & \expandafter{\csname course@\romannumeral##1@coursetitle\endcsname} & \expandafter\Pgnum{##1}\\
+                ##1. & \MakeTextUppercase{\expandafter{\csname course@\romannumeral##1@coursecode\endcsname}} & \expandafter{\csname course@\romannumeral##1@coursetitle\endcsname} & \Pgnum{##1}\\
       \end{tabular}\\
     }%
   }% End of scartctable
@@ -933,6 +925,7 @@
       \\
       \fi
       \end{longtable}%
+      \pagebreak% Need to get proper page number
     }
   }%
 }
@@ -950,22 +943,50 @@
   \@ifundefined{course@\romannumeral#1@pgnum}%
     {\mbox{\normalfont\bfseries ??}}%
     {\csname course@\romannumeral#1@pgnum\endcsname}
+    % {\PgInfo@get{#1}}
     % {\read@pgnum}%
 }% pointsinrange
 
+% \AddToHook{shipout/before}{%
+%   % \begingroup
+%     \ifpgnumout
+%       % perform the write
+%       % \edef\temp{%
+%       %   \noexpand\write\@mainaux{%
+%       %     \string\gdef\string\course@romannumeral\the\c@course @pgnum{\the\c@page}%
+%       %   }%
+%       % }%
+%       % \temp
+%       \immediate\write\@mainaux{%
+%       \string\gdef\string\course@romannumeral\the\c@numof@courses @pgnum{\the\c@page}%
+%     }%
+%       % reset flag
+%       \global\pgnumoutfalse
+%     \fi
+%   % \endgroup
+% }
+
+% \newcommand*\RecordCoursePageAtShipout[1]{%
+%   \AddThispageHook{%
+%     \immediate\write\@mainaux{%
+%       \string\gdef\string\course@\romannumeral#1@pgnum{\the\c@page}%
+%     }%
+%   }%
+% }
 %----------------AtBeginDocument------------------------------
 % \AtBeginDocument{%
 
 % }
 %----------------AtEndDocument------------------------------
 \AtEndDocument{%
-  \newpage
+  % \frontmatter
+  % \cleardoublepage
   \pagestyle{fplain}
   \def\myX{1}
   \gdef\printsemester{\MakeTextUppercase{\romannumeral\csname course@\romannumeral\csname myX\endcsname @coursesem\endcsname}}
   \mainindextable{\arabic{numof@courses}}
-  \cleardoublepage
-  % 
+  % \mainmatter
+   \clearpage% Forces a page break.
   \pagestyle{mplain}
   \foreach \x in {1,...,\arabic{numof@courses}}{%
     \edef\course@code{\csname course@\romannumeral\csname x\endcsname @coursecode\endcsname}
@@ -995,8 +1016,8 @@
     \edef\npel{\csname course@\romannumeral\csname x\endcsname @numofpracticeelunits\endcsname}
     \edef\nref{\csname course@\romannumeral\csname x\endcsname @numofreferences\endcsname}
     \edef\nco{\csname course@\romannumeral\csname x\endcsname @numofcourseoutcomes\endcsname}
-    \typeout{num of \nscheme,\space\currentcoursenum,\space\nlec,\space\nprac,\space\npel,\space\nref,\space\nco}
-    \clearpage% Forces a page break.
+    % \typeout{num of \nscheme,\space\currentcoursenum,\space\nlec,\space\nprac,\space\npel,\space\nref,\space\nco}
+   \clearpage
     \xpandtable{\nscheme}{\currentcoursenum}{\nlec}{\nprac}{\npel}{\nref}{\nco}%
     % \input{Template.tex}
     % Reset after every page/course
