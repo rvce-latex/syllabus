@@ -1,0 +1,219 @@
+\documentclass{syllabus}
+%%%%%%%%%%%%%%Bibliography%%%%%%%%%%%%%%%%%%%%%
+\usepackage[sorting=none, backend=biber,style=ieee]{biblatex}
+% If backend is set to bibtex, then configure texmaker Bi(La)Tex with "bibtex %"
+\addbibresource{Reference.bib}%Add bib file with extention
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ismaindoc}{true}
+\standalonefalse
+\renewcommand{\arraystretch}{1.5}
+%\schemeYear{2025}
+\begin{document}
+%%%% You can modify the credit %%%%
+	\input{CreditDefinitions}
+%%%% You can enter the data in the appropriate commands %%%%
+\begin{semester}{3}
+	\begin{definecourse}{MA231TC}
+		\category{PE}
+		\stream{CS}
+		\commonto{Common to Common to CS and CY}
+		\bos{MA}
+		\coursetitle[LT]{Linear Algebra and Probability Theory}
+	\end{definecourse}
+		\begin{coregroup}
+		\begin{definecourse}{CV232TA}
+			\category{PC}
+			\stream{CS}
+			\commonto{Common to CS,CD,CY and CI Programs}
+			\bos{CV}
+			\coursetitle[LO]{Environment and Sustainability}
+		\end{definecourse}
+		\begin{definecourse}{ME232TB}
+			\category{PC}
+			\stream{CS}
+			\commonto{Common to CS,CD,CY and CI Programs}
+			\bos{ME}
+			\coursetitle[LO]{Material Science for Engineers}
+	    \end{definecourse}	
+		\begin{definecourse}{BT232TD}
+			\category{PC}
+			\stream{CS}
+			\commonto{Common to CS,CD,CY and CI Programs}
+			\bos{BT}
+			\coursetitle[LO]{Bioinspired Engineering}
+		\end{definecourse}
+		\end{coregroup}
+	\begin{definecourse}{CS233AI}
+		\category{PC}
+		\stream{CS}
+		\commonto{Common to Common to CS and CY}
+		\bos{CS}
+		\coursetitle[LP]{Data Structures and Applications }
+	\end{definecourse}
+	\begin{definecourse}{CS234AI}
+		\category{PC}
+		\stream{CS}
+		\commonto{Common to Common to CS, CD and CY}
+		\bos{CS}
+		\coursetitle[LP]{Applied Digital Logic Design and Computer Organization }
+	\end{definecourse}
+	\begin{definecourse}{CS235AT}
+		\category{PC}
+		\stream{CS}
+		\commonto{Common to Common to CS, CD and CI}
+		\bos{CS}
+		\coursetitle[LO]{Operating Systems }
+	\end{definecourse}
+	\begin{definecourse}{CS236AT}
+		\category{PC}
+		\stream{CS}
+		\commonto{Common to Common to CS, CD and CI}
+		\bos{CS}
+		\coursetitle[LO]{Quantum Computing Essentials }
+	\end{definecourse}
+	\begin{definecourse}{CS238DL}
+		\category{PC}
+		\stream{CS}
+		\commonto{Common to Common to CS,CD,CY and CI Programs}
+		\bos{CS}
+		\coursetitle[PO]{Applied Design thinking lab }
+	\end{definecourse}
+	\begin{definecourse}{MAT149AT}
+		\category{BC}
+		\stream{CS}
+		\commonto{Common to Common to CS,CD,CY and CI Programs}
+		\bos{MA}
+		\coursetitle[LO]{Bridge Course Mathematics }
+	\end{definecourse}
+	\begin{definecourse}{SLCSP31A}
+		\category{SL}
+		\stream{CS}
+		\commonto{Common to Common to CS,CD,CY and CI Programs}
+		\bos{CS}
+		\coursetitle[PO]{Domain Engineering Skill Lab}
+	\end{definecourse}
+\end{semester}
+
+\begin{semester}{4}
+	\begin{definecourse}{CS241AT}
+		\category{PC}
+		\stream{CS}
+		\commonto{Common to Common to CS and CY Programs}
+		\bos{CS}
+		\coursetitle[LO]{Discrete mathematical structures and combinatorics}
+	\end{definecourse}
+	\begin{coregroup*}
+		\begin{definecourse}{CV232TA}
+			\category{PC}
+			\stream{CS}
+			\commonto{Common to CS,CD,CY and CI Programs}
+			\bos{CV}
+			\coursetitle[LO]{Environment and Sustainability}
+		\end{definecourse}
+		\begin{definecourse}{ME232TB}
+			\category{PC}
+			\stream{CS}
+			\commonto{Common to CS,CD,CY and CI Programs}
+			\bos{ME}
+			\coursetitle[LO]{Material Science for Engineers}
+		\end{definecourse}	
+		\begin{definecourse}{BT232TD}
+			\category{PC}
+			\stream{CS}
+			\commonto{Common to CS,CD,CY and CI Programs}
+			\bos{BT}
+			\coursetitle[LO]{Bioinspired Engineering}
+		\end{definecourse}
+	\end{coregroup*}
+	\begin{definecourse}{CD343AI}
+		\category{PC}
+		\stream{CS}
+		\commonto{Common to CS,CD,CY and CI Programs}
+		\bos{CD}
+		\coursetitle[LP]{Design and Analysis of Algorithms}
+	\end{definecourse}
+	\begin{definecourse}{CS345AI}
+		\category{PC}
+		\stream{CS}
+		\commonto{Common to CS and CI Programs}
+		\bos{CS}
+		\coursetitle[LP]{Embedded Systems, IoT and Edge AI}
+	\end{definecourse}
+	\begin{definecourse}{CS246AT}
+		\category{PC}
+		\stream{CS}
+		\commonto{Common to CS,CD,CY and CI Programs}
+		\bos{CS}
+		\coursetitle[LT]{Computer Networks}
+	\end{definecourse}	
+    \begin{electivegroup}{CS248ATX}{Professional Electives}{A}
+    	\begin{definecourse}{CS248ATA}
+			\category{PE}
+			\stream{CS}
+			\commonto{Only CS}
+			\bos{CS}
+			\coursetitle[LO]{Graph Theory}
+	  \end{definecourse}
+	  \begin{definecourse}{CS248ATB}
+			\category{PE}
+			\stream{EC}
+			\commonto{Only CS}
+			\bos{CS}
+			\coursetitle[LO]{Computer Graphics and Extended Reality}
+	  \end{definecourse}
+			\begin{definecourse}{CI248ATC}
+			\category{PE}
+			\stream{EC}
+			\commonto{Common to CS, CI and CD Programs}
+			\bos{CS}
+			\coursetitle[LO]{Quantum Algorithms and Key Distribution}
+	  \end{definecourse}
+	  \begin{definecourse}{CS248ATD}
+			\category{PE}
+			\stream{CS}
+			\commonto{Only CS}
+			\bos{CS}
+			\coursetitle[LO]{Natural Language Processing}
+	  \end{definecourse}
+	  \begin{definecourse}{CS355TBF}
+			\category{PE}
+			\stream{CS}
+			\commonto{Common to CS, CI, CY and CD Programs}
+			\bos{CS}
+			\coursetitle[LO]{Linux Internals}
+	  \end{definecourse}
+	  \begin{definecourse}{CS365TDB}
+			\category{PE}
+			\stream{CS}
+			\commonto{Only CS}
+			\bos{CS}
+			\coursetitle[LO]{Operation Research}
+	  \end{definecourse}
+	\end{electivegroup}
+	
+	\begin{aegroup}{HS248LX}
+		\begin{definecourse}{HS238LA}
+			\category{AE}
+			\stream{HS}
+			\commonto{All programs}
+			\bos{HS}
+			\coursetitle[PO]{National Service Scheme}
+		\end{definecourse}
+		\begin{definecourse}{HS238LB}
+			\category{AE}
+			\stream{HS}
+			\commonto{All programs}
+			\bos{HS}
+			\coursetitle[PO]{National Cadet Corps}
+		\end{definecourse}			
+	\end{aegroup}
+	\begin{definecourse}{CS139AT}
+		\category{BC}
+		\stream{CS}
+		\commonto{Common to Common to CS,CD,CY and CI Programs}
+		\bos{CS}
+		\coursetitle[LO]{Bridge Course C Programming }
+	\end{definecourse}
+\end{semester}
+
+\end{document}
