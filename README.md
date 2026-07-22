@@ -10,14 +10,14 @@ The process flow is given below
 \documentclass{syllabus}
 
 \begin{document}
-\begin{scheme}{3} % Scheme {3} defines the semester. Here we have defined 2 courses
+\begin{semester}{3} % Semester {3} defines the semester. Here we have defined 2 courses
 \begin{definecourse}{ma121ai} % <ma121ai> is the course code
 	\coursetitle[LO]{Elements of electronics}
 \end{definecourse}
 \begin{definecourse}{ec121ai}
 	\coursetitle[LO]{Elements of electronics}
 \end{definecourse}
-\end{scheme}
+\end{semester}
 
 \end{document}
 ```
@@ -25,13 +25,6 @@ The process flow is given below
 ```
 	LP									LO							LT							PO
 \begin{course}{1}                   \begin{course}{1}           \begin{course}{1}           \begin{course}{1}           
-    \category{}                         \category{}                 \category{}                 \category{}             
-    \commonto{}                         \commonto{}                 \commonto{}                 \commonto{}             
-    \stream{}                           \stream{}                   \stream{}                   \stream{}               
-    \ciemarks{}                         \ciemarks{}                 \ciemarks{}                 \ciemarks{}             
-    \seemarks{}                         \seemarks{}                 \seemarks{}                 \seemarks{}             
-    \seeduration{}                      \seeduration{}              \seeduration{}              \seeduration{}          
-    \totalhours{}                       \totalhours{}               \totalhours{}               \totalhours{}           
     \prerequisites{}                    \prerequisites{}            \prerequisites{}            \prerequisites{}        
     \begin{units}                       \begin{units}               \begin{units}               \begin{practicals}           
         \unit[4]{sample}                    \unit[4]{sample}            \unit[4]{sample}            \practicetitle{Hardware}
