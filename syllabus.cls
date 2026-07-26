@@ -18,6 +18,7 @@
 \LoadClass{article}
 \RequirePackage{ifthen}
 \RequirePackage{longtable}
+\RequirePackage{graphicx}
 \RequirePackage{pgf}
 \RequirePackage{pgffor}
 \RequirePackage{fancyhdr}
@@ -41,14 +42,6 @@
 \addtolength{\textheight}{-2.2in}
 \setlength{\marginparwidth}{.5in}
 \setlength{\marginparsep}{5pt}
-
-\newcommand*{\Department}[2][ECE]{%
-	\gdef\@departmentSF{#1}%
-	\gdef\@departmentLF{#2}}
-\newcommand*{\MastersIn}[2][M.Tech]{%
-	\gdef\@mastersInSF{#1}\relax%
-	\def\@mastersInLF{#2}\relax}
-\newcommand*{\pgProgramName}[1]{\gdef\@PGprgName{#1} }
 
 \newif\ifprerequisite
 \newif\ifpractice
@@ -92,6 +85,20 @@
 
 \gdef\current@variant@suffix{}
 \gdef\lsem{1} 
+
+\newcommand*{\department}[2][ECE]{%
+	\gdef\@departmentSF{#1}%
+	\gdef\@departmentLF{#2}}
+
+\newcommand*{\schemeYear}[2][UG]{%
+	\gdef\@graduateLabel{#1}%
+	\gdef\@schemeYear{#2}}
+
+% --- DEFAULT FALLBACKS ---
+\gdef\@departmentSF{ECE}
+\gdef\@departmentLF{Electronics and Communication Engineering}
+\gdef\@graduateLabel{UG}
+\gdef\@schemeYear{2025}
 
 \newcommand\checkint[1]{%
 	\ifnum#1=\numexpr#1\relax
@@ -434,10 +441,10 @@
 	
 	\edef\tempadd{%
 		\noexpand\hline
-		\noexpand\multicolumn{6}{|p{\dimexpr0.7\textwidth\relax}|}{\noexpand\centering\noexpand\textbf{Unit - \romunit}} & \noexpand\textbf{\hrs\noexpand\quad Hours} \noexpand\\
+		\noexpand\multicolumn{6}{|p{\dimexpr 0.61\textwidth + 10\tabcolsep + 5\arrayrulewidth \relax}|}{\noexpand\centering\noexpand\textbf{Unit - \romunit}} & \noexpand\textbf{\hrs\noexpand\quad Hours} \noexpand\\
 		\noexpand\hline
-		\noexpand\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{%
-			\noexpand\begin{minipage}[t]{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}%
+		\noexpand\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{%
+			\noexpand\begin{minipage}[t]{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}%
 				\noexpand\setlist[itemize]{topsep=4pt,itemsep=0.125em}%
 				\unexpanded{#2}% 
 				\noexpand\vspace*{0.5ex}%
@@ -452,39 +459,39 @@
 \newtoks\practok 
 
 \def\practicetitle#1{%
-	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{\noexpand\textbf{#1}} \noexpand\\}%
+	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{\noexpand\textbf{#1}} \noexpand\\}%
 	\global\practok=\expandafter\expandafter\expandafter{\expandafter\the\expandafter\practok\temprow}%
 }
 \def\practiceeltitle#1{%
-	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{\noexpand\textbf{#1}} \noexpand\\}%
+	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{\noexpand\textbf{#1}} \noexpand\\}%
 	\global\practok=\expandafter\expandafter\expandafter{\expandafter\the\expandafter\practok\temprow}%
 }
 \def\practiceinstruction#1{%
-	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{\unexpanded{#1}} \noexpand\\}%
+	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{\unexpanded{#1}} \noexpand\\}%
 	\global\practok=\expandafter\expandafter\expandafter{\expandafter\the\expandafter\practok\temprow}%
 }
 
 \def\experiment{\@ifnextchar[{\@expw}{\@expno}}
 \def\@expw[#1]#2{%
 	\stepcounter{prac@item@ctr}%
-	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{\noexpand\hangindent=1.5em \noexpand\hangafter=1 \noexpand\noindent\noexpand\makebox[1.1em][r]{\arabic{prac@item@ctr}.}\noexpand\hspace{0.4em}\noexpand\textbf{[#1]} \unexpanded{#2}} \noexpand\\}%
+	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{\noexpand\hangindent=1.5em \noexpand\hangafter=1 \noexpand\noindent\noexpand\makebox[1.1em][r]{\arabic{prac@item@ctr}.}\noexpand\hspace{0.4em}\noexpand\textbf{[#1]} \unexpanded{#2}} \noexpand\\}%
 	\global\practok=\expandafter\expandafter\expandafter{\expandafter\the\expandafter\practok\temprow}%
 }
 \def\@expno#1{%
 	\stepcounter{prac@item@ctr}%
-	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{\noexpand\hangindent=1.5em \noexpand\hangafter=1 \noexpand\noindent\noexpand\makebox[1.1em][r]{\arabic{prac@item@ctr}.}\noexpand\hspace{0.4em}\unexpanded{#1}} \noexpand\\}%
+	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{\noexpand\hangindent=1.5em \noexpand\hangafter=1 \noexpand\noindent\noexpand\makebox[1.1em][r]{\arabic{prac@item@ctr}.}\noexpand\hspace{0.4em}\unexpanded{#1}} \noexpand\\}%
 	\global\practok=\expandafter\expandafter\expandafter{\expandafter\the\expandafter\practok\temprow}%
 }
 
 \def\subexperiment{\@ifnextchar[{\@subexpw}{\@subexpno}}
 \def\@subexpw[#1]#2{%
 	\stepcounter{prac@sub@ctr}%
-	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{\noexpand\hangindent=2.6em \noexpand\hangafter=1 \noexpand\noindent\noexpand\hspace*{1.1em}\noexpand\makebox[1.1em][r]{\alph{prac@sub@ctr})}\noexpand\hspace{0.4em}\noexpand\textbf{[#1]} \unexpanded{#2}} \noexpand\\}%
+	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{\noexpand\hangindent=2.6em \noexpand\hangafter=1 \noexpand\noindent\noexpand\hspace*{1.1em}\noexpand\makebox[1.1em][r]{\alph{prac@sub@ctr})}\noexpand\hspace{0.4em}\noexpand\textbf{[#1]} \unexpanded{#2}} \noexpand\\}%
 	\global\practok=\expandafter\expandafter\expandafter{\expandafter\the\expandafter\practok\temprow}%
 }
 \def\@subexpno#1{%
 	\stepcounter{prac@sub@ctr}%
-	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{\noexpand\hangindent=2.6em \noexpand\hangafter=1 \noexpand\noindent\noexpand\hspace*{1.1em}\noexpand\makebox[1.1em][r]{\alph{prac@sub@ctr})}\noexpand\hspace{0.4em}\unexpanded{#1}} \noexpand\\}%
+	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{\noexpand\hangindent=2.6em \noexpand\hangafter=1 \noexpand\noindent\noexpand\hspace*{1.1em}\noexpand\makebox[1.1em][r]{\alph{prac@sub@ctr})}\noexpand\hspace{0.4em}\unexpanded{#1}} \noexpand\\}%
 	\global\practok=\expandafter\expandafter\expandafter{\expandafter\the\expandafter\practok\temprow}%
 }
 
@@ -641,8 +648,20 @@
 \newif\if@in@definecredits
 \@in@definecreditsfalse
 
-\def\definecredits{\global\@in@definecreditstrue}
+\def\definecredits{\global\@in@definecreditstrue
+	\gdef\global@hrspercred{30}%
+	\gdef\global@wkspercred{15}%
+	\gdef\global@Lcredmul{1}%
+	\gdef\global@Tcredmul{2}%
+	\gdef\global@Pcredmul{2}%
+}
 \def\enddefinecredits{\global\@in@definecreditsfalse}
+
+\newcommand{\hrspercred}[1]{\gdef\global@hrspercred{#1}}
+\newcommand{\wkspercred}[1]{\gdef\global@wkspercred{#1}}
+\newcommand{\Lcredmul}[1]{\gdef\global@Lcredmul{#1}}
+\newcommand{\Tcredmul}[1]{\gdef\global@Tcredmul{#1}}
+\newcommand{\Pcredmul}[1]{\gdef\global@Pcredmul{#1}}
 
 \newcounter{cie@total}
 \newcounter{cie@row}
@@ -667,8 +686,6 @@
 	\setcounter{master@cie@count}{0}%
 	
 	\gdef\temp@ciedur{---}\gdef\temp@seedur{3}%
-	\gdef\temp@lecdur{0}\gdef\temp@tutdur{0}\gdef\temp@pracdur{0}%
-	
 	\gdef\temp@cielmarks{0}\gdef\temp@ciepmarks{0}%
 	\gdef\temp@seelmarks{0}\gdef\temp@seepmarks{0}%
 	
@@ -680,9 +697,11 @@
 	\def\Pcredit##1{\setcounter{cred@P@tot}{##1}}%
 	\def\CIEduration##1{\gdef\temp@ciedur{##1}}%
 	\def\SEEduration##1{\gdef\temp@seedur{##1}}%
-	\def\LecDuration##1{\gdef\temp@lecdur{##1}}%
-	\def\TutDuration##1{\gdef\temp@tutdur{##1}}%
-	\def\PracDuration##1{\gdef\temp@pracdur{##1}}%
+	
+	% Nullify old commands if they still exist in older tex files
+	\def\LecDuration##1{}%
+	\def\TutDuration##1{}%
+	\def\PracDuration##1{}%
 	
 	\def\CIELmarks##1{\gdef\temp@cielmarks{##1}}% 
 	\def\CIEPmarks##1{\gdef\temp@ciepmarks{##1}}% 
@@ -754,19 +773,33 @@
 }{%
 	\if@in@definecredits
 	\edef\fulltype{\current@cred@type\current@variant}%
+	
+	% --- MATH CALCULATIONS ---
+	\edef\calc@Ldur{\the\numexpr \value{cred@L@tot} * \global@Lcredmul * \global@wkspercred \relax}%
+	\edef\calc@Tdur{\the\numexpr \value{cred@T@tot} * \global@Tcredmul * \global@wkspercred \relax}%
+	\edef\calc@Pdur{\the\numexpr \value{cred@P@tot} * \global@Pcredmul * \global@wkspercred \relax}%
+	\edef\calc@TotalCred{\the\numexpr \value{cred@L@tot} + \value{cred@T@tot} + \value{cred@P@tot} \relax}%
+	\edef\calc@BaseTotDur{\the\numexpr \calc@TotalCred * \global@hrspercred \relax}%
+	\edef\calc@Sdur{\the\numexpr \calc@BaseTotDur - (\calc@Ldur + \calc@Tdur + \calc@Pdur) \relax}%
+	\edef\calc@TotalHrs{\the\numexpr \calc@Ldur + \calc@Tdur + \calc@Pdur + \calc@Sdur \relax}%
+	
 	\expandafter\xdef\csname master@\fulltype @CIE@totalcount\endcsname{\the\value{master@cie@count}}%
 	\expandafter\xdef\csname type@\fulltype @L\endcsname{\the\value{cred@L@tot}}%
 	\expandafter\xdef\csname type@\fulltype @T\endcsname{\the\value{cred@T@tot}}%
 	\expandafter\xdef\csname type@\fulltype @P\endcsname{\the\value{cred@P@tot}}%
+	
+	\expandafter\xdef\csname type@\fulltype @Ldur\endcsname{\calc@Ldur}%
+	\expandafter\xdef\csname type@\fulltype @Tdur\endcsname{\calc@Tdur}%
+	\expandafter\xdef\csname type@\fulltype @Pdur\endcsname{\calc@Pdur}%
+	\expandafter\xdef\csname type@\fulltype @Sdur\endcsname{\calc@Sdur}%
+	\expandafter\xdef\csname type@\fulltype @TotalHrs\endcsname{\calc@TotalHrs}%
+	
 	\expandafter\xdef\csname type@\fulltype @CIEL\endcsname{\the\value{cie@theory@total}}%
 	\expandafter\xdef\csname type@\fulltype @CIEP\endcsname{\the\value{cie@lab@total}}%
 	\expandafter\xdef\csname type@\fulltype @SEEL\endcsname{\the\value{see@theory@total}}%
 	\expandafter\xdef\csname type@\fulltype @SEEP\endcsname{\the\value{see@lab@total}}%
 	\expandafter\xdef\csname type@\fulltype @CIEdur\endcsname{\temp@ciedur}%
 	\expandafter\xdef\csname type@\fulltype @SEEdur\endcsname{\temp@seedur}%
-	\expandafter\xdef\csname type@\fulltype @LecDur\endcsname{\temp@lecdur}%
-	\expandafter\xdef\csname type@\fulltype @TutDur\endcsname{\temp@tutdur}%
-	\expandafter\xdef\csname type@\fulltype @PracDur\endcsname{\temp@pracdur}%
 	
 	\immediate\write\@mainaux{\string\global\string\@namedef{master@\fulltype @CIE@totalcount}{\the\value{master@cie@count}}}%
 	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @L}{\the\value{cred@L@tot}}}%
@@ -778,11 +811,13 @@
 	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEEP}{\the\value{see@lab@total}}}%
 	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @CIEdur}{\temp@ciedur}}%
 	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEEdur}{\temp@seedur}}%
-	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @LecDur}{\temp@lecdur}}%
-	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @TutDur}{\temp@tutdur}}%
-	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @PracDur}{\temp@pracdur}}%
 	
-	%% <--- ADD THESE FOUR EXPORTS
+	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @Ldur}{\calc@Ldur}}%
+	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @Tdur}{\calc@Tdur}}%
+	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @Pdur}{\calc@Pdur}}%
+	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @Sdur}{\calc@Sdur}}%
+	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @TotalHrs}{\calc@TotalHrs}}%
+	
 	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @CIELmarks}{\temp@cielmarks}}%
 	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @CIEPmarks}{\temp@ciepmarks}}%
 	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEELmarks}{\temp@seelmarks}}%
@@ -1484,36 +1519,28 @@
 	\edef\ctype{\@ifundefined{course@sem\lsem @\romannumeral#2@coursetype}{UNKNOWN}{\@nameuse{course@sem\lsem @\romannumeral#2@coursetype}}}%
 	\expandafter\extract@basetype\ctype\relax\relax\@nil
 	\expandafter\clean@variant\temp@variant\@nil
+	
 	\@ifundefined{type@\ctype @L}{\def\cL{0}}{\edef\cL{\@nameuse{type@\ctype @L}}}%
 	\@ifundefined{type@\ctype @T}{\def\cT{0}}{\edef\cT{\@nameuse{type@\ctype @T}}}%
 	\@ifundefined{type@\ctype @P}{\def\cP{0}}{\edef\cP{\@nameuse{type@\ctype @P}}}%
-	\edef\cLTP{\cL:\cT:\cP}%
-	\@ifundefined{type@\ctype @SEEdur}{\def\cSEEDur{3}}{\edef\cSEEDur{\@nameuse{type@\ctype @SEEdur}}}%
-	\@ifundefined{type@\ctype @LecDur}{\def\cLD{0}}{\edef\cLD{\@nameuse{type@\ctype @LecDur}}}%
-	\@ifundefined{type@\ctype @TutDur}{\def\cTD{0}}{\edef\cTD{\@nameuse{type@\ctype @TutDur}}}%
-	\@ifundefined{type@\ctype @PracDur}{\def\cPD{0}}{\edef\cPD{\@nameuse{type@\ctype @PracDur}}}%
+	
+	\@ifundefined{type@\ctype @Ldur}{\def\cLdur{0}}{\edef\cLdur{\@nameuse{type@\ctype @Ldur}}}%
+	\@ifundefined{type@\ctype @Tdur}{\def\cTdur{0}}{\edef\cTdur{\@nameuse{type@\ctype @Tdur}}}%
+	\@ifundefined{type@\ctype @Pdur}{\def\cPdur{0}}{\edef\cPdur{\@nameuse{type@\ctype @Pdur}}}%
+	\@ifundefined{type@\ctype @Sdur}{\def\cSdur{0}}{\edef\cSdur{\@nameuse{type@\ctype @Sdur}}}%
+	\edef\cTotCreds{\the\numexpr \cL + \cT + \cP \relax}%
+	
+	\@ifundefined{type@\ctype @CIEdur}{\def\cCIEDur{---}}{\edef\cCIEDur{\@nameuse{type@\ctype @CIEdur}}}%
+	\@ifundefined{type@\ctype @SEEdur}{\def\cSEEDur{---}}{\edef\cSEEDur{\@nameuse{type@\ctype @SEEdur}}}%
 	
 	\edef\cCIEL{\@ifundefined{type@\ctype @CIELmarks}{\@ifundefined{type@\ctype @CIEL}{0}{\@nameuse{type@\ctype @CIEL}}}{\@nameuse{type@\ctype @CIELmarks}}}%
 	\edef\cCIEP{\@ifundefined{type@\ctype @CIEPmarks}{\@ifundefined{type@\ctype @CIEP}{0}{\@nameuse{type@\ctype @CIEP}}}{\@nameuse{type@\ctype @CIEPmarks}}}%
 	\edef\cSEEL{\@ifundefined{type@\ctype @SEELmarks}{\@ifundefined{type@\ctype @SEEL}{0}{\@nameuse{type@\ctype @SEEL}}}{\@nameuse{type@\ctype @SEELmarks}}}%
 	\edef\cSEEP{\@ifundefined{type@\ctype @SEEPmarks}{\@ifundefined{type@\ctype @SEEP}{0}{\@nameuse{type@\ctype @SEEP}}}{\@nameuse{type@\ctype @SEEPmarks}}}%
 	
-	\edef\cStr{\@ifundefined{course@sem\lsem @\romannumeral#2@stream}{}{\@nameuse{course@sem\lsem @\romannumeral#2@stream}}}%
-	\def\emptyStr{}%
-	\ifx\cStr\emptyStr
-	\def\StreamRowOut{}%
-	\else
-	\def\StreamRowOut{%
-		\unexpanded{%%
-			\\%%
-			\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
-		}%%
-		{
-			\unexpanded{\centering}%%
-			{\unexpanded{\textbf}{Stream: \unexpanded\expandafter{\cStr}}}%%
-		}%%
-	}%
-	\fi
+	\def\zeroval{0}%
+	\ifx\cCIEP\zeroval \edef\cCIEDisplay{\cCIEL} \else \edef\cCIEDisplay{\cCIEL\space + \cCIEP} \fi
+	\ifx\cSEEP\zeroval \edef\cSEEDisplay{\cSEEL} \else \edef\cSEEDisplay{\cSEEL\space + \cSEEP} \fi
 	
 	\edef\cStr{\@ifundefined{course@sem\lsem @\romannumeral#2@stream}{}{\@nameuse{course@sem\lsem @\romannumeral#2@stream}}}%
 	\edef\cCommon{\@ifundefined{course@sem\lsem @\romannumeral#2@commonto}{}{\@nameuse{course@sem\lsem @\romannumeral#2@commonto}}}%
@@ -1536,53 +1563,33 @@
 	\ifx\CombinedStr\emptyVal
 	\def\CombinedRowOut{}%
 	\else
-	\def\CombinedRowOut{%
-		\unexpanded{\\ \multicolumn{7}{|p{\dimexpr\textwidth\relax}|}}%
+	\def\CombinedRowOut{% 
+		\unexpanded{\\ \multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}}%
 		{\unexpanded{\centering}{\unexpanded{\textbf}{\unexpanded\expandafter{\CombinedStr}}}}%
 	}%
 	\fi
 	
-	% --- EXTRACT COURSE TYPE STRING & HOURS/MARKS ---
-	\def\cTotalHrs{---}\def\cCIEstr{---}\def\cSEEstr{---}\def\cTypeStr{}%
-	\ifx\course@basetype\lo 
-	\edef\cTotalHrs{\cLD L}\edef\cCIEstr{\cCIEL}\edef\cSEEstr{\cSEEL}\def\cTypeStr{(Theory)}%
-	\fi
-	\ifx\course@basetype\lt 
-	\edef\cTotalHrs{\cLD L+\cTD T}\edef\cCIEstr{\cCIEL}\edef\cSEEstr{\cSEEL}\def\cTypeStr{(Theory \& Tutorial)}%
-	\fi
-	\ifx\course@basetype\po 
-	\edef\cTotalHrs{\cPD P}\edef\cCIEstr{\cCIEP}\edef\cSEEstr{\cSEEP}\def\cTypeStr{(Practical)}%
-	\fi
-	\ifx\course@basetype\lp 
-	\edef\cTotalHrs{\cLD L+\cPD P}\edef\cCIEstr{\cCIEL+\cCIEP}\edef\cSEEstr{\cSEEL+\cSEEP}\def\cTypeStr{(Theory \& Practical)}%
-	\fi
+	\def\cTypeStr{}%
+	\ifx\course@basetype\lo \def\cTypeStr{(Theory)}\fi
+	\ifx\course@basetype\lt \def\cTypeStr{(Theory \& Tutorial)}\fi
+	\ifx\course@basetype\po \def\cTypeStr{(Practical)}\fi
+	\ifx\course@basetype\lp \def\cTypeStr{(Theory \& Practical)}\fi
 	
 	\edef\checkCat{\@ifundefined{course@sem\lsem @\romannumeral#2@category}{}{\@nameuse{course@sem\lsem @\romannumeral#2@category}}}%
-	\def\targetCat{Category: Bridge Course}%
-	\ifx\checkCat\targetCat
-	\def\cSEEstr{---}%
-	\def\cSEEDur{---}%
-	\fi
-	
 	\def\targetAE{Category: AE}%
-	\ifx\checkCat\targetAE
-	\def\PrintCat{Ability Enhancement Course}%
-	\else
-	\let\PrintCat\checkCat
-	\fi
+	\ifx\checkCat\targetAE \def\PrintCat{Ability Enhancement Course}\else\let\PrintCat\checkCat\fi
 	
 	\ifx\cTypeStr\emptyVal
 	\def\TypeRowOut{}%
 	\else
-	\def\TypeRowOut{%
-		\unexpanded{\\ \multicolumn{7}{|p{\dimexpr\textwidth\relax}|}}%
+	\def\TypeRowOut{% 
+		\unexpanded{\\ \multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}}%
 		{\unexpanded{\centering}{\unexpanded{\textbf}{\unexpanded\expandafter{\cTypeStr}}}}%
 	}%
 	\fi
 	
-	% --- SECURE FETCH OF CACHED UNITS & PRACTICALS ---
 	\@ifundefined{course@sem\lsem @\romannumeral#2@allunits}{\def\cAllUnits{}}{\expandafter\let\expandafter\cAllUnits\csname course@sem\lsem @\romannumeral#2@allunits\endcsname}%
-	\@ifundefined{course@sem\lsem @\romannumeral#2@allpracticals}{\def\cAllPracs{\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{\textbf{??}} \\ }}{\expandafter\let\expandafter\cAllPracs\csname course@sem\lsem @\romannumeral#2@allpracticals\endcsname}%
+	\@ifundefined{course@sem\lsem @\romannumeral#2@allpracticals}{\def\cAllPracs{\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{\textbf{??}} \\ }}{\expandafter\let\expandafter\cAllPracs\csname course@sem\lsem @\romannumeral#2@allpracticals\endcsname}%
 	
 	\hypertarget{course\lsem\romannumeral#2}{}% 
 	\label{course\lsem\romannumeral#2}%
@@ -1590,7 +1597,7 @@
 	\def\@scartchlectable##1{%%
 		\unexpanded{%
 			\hline
-			\multicolumn{6}{|p{\dimexpr0.7\textwidth\relax}|}%%
+			\multicolumn{6}{|p{\dimexpr 0.71\textwidth + 10\tabcolsep + 5\arrayrulewidth \relax}|}%%
 		}
 		{\unexpanded{
 				\centering
@@ -1606,9 +1613,9 @@
 		\unexpanded{%%
 			\\%%
 			\hline
-			\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}%%
+			\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}%%
 		}{%%
-			\unexpanded{\begin{minipage}[t]{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}}
+			\unexpanded{\begin{minipage}[t]{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}}
 				\unexpanded{\setlist[itemize]{topsep=4pt,itemsep=0.125em}}
 				\unexpanded{\expandafter{\getlectureunitcontent{#2}{##1}}}
 				\unexpanded{\vspace*{0.5ex}}
@@ -1620,31 +1627,29 @@
 	}%% End of scartctable
 	\def\@scartchpraceltable##1{%%
 		\unexpanded{%%
-			\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{%
-				\hangindent=1.5em \hangafter=1 \noindent\makebox[1.1em][r]{##1.}\hspace{0.4em}{\getpracticeelunitcontent{#2}{##1}}%
+			\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{%
+				\setlength{\leftskip}{1.5em}\noindent\hspace*{-1.5em}\makebox[1.1em][r]{##1.}\hspace{0.4em}{\getpracticeelunitcontent{#2}{##1}}\par
 			} \\
 		}%%
 	}%% End of scartctable
 	\def\@scartchoutcometable##1{%%
 		\unexpanded{%%
-			\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{%
-				\hangindent=1.5em \hangafter=1 \noindent\makebox[1.1em][r]{##1.}\hspace{0.4em}{\getcourseco{#2}{##1}}%
+			\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{%
+				\setlength{\leftskip}{1.5em}\noindent\hspace*{-1.5em}\makebox[1.1em][r]{##1.}\hspace{0.4em}{\getcourseco{#2}{##1}}\par
 			} \\
 		}%%
 	}%% End of scartctable
 	\def\@scartchreftable##1{%%
 		\unexpanded{%%
-			\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{%
-				\hangindent=2.2em \hangafter=1 \noindent\makebox[1.8em][r]{[##1]}\hspace{0.4em}{\getcourseref{#2}{##1}}%
+			\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{%
+				\setlength{\leftskip}{2.2em}\noindent\hspace*{-2.2em}\makebox[1.8em][r]{[##1]}\hspace{0.4em}{\getcourseref{#2}{##1}}\par
 			} \\
 		}%%
 	}%% End of scartctable
 	\expanded{%%
 		\endgroup
 		\unexpanded{%%
-			\begin{longtable}{|p{0.15\textwidth}|p{0.02\textwidth}|%
-					p{0.15\textwidth}|p{0.2\textwidth}|p{0.15\textwidth}|%
-					p{0.02\textwidth}|p{0.15\textwidth}|}%%
+			\begin{longtable}{|p{0.22\textwidth}|p{0.02\textwidth}|p{0.12\textwidth}|p{0.12\textwidth}|p{0.18\textwidth}|p{0.02\textwidth}|p{0.15\textwidth}|}%%
 				\hline
 				\endfirsthead
 				\hline
@@ -1655,7 +1660,7 @@
 				\endlastfoot
 				\multicolumn{7}{|c|}{\textbf{Semester - \printsemester}} \\
 				\hline
-				\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%
+				\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}%
 			}%
 			{
 				\unexpanded{
@@ -1670,7 +1675,7 @@
 			}%% for multicolumn
 			\unexpanded{%%
 				\\%%
-				\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
+				\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}%%
 			}%%
 			{
 				\unexpanded{
@@ -1688,9 +1693,13 @@
 			\unexpanded{%%
 				\\%%
 				\hline%%
-				\textbf{Course Code}&\textbf{:}&\space\MakeTextUppercase{\csname course@sem\lsem @\romannumeral#2@coursecode\endcsname} & & \textbf{CIE} & \textbf{:}&\space}\cCIEstr\unexpanded{\space Marks\\%%
-			}\unexpanded{\textbf{Credits L:T:P}&\textbf{:}&\space}\cLTP\unexpanded{ & & \textbf{SEE} & \textbf{:}&\space}\cSEEstr\unexpanded{\space Marks\\%%
-			}\unexpanded{\textbf{Total Hours}&\textbf{:}&\space}\cTotalHrs\unexpanded{ & & \textbf{SEE Duration} & \textbf{:}&\space}\cSEEDur\unexpanded{\space Hrs\\%%
+				\textbf{Course Code}&\textbf{:}&\space\MakeTextUppercase{\csname course@sem\lsem @\romannumeral#2@coursecode\endcsname} & & \textbf{CIE} & \textbf{:}&\space}\cCIEDisplay\unexpanded{\space Marks\\%%
+				\hline%%
+				\textbf{Credit distribution:}\newline\textbf{L:T:P}&\textbf{:}&\space}\cL:\cT:\cP\unexpanded{ & & \textbf{SEE} & \textbf{:}&\space}\cSEEDisplay\unexpanded{\space Marks\\%%
+				\hline%%
+				\textbf{Pedagogical Hours}\newline\textbf{(L:T:P:S)}&\textbf{:}&\space}\cLdur:\cTdur:\cPdur:\cSdur\unexpanded{ & & \textbf{CIE Duration} & \textbf{:}&\space}\cCIEDur\unexpanded{\space Hours\\%%
+				\hline%%
+				\textbf{Total credits:}& \textbf{:}&\space}\cTotCreds\unexpanded{ & & \textbf{SEE Duration} & \textbf{:}&\space}\cSEEDur\unexpanded{\space Hours\\%%
 				\hline%%
 			}
 			\iflecture%%
@@ -1711,7 +1720,7 @@
 			{
 				\unexpanded{%%
 					\hline
-					\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
+					\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}%%
 				}
 				{
 					\unexpanded{
@@ -1729,7 +1738,7 @@
 			{
 				\unexpanded{%%
 					\hline
-					\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
+					\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}%%
 				}
 				{
 					\unexpanded{
@@ -1746,7 +1755,7 @@
 			{
 				\unexpanded{%%
 					\hline
-					\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
+					\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}%%
 				}
 				{
 					\unexpanded{
@@ -1760,361 +1769,20 @@
 				\expandafter\@refloop\expandafter{\number\numexpr(1)\expandafter\relax\expandafter}{\number\numexpr(#6)\relax}%%
 			}
 			\unexpanded{
-				\hline % <--- This single command seals the bottom edge of the table perfectly!
+				\hline
 			\end{longtable}%%
-			}
-			
-			\unexpanded{%
+		}
+		
+		\unexpanded{%
 			\drawCIEtable{#2}%
 			\drawSEEtable{#2}%
-			}
+		}
 		
 		\unexpanded{
 			\pagebreak
 		}
 	}%%
 }
-%\newcommand{\xpandtable}[7]{%
-%	\edef\ctype{\@ifundefined{course@sem\lsem @\romannumeral#2@coursetype}{UNKNOWN}{\@nameuse{course@sem\lsem @\romannumeral#2@coursetype}}}%
-%	\expandafter\extract@basetype\ctype\relax\relax\@nil
-%	\expandafter\clean@variant\temp@variant\@nil
-%	\@ifundefined{type@\ctype @L}{\def\cL{0}}{\edef\cL{\@nameuse{type@\ctype @L}}}%
-%	\@ifundefined{type@\ctype @T}{\def\cT{0}}{\edef\cT{\@nameuse{type@\ctype @T}}}%
-%	\@ifundefined{type@\ctype @P}{\def\cP{0}}{\edef\cP{\@nameuse{type@\ctype @P}}}%
-%	\edef\cLTP{\cL:\cT:\cP}%
-%	\@ifundefined{type@\ctype @SEEdur}{\def\cSEEDur{3}}{\edef\cSEEDur{\@nameuse{type@\ctype @SEEdur}}}%
-%	\@ifundefined{type@\ctype @LecDur}{\def\cLD{0}}{\edef\cLD{\@nameuse{type@\ctype @LecDur}}}%
-%	\@ifundefined{type@\ctype @TutDur}{\def\cTD{0}}{\edef\cTD{\@nameuse{type@\ctype @TutDur}}}%
-%	\@ifundefined{type@\ctype @PracDur}{\def\cPD{0}}{\edef\cPD{\@nameuse{type@\ctype @PracDur}}}%
-%	
-%	\edef\cCIEL{\@ifundefined{type@\ctype @CIELmarks}{\@ifundefined{type@\ctype @CIEL}{0}{\@nameuse{type@\ctype @CIEL}}}{\@nameuse{type@\ctype @CIELmarks}}}%
-%	\edef\cCIEP{\@ifundefined{type@\ctype @CIEPmarks}{\@ifundefined{type@\ctype @CIEP}{0}{\@nameuse{type@\ctype @CIEP}}}{\@nameuse{type@\ctype @CIEPmarks}}}%
-%	\edef\cSEEL{\@ifundefined{type@\ctype @SEELmarks}{\@ifundefined{type@\ctype @SEEL}{0}{\@nameuse{type@\ctype @SEEL}}}{\@nameuse{type@\ctype @SEELmarks}}}%
-%	\edef\cSEEP{\@ifundefined{type@\ctype @SEEPmarks}{\@ifundefined{type@\ctype @SEEP}{0}{\@nameuse{type@\ctype @SEEP}}}{\@nameuse{type@\ctype @SEEPmarks}}}%
-%	
-%	\edef\cStr{\@ifundefined{course@sem\lsem @\romannumeral#2@stream}{}{\@nameuse{course@sem\lsem @\romannumeral#2@stream}}}%
-%	\def\emptyStr{}%
-%	\ifx\cStr\emptyStr
-%	\def\StreamRowOut{}%
-%	\else
-%	\def\StreamRowOut{%
-%		\unexpanded{%%
-%			\\%%
-%			\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
-%		}%%
-%		{
-%			\unexpanded{\centering}%%
-%			{\unexpanded{\textbf}{Stream: \unexpanded\expandafter{\cStr}}}%%
-%		}%%
-%	}%
-%	\fi
-%	
-%	\edef\cStr{\@ifundefined{course@sem\lsem @\romannumeral#2@stream}{}{\@nameuse{course@sem\lsem @\romannumeral#2@stream}}}%
-%	\edef\cCommon{\@ifundefined{course@sem\lsem @\romannumeral#2@commonto}{}{\@nameuse{course@sem\lsem @\romannumeral#2@commonto}}}%
-%	\def\emptyVal{}%
-%	
-%	\ifx\cStr\emptyVal
-%	\ifx\cCommon\emptyVal
-%	\def\CombinedStr{}%
-%	\else
-%	\edef\CombinedStr{\cCommon}%
-%	\fi
-%	\else
-%	\ifx\cCommon\emptyVal
-%	\edef\CombinedStr{Stream: \cStr}%
-%	\else
-%	\edef\CombinedStr{Stream: \cStr\quad\cCommon}%
-%	\fi
-%	\fi
-%	
-%	\ifx\CombinedStr\emptyVal
-%	\def\CombinedRowOut{}%
-%	\else
-%	\def\CombinedRowOut{% <--- SAFELY RESTORED TO \def
-%		\unexpanded{\\ \multicolumn{7}{|p{\dimexpr\textwidth\relax}|}}%
-%		{\unexpanded{\centering}{\unexpanded{\textbf}{\unexpanded\expandafter{\CombinedStr}}}}%
-%	}%
-%	\fi
-%	
-%	% --- EXTRACT COURSE TYPE STRING & HOURS/MARKS ---
-%	\def\cTotalHrs{---}\def\cCIEstr{---}\def\cSEEstr{---}\def\cTypeStr{}%
-%	\ifx\course@basetype\lo 
-%	\edef\cTotalHrs{\cLD L}\edef\cCIEstr{\cCIEL}\edef\cSEEstr{\cSEEL}\def\cTypeStr{(Theory)}%
-%	\fi
-%	\ifx\course@basetype\lt 
-%	\edef\cTotalHrs{\cLD L+\cTD T}\edef\cCIEstr{\cCIEL}\edef\cSEEstr{\cSEEL}\def\cTypeStr{(Theory \& Tutorial)}%
-%	\fi
-%	\ifx\course@basetype\po 
-%	\edef\cTotalHrs{\cPD P}\edef\cCIEstr{\cCIEP}\edef\cSEEstr{\cSEEP}\def\cTypeStr{(Practical)}%
-%	\fi
-%	\ifx\course@basetype\lp 
-%	\edef\cTotalHrs{\cLD L+\cPD P}\edef\cCIEstr{\cCIEL+\cCIEP}\edef\cSEEstr{\cSEEL+\cSEEP}\def\cTypeStr{(Theory \& Practical)}%
-%	\fi
-%	
-%	\edef\checkCat{\@ifundefined{course@sem\lsem @\romannumeral#2@category}{}{\@nameuse{course@sem\lsem @\romannumeral#2@category}}}%
-%	\def\targetCat{Category: Bridge Course}%
-%	\ifx\checkCat\targetCat
-%	\def\cSEEstr{---}%
-%	\def\cSEEDur{---}%
-%	\fi
-%	
-%	\def\targetAE{Category: AE}%
-%	\ifx\checkCat\targetAE
-%	\def\PrintCat{Ability Enhancement Course}%
-%	\else
-%	\let\PrintCat\checkCat
-%	\fi
-%	
-%	\ifx\cTypeStr\emptyVal
-%	\def\TypeRowOut{}%
-%	\else
-%	\def\TypeRowOut{% <--- SAFELY RESTORED TO \def
-%		\unexpanded{\\ \multicolumn{7}{|p{\dimexpr\textwidth\relax}|}}%
-%		{\unexpanded{\centering}{\unexpanded{\textbf}{\unexpanded\expandafter{\cTypeStr}}}}%
-%	}%
-%	\fi
-%	
-%	\hypertarget{course\lsem\romannumeral#2}{}% 
-%	\label{course\lsem\romannumeral#2}%
-%	\begingroup
-%	\def\@scartchlectable##1{%%
-%		\unexpanded{%
-%			\hline
-%			\multicolumn{6}{|p{\dimexpr0.7\textwidth\relax}|}%%
-%		}
-%		{\unexpanded{
-%				\centering
-%			}%%
-%			{\unexpanded{\textbf{\unexpanded{Unit - \MakeTextUppercase}{\romannumeral##1}}}}
-%		}%% multicolumn
-%		\unexpanded{%%
-%			&%%
-%			\textbf
-%		}{%%
-%			\unexpanded{\expandafter{\getlectureunithour{#2}{##1}}\quad Hours}%%
-%		}
-%		\unexpanded{%%
-%			\\%%
-%			\hline
-%			\multicolumn{7}{|p{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}%%
-%		}{%%
-%			\unexpanded{\begin{minipage}[t]{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}}
-%				\unexpanded{\setlist[itemize]{topsep=4pt,itemsep=0.125em}}
-%				\unexpanded{\expandafter{\getlectureunitcontent{#2}{##1}}}
-%				\unexpanded{\vspace*{0.5ex}}
-%				\unexpanded{\end{minipage}}
-%		}%%
-%		\unexpanded{%
-%			\\%%
-%		}%%
-%	}%% End of scartctable
-%	\def\@scartchpractable##1{%%
-%		\unexpanded{%%
-%			\item \expandafter{\getpracticeunitcontent{#2}{##1}}%%
-%		}%%
-%	}%% End of scartctable
-%	\def\@scartchpraceltable##1{%%
-%		\unexpanded{%%
-%			\item \expandafter{\getpracticeelunitcontent{#2}{##1}}%%
-%		}%%
-%	}%% End of scartctable
-%	\def\@scartchoutcometable##1{%%
-%		\unexpanded{%%
-%			\item \expandafter{\getcourseco{#2}{##1}}%%
-%		}%%
-%	}%% End of scartctable
-%	\def\@scartchreftable##1{%%
-%		\unexpanded{%%
-%			\item \expandafter{\getcourseref{#2}{##1}}%%
-%		}%%
-%	}%% End of scartctable
-%	\expanded{%%
-%		\endgroup
-%		\unexpanded{%%
-%			\begin{longtable}{|p{0.15\textwidth}|p{0.02\textwidth}|%
-%					p{0.15\textwidth}|p{0.2\textwidth}|p{0.15\textwidth}|%
-%					p{0.02\textwidth}|p{0.15\textwidth}|}%%
-%				\hline
-%				\endfirsthead
-%				\hline
-%				\endhead
-%				\hline
-%				\endfoot
-%				\hline
-%				\endlastfoot
-%				\multicolumn{7}{|c|}{\textbf{Semester - \printsemester}} \\
-%				\hline
-%				\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%
-%			}%
-%			{
-%				\unexpanded{
-%					\centering
-%				}%%
-%				{
-%					\unexpanded{
-%						\textbf
-%					}
-%					{\unexpanded\expandafter{\csname course@sem\lsem @\romannumeral#2@coursetitle\endcsname}}
-%				}%% centering
-%			}%% for multicolumn
-%			\unexpanded{%%
-%				\\%%
-%				\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
-%			}%%
-%			{
-%				\unexpanded{
-%					\centering
-%				}%%
-%				{
-%					\unexpanded{
-%						\textbf
-%					}
-%					{\unexpanded\expandafter{\PrintCat}}
-%				}%% centering
-%			}%% for multicolumn
-%			\CombinedRowOut
-%			\TypeRowOut
-%			\unexpanded{%%
-%				\\%%
-%				\hline%%
-%				\textbf{Course Code}&\textbf{:}&\space\MakeTextUppercase{\csname course@sem\lsem @\romannumeral#2@coursecode\endcsname} & & \textbf{CIE} & \textbf{:}&\space}\cCIEstr\unexpanded{\space Marks\\%%
-%			}\unexpanded{\textbf{Credits L:T:P}&\textbf{:}&\space}\cLTP\unexpanded{ & & \textbf{SEE} & \textbf{:}&\space}\cSEEstr\unexpanded{\space Marks\\%%
-%			}\unexpanded{\textbf{Total Hours}&\textbf{:}&\space}\cTotalHrs\unexpanded{ & & \textbf{SEE Duration} & \textbf{:}&\space}\cSEEDur\unexpanded{\space Hrs\\%%
-%				\hline%%
-%			}
-%			\iflecture%%
-%			\ifnum#3<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
-%			{
-%				\unexpanded\expandafter{\csname course@sem\lsem @\romannumeral#2@allunits\endcsname}%%
-%				\unexpanded{\hline}%% 
-%			}
-%			\fi
-%			\ifpractice%%
-%			\ifnum#4<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
-%			{
-%				\unexpanded{%%
-%					\hline
-%					\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
-%				}
-%				{\unexpanded{%
-%						\begin{minipage}[b]{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}%
-%							\vspace*{4pt}%
-%							\setlist[enumerate]{topsep=0em,itemsep=0.125em}%
-%							\begin{enumerate}%
-%							}%
-%							\unexpanded\expandafter{\csname course@sem\lsem @\romannumeral#2@allpracticals\endcsname}%%
-%							\unexpanded{%
-%							\end{enumerate}%
-%							\vspace*{4pt}%
-%						\end{minipage}%
-%				}} \unexpanded{\\}
-%			}
-%			\fi
-%			\ifpracticeel%%
-%			\ifnum#5<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
-%			{
-%				\unexpanded{%%
-%					\hline
-%					\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
-%				}
-%				{
-%					\unexpanded{
-%						\textbf
-%					}%%
-%					{\unexpanded{\expandafter{\space\csname course@sem\lsem @\romannumeral#2@practiceeltitle\endcsname}}}
-%				}%% multicolumn
-%				\unexpanded{%%
-%					\\
-%					\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
-%				}
-%				{\unexpanded{%
-%						\begin{minipage}[b]{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}%
-%							\setlist[enumerate]{topsep=0em,itemsep=0.125em}%
-%							\begin{enumerate}%
-%							}%
-%							\expandafter\@pracelloop\expandafter{\number\numexpr(1)\expandafter\relax\expandafter}{\number\numexpr(#5)\relax}%%
-%							\unexpanded{%
-%							\end{enumerate}%
-%						\end{minipage}%
-%				}} \unexpanded{\\}
-%			}
-%			\fi
-%			\ifnum#7<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
-%			{
-%				\unexpanded{%%
-%					\hline
-%					\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
-%				}
-%				{
-%					\unexpanded{
-%						\textbf
-%					}%%
-%					{\unexpanded{\space Course Outcomes: After completing the course, the students will be able to:}}
-%				}%% multicolumn
-%				\unexpanded{%%
-%					\\
-%					\hline
-%					\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
-%				}
-%				{\unexpanded{%
-%						\begin{minipage}[b]{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}%
-%							\vspace{0.5em}
-%							\setlist[enumerate]{topsep=0em,itemsep=0.125em}%
-%							\begin{enumerate}%
-%							}%
-%							\expandafter\@outcomeloop\expandafter{\number\numexpr(1)\expandafter\relax\expandafter}{\number\numexpr(#7)\relax}%%
-%							\unexpanded{%
-%							\end{enumerate}%
-%						\end{minipage}%
-%				}} \unexpanded{\\}
-%			}
-%			\ifnum#6<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
-%			{
-%				\unexpanded{%%
-%					\hline
-%					\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
-%				}
-%				{
-%					\unexpanded{
-%						\textbf
-%					}%%
-%					{\unexpanded{\space References}}
-%				}%% multicolumn
-%				\unexpanded{%%
-%					\\
-%					\hline
-%					
-%					\multicolumn{7}{|p{\dimexpr\textwidth\relax}|}%%
-%				}
-%				{\unexpanded{%
-%						\begin{minipage}[b]{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}%
-%							\setlist[enumerate]{topsep=0em,itemsep=0.125em}%
-%							\vspace{1em}%
-%							\begin{enumerate}%
-%							}%
-%							\expandafter\@refloop\expandafter{\number\numexpr(1)\expandafter\relax\expandafter}{\number\numexpr(#6)\relax}%%
-%							\unexpanded{%
-%							\end{enumerate}%
-%						\end{minipage}%
-%				}} \unexpanded{\\}
-%			}
-%			\unexpanded{
-%				\ifhmode
-%				\\
-%				\fi
-%			\end{longtable}%%
-%		}
-%		
-%		\unexpanded{%
-%			\drawCIEtable{#2}%
-%			\drawSEEtable{#2}%
-%		}
-%		
-%		\unexpanded{
-%			\pagebreak
-%		}
-%	}%%
-%}
 
 \def\@lecloop#1#2{\ifnum#1>#2 \expandafter\@gobble\else\expandafter\@firstofone\fi{\@scartchlectable{#1}\expandafter\@lecloop\expandafter{\number\numexpr#1+1}{#2}}}
 \def\@pracloop#1#2{\ifnum#1>#2 \expandafter\@gobble\else\expandafter\@firstofone\fi{\@scartchpractable{#1}\expandafter\@pracloop\expandafter{\number\numexpr#1+1}{#2}}}
@@ -2271,59 +1939,13 @@
 	\fi
 }
 
-%\newcommand{\mainindextable}[1]{%%
-%%	\clearpage % <--- FIX 1: Forces every semester index to start on a fresh page cleanly.
-%	\setcounter{tot@semester@credits}{0}%
-%	\setcounter{main@print@ctr}{0}%
-%	
-%	\ifnum#1<1 \else
-%	\@calcCrdloop{1}{#1}%
-%	\fi
-%	
-%	\begingroup
-%	\small
-%	% --- FIT TO PAGE UPDATES ---
-%	\setlength{\tabcolsep}{3pt} % Reduces white space between columns so it fits
-%	\setlength{\LTleft}{0pt plus 1fill} % Centers the table perfectly
-%	\setlength{\LTright}{0pt plus 1fill}
-%	\renewcommand{\thefootnote}{\fnsymbol{footnote}}% 
-%	
-%	% Changed Col 2 and 4 to 'p' columns to allow \newline
-%	\begin{longtable}{|c|>{\centering\arraybackslash}p{0.12\textwidth}|>{\raggedright\arraybackslash}p{0.2\textwidth}|>{\centering\arraybackslash}p{0.06\textwidth}|c|c|c|c|c|c|c|c|c|c|c|}
-%		\hline
-%		\multicolumn{15}{|c|}{\textbf{\printsemester\space SEMESTER}} \\ \hline
-%		\multirow{2}{*}{\textbf{\shortstack{Sl.\\No.}}} & \multirow{2}{*}{\textbf{Course Code}} & \multirow{2}{*}{\centering\textbf{Course Title}} & \multirow{2}{*}{\textbf{BoS}} & \multicolumn{4}{c|}{\textbf{Credit Allocation}} & \multirow{2}{*}{\textbf{Category}} & \multirow{2}{*}{\textbf{\shortstack{CIE\\Duration\\(Hrs)}}} & \multicolumn{2}{c|}{\textbf{Max Marks CIE}} & \multirow{2}{*}{\textbf{\shortstack{SEE\\Duration\\(Hrs)}}} & \multicolumn{2}{c|}{\textbf{Max Marks SEE}} \\ \cline{5-8} \cline{11-12} \cline{14-15}
-%		& & & & \textbf{L} & \textbf{T} & \textbf{P} & \textbf{Total} & & & \textbf{Theory} & \textbf{Lab} & & \textbf{Theory} & \textbf{Lab} \\ \hline
-%		\endfirsthead
-%		
-%		\multicolumn{15}{|c|}{\textbf{\printsemester\space SEMESTER (Continued)}} \\ \hline
-%		\multirow{2}{*}{\textbf{\shortstack{Sl.\\No.}}} & \multirow{2}{*}{\textbf{Course Code}} & \multirow{2}{*}{\centering\textbf{Course Title}} & \multirow{2}{*}{\textbf{BoS}} & \multicolumn{4}{c|}{\textbf{Credit Allocation}} & \multirow{2}{*}{\textbf{Category}} & \multirow{2}{*}{\textbf{\shortstack{CIE\\Duration\\(H)}}} & \multicolumn{2}{c|}{\textbf{Max Marks CIE}} & \multirow{2}{*}{\textbf{\shortstack{SEE\\Duration\\(Hrs)}}} & \multicolumn{2}{c|}{\textbf{Max Marks SEE}} \\ \cline{5-8} \cline{11-12} \cline{14-15}
-%		& & & & \textbf{L} & \textbf{T} & \textbf{P} & \textbf{Total} & & & \textbf{Theory} & \textbf{Lab} & & \textbf{Theory} & \textbf{Lab} \\ \hline
-%		\endhead
-%		
-%		\hline
-%		\endfoot
-%		\hline
-%		\endlastfoot
-%		
-%		\ifnum#1<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
-%		{\expandafter\@mainloop\expandafter{\number\numexpr(1)\expandafter\relax\expandafter}{#1}}
-%		
-%		\multicolumn{7}{|r|}{\textbf{Total}} & \textbf{\thetot@semester@credits} & \multicolumn{7}{c|}{} \\ \hline
-%	\end{longtable}
-%	\normalsize
-%	\endgroup
-%}
-
-\gdef\maintablecontent{} % <--- Initializes the empty container
+\gdef\maintablecontent{}
 
 \newcommand{\mainindextable}[1]{%%
-%	\clearpage % Forces the table to start cleanly on a new page
 	\setcounter{tot@semester@credits}{0}%
 	\setcounter{main@print@ctr}{0}%
-	\gdef\maintablecontent{}% <--- Empties the container for the new semester
+	\gdef\maintablecontent{}%
 	
-	% --- RUN THE LOOP HERE (OUTSIDE THE TABLE) ---
 	\ifnum#1<1\relax\else
 	\@calcCrdloop{1}{#1}%
 	\@mainloop{1}{#1}%
@@ -2332,32 +1954,83 @@
 	\begingroup
 	\small
 	\setlength{\tabcolsep}{3pt}% 
-	\setlength{\LTleft}{0pt plus 1fill}% 
+	\setlength{\LTleft}{-1cm}%
 	\setlength{\LTright}{0pt plus 1fill}%
 	\renewcommand{\thefootnote}{\fnsymbol{footnote}}% 
 	
-%	\begin{longtable}{|c|c|>{\raggedright\arraybackslash}p{\dimexpr 0.22\textwidth-2\tabcolsep-\arrayrulewidth\relax}|c|c|c|c|c|c|c|c|c|c|c|c|}
-%	\begin{longtable}{|c|c|>{\raggedright\arraybackslash}p{0.2\textwidth}|c|c|c|c|c|c|c|c|c|c|c|c|}
-	\begin{longtable}{|c|>{\centering\arraybackslash}p{0.12\textwidth}|>{\raggedright\arraybackslash}p{0.2\textwidth}|>{\centering\arraybackslash}p{0.08\textwidth}|c|c|c|c|c|c|c|c|c|c|c|}
+	\hspace*{-1cm}
+	\begin{longtable}{|>{\centering\arraybackslash}p{0.03\linewidth}|>{\centering\arraybackslash}p{0.1\linewidth}|>{\raggedright\arraybackslash}p{0.30\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|}
 		\hline
-		\multicolumn{15}{|c|}{\textbf{\printsemester\space SEMESTER}} \\ \hline
-		\multirow{2}{*}{\textbf{\shortstack{Sl.\\No.}}} & \multirow{2}{*}{\textbf{Course Code}} & \multirow{2}{*}{\centering\textbf{Course Title}} & \multirow{2}{*}{\textbf{BoS}} & \multicolumn{4}{c|}{\textbf{Credit Allocation}} & \multirow{2}{*}{\textbf{Category}} & \multirow{2}{*}{\textbf{\shortstack{CIE\\Duration\\(Hrs)}}} & \multicolumn{2}{c|}{\textbf{Max Marks CIE}} & \multirow{2}{*}{\textbf{\shortstack{SEE\\Duration\\(Hrs)}}} & \multicolumn{2}{c|}{\textbf{Max Marks SEE}} \\ \cline{5-8} \cline{11-12} \cline{14-15}
-		& & & & \textbf{L} & \textbf{T} & \textbf{P} & \textbf{Total} & & & \textbf{Theory} & \textbf{Lab} & & \textbf{Theory} & \textbf{Lab} \\ \hline
+		\multicolumn{14}{|c|}{\textbf{\@schemeYear\space Scheme template -- \@graduateLabel\space Programs}} \\ \hline
+		\multicolumn{14}{|c|}{\textbf{B.E in \@departmentLF\space (\@departmentSF)}} \\ \hline
+		\multicolumn{14}{|c|}{\textbf{\printsemester\space SEMESTER}} \\ \hline
+		
+		\multirow{3}{*}{\textbf{Sl}} & 
+		\multirow{3}{*}{\textbf{Course Code}} & 
+		\multicolumn{1}{c|}{\multirow{3}{*}{\textbf{Course Title}}} & 
+		\multirow{3}{*}{\textbf{BoS}} & 
+		\multicolumn{4}{c|}{\rule[-0.15cm]{0pt}{0.5cm}\textbf{Teaching \& Learning Scheme}} & 
+		\multirow{3}{*}{\rotatebox{90}{\parbox{2.5cm}{\centering \textbf{Total Hrs per Sem}}}} & 
+		\multicolumn{4}{c|}{\textbf{Examination}} & 
+		\multirow{3}{*}{\rotatebox[origin=b]{90}{\parbox{2.5cm}{\centering\textbf{Total Credits}}}} \\ \cline{5-8} \cline{10-13}
+		
+		& & & & 
+		\multicolumn{2}{c|}{\rule[-0.1cm]{0pt}{1cm}\textbf{CI}} & 
+		\textbf{LI} & 
+		\textbf{TW \& SL} & 
+		& 
+		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering \textbf{CIE/SEE Dur.(Hrs)}}}} & 
+		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering \textbf{CIE Marks}}}} & 
+		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering\textbf{SEE Marks}}}} & 
+		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering\textbf{Total Marks}}}} & 
+		\\ \cline{5-8}
+		
+		& & & & 
+		\rule[-0.1cm]{0pt}{0.5cm}\textbf{L} & 
+		\textbf{T} & 
+		\textbf{P} & 
+		\textbf{S} & 
+		& & & & & \\ \hline
+		
 		\endfirsthead
 		
 		\hline
-		\multicolumn{15}{|c|}{\textbf{\printsemester\space SEMESTER (Continued)}} \\ \hline
-		\multirow{2}{*}{\textbf{\shortstack{Sl.\\No.}}} & \multirow{2}{*}{\textbf{Course Code}} & \multirow{2}{*}{\centering\textbf{Course Title}} & \multirow{2}{*}{\textbf{BoS}} & \multicolumn{4}{c|}{\textbf{Credit Allocation}} & \multirow{2}{*}{\textbf{Category}} & \multirow{2}{*}{\textbf{\shortstack{CIE\\Duration\\(Hrs)}}} & \multicolumn{2}{c|}{\textbf{Max Marks CIE}} & \multirow{2}{*}{\textbf{\shortstack{SEE\\Duration\\(Hrs)}}} & \multicolumn{2}{c|}{\textbf{Max Marks SEE}} \\ \cline{5-8} \cline{11-12} \cline{14-15}
-		& & & & \textbf{L} & \textbf{T} & \textbf{P} & \textbf{Total} & & & \textbf{Theory} & \textbf{Lab} & & \textbf{Theory} & \textbf{Lab} \\ \hline
+		\multicolumn{14}{|c|}{\textbf{\printsemester\space SEMESTER (Continued)}} \\ \hline
+		\multirow{3}{*}{\textbf{Sl}} & 
+		\multirow{3}{*}{\textbf{Course Code}} & 
+		\multicolumn{1}{c|}{\multirow{3}{*}{\textbf{Course Title}}} & 
+		\multirow{3}{*}{\textbf{BoS}} & 
+		\multicolumn{4}{c|}{\rule[-0.15cm]{0pt}{0.5cm}\textbf{Teaching \& Learning Scheme}} & 
+		\multirow{3}{*}{\rotatebox{90}{\parbox{2.5cm}{\centering \textbf{Total Hrs per Sem}}}} & 
+		\multicolumn{4}{c|}{\textbf{Examination}} & 
+		\multirow{3}{*}{\rotatebox[origin=b]{90}{\parbox{2.5cm}{\centering\textbf{Total Credits}}}} \\ \cline{5-8} \cline{10-13}
+		
+		& & & & 
+		\multicolumn{2}{c|}{\rule[-0.1cm]{0pt}{1cm}\textbf{CI}} & 
+		\textbf{LI} & 
+		\textbf{TW \& SL} & 
+		& 
+		\multirow{2}{*}{\rotatebox[origin=bl]{90}{\parbox{1.5cm}{\centering \textbf{CIE/SEE Dur.(Hrs)}}}} & 
+		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering \textbf{CIE Marks}}}} & 
+		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering\textbf{SEE Marks}}}} & 
+		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering\textbf{Total Marks}}}} & 
+		\\ \cline{5-8}
+		
+		& & & & 
+		\rule[-0.1cm]{0pt}{0.5cm}\textbf{L} & 
+		\textbf{T} & 
+		\textbf{P} & 
+		\textbf{S} & 
+		& & & & & \\ \hline
 		\endhead
 		
 		\hline
 		\endfoot
 		\endlastfoot
 		
-		\maintablecontent% <--- DROP THE CLEAN, PRE-BUILT ROWS HERE
+		\maintablecontent
 		
-		\multicolumn{7}{|r|}{\textbf{Total}} & \textbf{\arabic{tot@semester@credits}} & \multicolumn{7}{c|}{} \\ \hline
+		\multicolumn{13}{|r|}{\textbf{Total}} & \textbf{\arabic{tot@semester@credits}} \\ \hline
 	\end{longtable}
 	\normalsize
 	\endgroup
@@ -2365,103 +2038,24 @@
 
 \def\@mainloop#1#2{\ifnum#1>#2 \expandafter\@gobble\else\expandafter\@firstofone\fi{\PrintCourseRow{#1}\expandafter\@mainloop\expandafter{\number\numexpr#1+1}{#2}}}
 
-%\newcommand{\PrintCourseRow}[1]{%
-%	\edef\croman{\romannumeral#1}%
-%	\edef\cgrole{\@ifundefined{course@sem\lsem @\croman @cg@role}{none}{\@nameuse{course@sem\lsem @\croman @cg@role}}}%
-%	\def\rolef{follower}%
-%	\ifx\cgrole\rolef
-%	% Skip row drawing entirely
-%	\else
-%	\stepcounter{main@print@ctr}%
-%	\@ifundefined{course@sem\lsem @\croman @coursetype}{\def\ctype{UNKNOWN}}{\edef\ctype{\@nameuse{course@sem\lsem @\croman @coursetype}}}% 
-%	\@ifundefined{type@\ctype @L}{\def\cL{0}}{\edef\cL{\@nameuse{type@\ctype @L}}}%
-%	\@ifundefined{type@\ctype @T}{\def\cT{0}}{\edef\cT{\@nameuse{type@\ctype @T}}}%
-%	\@ifundefined{type@\ctype @P}{\def\cP{0}}{\edef\cP{\@nameuse{type@\ctype @P}}}%
-%	
-%	\@ifundefined{type@\ctype @CIELmarks}{\@ifundefined{type@\ctype @CIEL}{\def\cCIEL{0}}{\edef\cCIEL{\@nameuse{type@\ctype @CIEL}}}}{\edef\cCIEL{\@nameuse{type@\ctype @CIELmarks}}}%
-%	\@ifundefined{type@\ctype @CIEPmarks}{\@ifundefined{type@\ctype @CIEP}{\def\cCIEP{0}}{\edef\cCIEP{\@nameuse{type@\ctype @CIEP}}}}{\edef\cCIEP{\@nameuse{type@\ctype @CIEPmarks}}}%
-%	\@ifundefined{type@\ctype @SEELmarks}{\@ifundefined{type@\ctype @SEEL}{\def\cSEEL{0}}{\edef\cSEEL{\@nameuse{type@\ctype @SEEL}}}}{\edef\cSEEL{\@nameuse{type@\ctype @SEELmarks}}}%
-%	\@ifundefined{type@\ctype @SEEPmarks}{\@ifundefined{type@\ctype @SEEP}{\def\cSEEP{0}}{\edef\cSEEP{\@nameuse{type@\ctype @SEEP}}}}{\edef\cSEEP{\@nameuse{type@\ctype @SEEPmarks}}}%
-%	
-%	\@ifundefined{type@\ctype @CIEdur}{\def\cCIEDur{---}}{\edef\cCIEDur{\@nameuse{type@\ctype @CIEdur}}}%
-%	\@ifundefined{type@\ctype @SEEdur}{\def\cSEEDur{3}}{\edef\cSEEDur{\@nameuse{type@\ctype @SEEdur}}}%
-%	
-%	\edef\checkCat{\@ifundefined{course@sem\lsem @\croman @category}{}{\@nameuse{course@sem\lsem @\croman @category}}}%
-%	\def\targetCat{Category: Bridge Course}%
-%	\ifx\checkCat\targetCat
-%	\def\cTot{0\unexpanded{\footnote[2]{Audit}}}% 
-%	\def\oSEEL{---}% 
-%	\def\oSEEP{---}% 
-%	\def\cSEEDur{---}% 
-%	\else
-%	\edef\cTot{\the\numexpr\cL+\cT+\cP\relax}%
-%	\fi
-%	
-%	\def\cCat{Theory}%
-%	\ifnum\cP>0 \ifnum\cL>0 \def\cCat{Theory+Lab}\else \def\cCat{Lab}\fi\fi
-%	
-%	\expandafter\extract@basetype\ctype\relax\relax\@nil
-%	\ifx\course@basetype\po \def\cCIEL{0}\def\cSEEL{0}\fi
-%	\ifx\course@basetype\lo \def\cCIEP{0}\def\cSEEP{0}\fi
-%	\ifx\course@basetype\lt \def\cCIEP{0}\def\cSEEP{0}\fi
-%	
-%	\def\zeroval{0}%
-%	\edef\oCIEL{\ifx\cCIEL\zeroval ---\else\cCIEL\fi}%
-%	\edef\oCIEP{\ifx\cCIEP\zeroval ---\else\cCIEP\fi}%
-%	\edef\oSEEP{\ifx\cSEEP\zeroval ---\else\cSEEP\fi}%
-%	\edef\oSEEL{\ifx\cSEEL\zeroval ---\else\cSEEL\fi}%
-%	
-%	\def\rolel{leader}%
-%	\def\roleegl{egleader}%
-%	\ifx\cgrole\rolel
-%	\expandafter\let\expandafter\ccode\csname course@sem\lsem @\croman @cg@codes\endcsname
-%	\expandafter\let\expandafter\ctitle\csname course@sem\lsem @\croman @cg@titles\endcsname
-%	\expandafter\let\expandafter\cBoS\csname course@sem\lsem @\croman @cg@boses\endcsname
-%	\else\ifx\cgrole\roleegl
-%	\expandafter\let\expandafter\rawccode\csname course@sem\lsem @\croman @cg@codes\endcsname
-%	\edef\ccode{\noexpand\MakeTextUppercase{\unexpanded\expandafter{\rawccode}}}%
-%	\expandafter\let\expandafter\ctitle\csname course@sem\lsem @\croman @cg@titles\endcsname
-%	\expandafter\let\expandafter\tempBoS\csname course@sem\lsem @\croman @cg@boses\endcsname
-%	\def\emptyBoS{}%
-%	\ifx\tempBoS\emptyBoS \edef\cBoS{\cDept}\else \expandafter\let\expandafter\cBoS\csname course@sem\lsem @\croman @cg@boses\endcsname\fi
-%	\else
-%	\@ifundefined{@departmentSF}{\def\cDept{ECE}}{\edef\cDept{\@departmentSF}}%
-%	\@ifundefined{course@sem\lsem @\croman @bos}{\edef\cBoS{\cDept}}{%
-%		\expandafter\let\expandafter\tempBoS\csname course@sem\lsem @\croman @bos\endcsname
-%		\def\emptyBoS{}%
-%		\ifx\tempBoS\emptyBoS \edef\cBoS{\cDept}\else \expandafter\let\expandafter\cBoS\csname course@sem\lsem @\croman @bos\endcsname\fi
-%	}%
-%	\@ifundefined{course@sem\lsem @\croman @coursecode}{\def\ccode{---}}{\expandafter\let\expandafter\rawccode\csname course@sem\lsem @\croman @coursecode\endcsname \edef\ccode{\noexpand\MakeTextUppercase{\unexpanded\expandafter{\rawccode}}}}%
-%	\@ifundefined{course@sem\lsem @\croman @coursetitle}{\def\ctitle{---}}{\expandafter\let\expandafter\ctitle\csname course@sem\lsem @\croman @coursetitle\endcsname}%
-%	\fi\fi
-%	
-%	\def\rolef{follower}%
-%	\ifx\cgrole\rolef
-%	% Skip row drawing entirely
-%	\else
-%	\toks0=\expandafter{\maintablecontent}%
-%	\toks1=\expandafter{\ccode}%
-%	\toks2=\expandafter{\ctitle}%
-%	\toks3=\expandafter{\cBoS}%
-%	\toks4=\expandafter{\cTot}%
-%	\toks5=\expandafter{\cCat}%
-%	\edef\temp{\the\toks0 \arabic{main@print@ctr} & \noexpand\MakeTextUppercase{\the\toks1} & \the\toks2 & \the\toks3 & \cL & \cT & \cP & \the\toks4 & \the\toks5 & \cCIEDur & \oCIEL & \oCIEP & \cSEEDur & \oSEEL & \oSEEP \noexpand\\ \noexpand\hline}%
-%	\global\let\maintablecontent\temp
-%	\fi
-%}
-
 \newcommand{\PrintCourseRow}[1]{%
 	\edef\croman{\romannumeral#1}%
 	\edef\cgrole{\@ifundefined{course@sem\lsem @\croman @cg@role}{none}{\@nameuse{course@sem\lsem @\croman @cg@role}}}%
 	\def\rolef{follower}%
 	\ifx\cgrole\rolef
-	% Skip row drawing entirely
 	\else
 	\stepcounter{main@print@ctr}%
 	\@ifundefined{course@sem\lsem @\croman @coursetype}{\def\ctype{UNKNOWN}}{\edef\ctype{\@nameuse{course@sem\lsem @\croman @coursetype}}}% 
+	
 	\@ifundefined{type@\ctype @L}{\def\cL{0}}{\edef\cL{\@nameuse{type@\ctype @L}}}%
 	\@ifundefined{type@\ctype @T}{\def\cT{0}}{\edef\cT{\@nameuse{type@\ctype @T}}}%
 	\@ifundefined{type@\ctype @P}{\def\cP{0}}{\edef\cP{\@nameuse{type@\ctype @P}}}%
+	
+	\@ifundefined{type@\ctype @Ldur}{\def\cLdur{0}}{\edef\cLdur{\@nameuse{type@\ctype @Ldur}}}%
+	\@ifundefined{type@\ctype @Tdur}{\def\cTdur{0}}{\edef\cTdur{\@nameuse{type@\ctype @Tdur}}}%
+	\@ifundefined{type@\ctype @Pdur}{\def\cPdur{0}}{\edef\cPdur{\@nameuse{type@\ctype @Pdur}}}%
+	\@ifundefined{type@\ctype @Sdur}{\def\cSdur{0}}{\edef\cSdur{\@nameuse{type@\ctype @Sdur}}}%
+	\@ifundefined{type@\ctype @TotalHrs}{\def\cTotalHrs{0}}{\edef\cTotalHrs{\@nameuse{type@\ctype @TotalHrs}}}%
 	
 	\@ifundefined{type@\ctype @CIELmarks}{\@ifundefined{type@\ctype @CIEL}{\def\cCIEL{0}}{\edef\cCIEL{\@nameuse{type@\ctype @CIEL}}}}{\edef\cCIEL{\@nameuse{type@\ctype @CIELmarks}}}%
 	\@ifundefined{type@\ctype @CIEPmarks}{\@ifundefined{type@\ctype @CIEP}{\def\cCIEP{0}}{\edef\cCIEP{\@nameuse{type@\ctype @CIEP}}}}{\edef\cCIEP{\@nameuse{type@\ctype @CIEPmarks}}}%
@@ -2469,32 +2063,22 @@
 	\@ifundefined{type@\ctype @SEEPmarks}{\@ifundefined{type@\ctype @SEEP}{\def\cSEEP{0}}{\edef\cSEEP{\@nameuse{type@\ctype @SEEP}}}}{\edef\cSEEP{\@nameuse{type@\ctype @SEEPmarks}}}%
 	
 	\@ifundefined{type@\ctype @CIEdur}{\def\cCIEDur{---}}{\edef\cCIEDur{\@nameuse{type@\ctype @CIEdur}}}%
-	\@ifundefined{type@\ctype @SEEdur}{\def\cSEEDur{3}}{\edef\cSEEDur{\@nameuse{type@\ctype @SEEdur}}}%
+	\@ifundefined{type@\ctype @SEEdur}{\def\cSEEDur{---}}{\edef\cSEEDur{\@nameuse{type@\ctype @SEEdur}}}%
+	
+	\edef\cCIETotMarks{\the\numexpr \cCIEL + \cCIEP \relax}%
+	\edef\cSEETotMarks{\the\numexpr \cSEEL + \cSEEP \relax}%
+	\edef\cTotalMarks{\the\numexpr \cCIETotMarks + \cSEETotMarks \relax}%
 	
 	\edef\checkCat{\@ifundefined{course@sem\lsem @\croman @category}{}{\@nameuse{course@sem\lsem @\croman @category}}}%
 	\def\targetCat{Category: Bridge Course}%
 	\ifx\checkCat\targetCat
 	\def\cTot{0\unexpanded{\footnote[2]{Audit}}}% 
-	\def\oSEEL{---}% 
-	\def\oSEEP{---}% 
+	\def\cSEETotMarks{---}%
+	\def\cTotalMarks{\cCIETotMarks}%
 	\def\cSEEDur{---}% 
 	\else
 	\edef\cTot{\the\numexpr\cL+\cT+\cP\relax}%
 	\fi
-	
-	\def\cCat{Theory}%
-	\ifnum\cP>0 \ifnum\cL>0 \def\cCat{Theory+Lab}\else \def\cCat{Lab}\fi\fi
-	
-	\expandafter\extract@basetype\ctype\relax\relax\@nil
-	\ifx\course@basetype\po \def\cCIEL{0}\def\cSEEL{0}\fi
-	\ifx\course@basetype\lo \def\cCIEP{0}\def\cSEEP{0}\fi
-	\ifx\course@basetype\lt \def\cCIEP{0}\def\cSEEP{0}\fi
-	
-	\def\zeroval{0}%
-	\edef\oCIEL{\ifx\cCIEL\zeroval ---\else\cCIEL\fi}%
-	\edef\oCIEP{\ifx\cCIEP\zeroval ---\else\cCIEP\fi}%
-	\edef\oSEEP{\ifx\cSEEP\zeroval ---\else\cSEEP\fi}%
-	\edef\oSEEL{\ifx\cSEEL\zeroval ---\else\cSEEL\fi}%
 	
 	\def\rolel{leader}%
 	\def\roleegl{egleader}%
@@ -2525,8 +2109,12 @@
 	\toks2=\expandafter{\ctitle}%
 	\toks3=\expandafter{\cBoS}%
 	\toks4=\expandafter{\cTot}%
-	\toks5=\expandafter{\cCat}%
-	\edef\temp{\the\toks0 \arabic{main@print@ctr} & \noexpand\MakeTextUppercase{\the\toks1} & \the\toks2 & \the\toks3 & \cL & \cT & \cP & \the\toks4 & \the\toks5 & \cCIEDur & \oCIEL & \oCIEP & \cSEEDur & \oSEEL & \oSEEP \noexpand\\ \noexpand\hline}%
+	\edef\temp{\the\toks0 \arabic{main@print@ctr} & \noexpand\MakeTextUppercase{\the\toks1} & \the\toks2 & \the\toks3 & %
+		\noexpand\begin{tabular}{@{}c@{}}\cL \noexpand\\ (\cLdur)\noexpand\end{tabular} & %
+		\noexpand\begin{tabular}{@{}c@{}}\cT \noexpand\\ (\cTdur)\noexpand\end{tabular} & %
+		\noexpand\begin{tabular}{@{}c@{}}\cP \noexpand\\ (\cPdur)\noexpand\end{tabular} & %
+		\noexpand\begin{tabular}{@{}c@{}}-- \noexpand\\ (\cSdur)\noexpand\end{tabular} & %
+		\cTotalHrs & \cCIEDur/\cSEEDur & \cCIETotMarks & \cSEETotMarks & \cTotalMarks & \the\toks4 \noexpand\\ \noexpand\hline}%
 	\global\let\maintablecontent\temp
 	\fi
 }

@@ -3,10 +3,14 @@
 # --------------------------------------------
 
 # === Global Preamble Commands ===
-\Department[short name]{long name}
-\MastersIn[short name]{long name}
+\department[short name]{long name}
+\schemeYear[UG/PG]{Year}
 \pgProgramName{name}
-
+\hrspercred{hours/credit}
+\wkspercred{weeks/credit}
+\Lcredmul{L cred multiplier}
+\Tcredmul{T cred multiplier}
+\Pcredmul{P cred multiplier}
 # --- Course Grouping ---
 \begin{semester}{semester number}
 \end{semester}

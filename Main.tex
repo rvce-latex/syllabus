@@ -7,7 +7,9 @@
 \newcommand{\ismaindoc}{true}
 \standalonefalse
 \renewcommand{\arraystretch}{1.5}
-%\schemeYear{2025}
+\department[ECE]{Electronics and Communication Engineering}
+\schemeYear[UG]{2025}
+
 \begin{document}
 %%%% You can modify the credit %%%%
 	\input{CreditDefinitions}
@@ -20,7 +22,8 @@
 		\bos{MA}
 		\coursetitle[LT]{Linear Algebra and Probability Theory}
 	\end{definecourse}
-		\begin{coregroup}
+	
+	\begin{coregroup} % Basket course
 		\begin{definecourse}{CV232TA}
 			\category{PC}
 			\stream{CS}
@@ -42,7 +45,8 @@
 			\bos{BT}
 			\coursetitle[LO]{Bioinspired Engineering}
 		\end{definecourse}
-		\end{coregroup}
+	\end{coregroup}
+	
 	\begin{definecourse}{CS233AI}
 		\category{PC}
 		\stream{CS}
@@ -102,7 +106,8 @@
 		\bos{CS}
 		\coursetitle[LO]{Discrete mathematical structures and combinatorics}
 	\end{definecourse}
-	\begin{coregroup*}
+	
+	\begin{coregroup*} % Basket course duplication
 		\begin{definecourse}{CV232TA}
 			\category{PC}
 			\stream{CS}
@@ -125,6 +130,7 @@
 			\coursetitle[LO]{Bioinspired Engineering}
 		\end{definecourse}
 	\end{coregroup*}
+	
 	\begin{definecourse}{CD343AI}
 		\category{PC}
 		\stream{CS}
@@ -145,7 +151,9 @@
 		\commonto{Common to CS,CD,CY and CI Programs}
 		\bos{CS}
 		\coursetitle[LT]{Computer Networks}
-	\end{definecourse}	
+	\end{definecourse}
+	
+	% Elective group definition
     \begin{electivegroup}{CS248ATX}{Professional Electives}{A}
     	\begin{definecourse}{CS248ATA}
 			\category{PE}
@@ -191,6 +199,7 @@
 	  \end{definecourse}
 	\end{electivegroup}
 	
+	% Ability Enhancement group
 	\begin{aegroup}{HS248LX}
 		\begin{definecourse}{HS238LA}
 			\category{AE}
@@ -207,6 +216,7 @@
 			\coursetitle[PO]{National Cadet Corps}
 		\end{definecourse}			
 	\end{aegroup}
+	
 	\begin{definecourse}{CS139AT}
 		\category{BC}
 		\stream{CS}
