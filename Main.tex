@@ -2,18 +2,18 @@
 %%%%%%%%%%%%%%Bibliography%%%%%%%%%%%%%%%%%%%%%
 \usepackage[sorting=none, backend=biber,style=ieee]{biblatex}
 % If backend is set to bibtex, then configure texmaker Bi(La)Tex with "bibtex %"
-\addbibresource{Reference.bib}%Add bib file with extention
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\ismaindoc}{true}
 \standalonefalse
 \renewcommand{\arraystretch}{1.5}
+%\schemeYear{2025}
 \department[ECE]{Electronics and Communication Engineering}
 \schemeYear[UG]{2025}
-
 \begin{document}
 %%%% You can modify the credit %%%%
 	\input{CreditDefinitions}
 %%%% You can enter the data in the appropriate commands %%%%
+
 \begin{semester}{3}
 	\begin{definecourse}{MA231TC}
 		\category{PE}
@@ -22,31 +22,29 @@
 		\bos{MA}
 		\coursetitle[LT]{Linear Algebra and Probability Theory}
 	\end{definecourse}
-	
-	\begin{coregroup} % Basket course
+	\begin{definecourse}{ME232TB}
+		\category{PC}
+		\stream{CS}
+		\commonto{Common to CS,CD,CY and CI Programs}
+		\bos{ME}
+		\coursetitle[LP]{Material Science for Engineers}
+	\end{definecourse}
+	\begin{coregroup}
 		\begin{definecourse}{CV232TA}
 			\category{PC}
 			\stream{CS}
 			\commonto{Common to CS,CD,CY and CI Programs}
 			\bos{CV}
-			\coursetitle[LO]{Environment and Sustainability}
-		\end{definecourse}
-		\begin{definecourse}{ME232TB}
-			\category{PC}
-			\stream{CS}
-			\commonto{Common to CS,CD,CY and CI Programs}
-			\bos{ME}
-			\coursetitle[LO]{Material Science for Engineers}
-	    \end{definecourse}	
+			\coursetitle[LOb]{Environment and Sustainability}
+		\end{definecourse}	
 		\begin{definecourse}{BT232TD}
 			\category{PC}
 			\stream{CS}
 			\commonto{Common to CS,CD,CY and CI Programs}
 			\bos{BT}
-			\coursetitle[LO]{Bioinspired Engineering}
+			\coursetitle[LOb]{Bioinspired Engineering}
 		\end{definecourse}
 	\end{coregroup}
-	
 	\begin{definecourse}{CS233AI}
 		\category{PC}
 		\stream{CS}
@@ -106,8 +104,7 @@
 		\bos{CS}
 		\coursetitle[LO]{Discrete mathematical structures and combinatorics}
 	\end{definecourse}
-	
-	\begin{coregroup*} % Basket course duplication
+	\begin{coregroup*}
 		\begin{definecourse}{CV232TA}
 			\category{PC}
 			\stream{CS}
@@ -130,7 +127,6 @@
 			\coursetitle[LO]{Bioinspired Engineering}
 		\end{definecourse}
 	\end{coregroup*}
-	
 	\begin{definecourse}{CD343AI}
 		\category{PC}
 		\stream{CS}
@@ -151,9 +147,7 @@
 		\commonto{Common to CS,CD,CY and CI Programs}
 		\bos{CS}
 		\coursetitle[LT]{Computer Networks}
-	\end{definecourse}
-	
-	% Elective group definition
+	\end{definecourse}	
     \begin{electivegroup}{CS248ATX}{Professional Electives}{A}
     	\begin{definecourse}{CS248ATA}
 			\category{PE}
@@ -199,7 +193,6 @@
 	  \end{definecourse}
 	\end{electivegroup}
 	
-	% Ability Enhancement group
 	\begin{aegroup}{HS248LX}
 		\begin{definecourse}{HS238LA}
 			\category{AE}
@@ -216,7 +209,6 @@
 			\coursetitle[PO]{National Cadet Corps}
 		\end{definecourse}			
 	\end{aegroup}
-	
 	\begin{definecourse}{CS139AT}
 		\category{BC}
 		\stream{CS}

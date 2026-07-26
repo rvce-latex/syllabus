@@ -836,7 +836,7 @@
 	\setcounter{cie@total}{0}%
 	\setcounter{cie@row}{0}%
 	\vspace{1em}\noindent
-	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|p{\dimexpr0.78\textwidth-6\tabcolsep-4\arrayrulewidth\relax}|>{\centering\arraybackslash}p{0.14\textwidth}|}
+	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|p{\dimexpr0.83\textwidth-6\tabcolsep-4\arrayrulewidth\relax}|>{\centering\arraybackslash}p{0.09\textwidth}|}
 		\hline
 		\multicolumn{3}{|l|}{\textbf{RUBRICS FOR THE CONTINUOUS INTERNAL EVALUATION}} \\ \hline
 		\textbf{\#} & \multicolumn{1}{c|}{\textbf{COMPONENTS}} & \textbf{MARKS} \\ \hline
@@ -855,7 +855,7 @@
 \NewDocumentEnvironment{SEE@Theory@rubrics}{O{THEORY}}{%
 	\setcounter{see@total}{0}%
 	\vspace{1em}\noindent
-	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|p{\dimexpr0.78\textwidth-6\tabcolsep-4\arrayrulewidth\relax}|>{\centering\arraybackslash}p{0.14\textwidth}|}
+	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|p{\dimexpr0.83\textwidth-6\tabcolsep-4\arrayrulewidth\relax}|>{\centering\arraybackslash}p{0.09\textwidth}|}
 		\hline
 		\multicolumn{3}{|l|}{\textbf{RUBRICS FOR SEMESTER END EXAMINATION (#1)}} \\ \hline%
 		\textbf{Q.NO.} & \multicolumn{1}{c|}{\textbf{CONTENTS}} & \textbf{MARKS} \\ \hline%
@@ -875,7 +875,7 @@
 	\setcounter{see@total}{0}%
 	\setcounter{see@row}{0}%
 	\vspace{1em}\noindent
-	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|p{\dimexpr0.78\textwidth-6\tabcolsep-4\arrayrulewidth\relax}|>{\centering\arraybackslash}p{0.14\textwidth}|}
+	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|p{\dimexpr0.83\textwidth-6\tabcolsep-4\arrayrulewidth\relax}|>{\centering\arraybackslash}p{0.09\textwidth}|}
 		\hline
 		\multicolumn{3}{|l|}{\textbf{RUBRICS FOR SEMESTER END EXAMINATION (LAB)}} \\ \hline
 		\textbf{Q.NO.} & \multicolumn{1}{c|}{\textbf{CONTENTS}} & \textbf{MARKS} \\ \hline%
@@ -1469,7 +1469,7 @@
 		\@CIEloop{1}{\maxrows}{\croman}{\cfulltype}%
 		%
 		\vspace{1.5em}\noindent
-		\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|p{\dimexpr0.78\textwidth-6\tabcolsep-4\arrayrulewidth\relax}|>{\centering\arraybackslash}p{0.14\textwidth}|}
+		\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|p{\dimexpr0.83\textwidth-6\tabcolsep-4\arrayrulewidth\relax}|>{\centering\arraybackslash}p{0.09\textwidth}|}
 			\hline
 			\multicolumn{3}{|l|}{\textbf{RUBRICS FOR THE CONTINUOUS INTERNAL EVALUATION}} \\ \hline
 			\textbf{\#} & \multicolumn{1}{c|}{\textbf{COMPONENTS}} & \textbf{MARKS} \\ \hline
