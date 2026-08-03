@@ -1,4 +1,4 @@
-\documentclass{syllabus}
+\documentclass[a4paper]{syllabus}
 %%%%%%%%%%%%%%Bibliography%%%%%%%%%%%%%%%%%%%%%
 \usepackage[sorting=none, backend=biber,style=ieee]{biblatex}
 % If backend is set to bibtex, then configure texmaker Bi(La)Tex with "bibtex %"
@@ -16,19 +16,13 @@
 
 \begin{semester}{3}
 	\begin{definecourse}{MA231TC}
-		\category{PE}
-		\stream{CS}
-		\commonto{Common to Common to CS and CY}
-		\bos{MA}
-		\coursetitle[LT]{Linear Algebra and Probability Theory}
-	\end{definecourse}
-	\begin{definecourse}{ME232TB}
 		\category{PC}
 		\stream{CS}
-		\commonto{Common to CS,CD,CY and CI Programs}
-		\bos{ME}
-		\coursetitle[LP]{Material Science for Engineers}
+		\commonto{Common to CS and CY}
+		\bos{MA}
+		\coursetitle[LP]{Linear Algebra and Probability Theory}
 	\end{definecourse}
+	
 	\begin{coregroup}
 		\begin{definecourse}{CV232TA}
 			\category{PC}
@@ -36,7 +30,14 @@
 			\commonto{Common to CS,CD,CY and CI Programs}
 			\bos{CV}
 			\coursetitle[LOb]{Environment and Sustainability}
-		\end{definecourse}	
+		\end{definecourse}
+		\begin{definecourse}{ME232TB}
+			\category{PC}
+			\stream{CS}
+			\commonto{Common to CS,CD,CY and CI Programs}
+			\bos{ME}
+			\coursetitle[LOb]{Material Science for Engineers}
+		\end{definecourse}
 		\begin{definecourse}{BT232TD}
 			\category{PC}
 			\stream{CS}
@@ -45,54 +46,48 @@
 			\coursetitle[LOb]{Bioinspired Engineering}
 		\end{definecourse}
 	\end{coregroup}
+	
 	\begin{definecourse}{CS233AI}
 		\category{PC}
 		\stream{CS}
-		\commonto{Common to Common to CS and CY}
+		\commonto{Common to CS and CY}
 		\bos{CS}
 		\coursetitle[LP]{Data Structures and Applications }
 	\end{definecourse}
 	\begin{definecourse}{CS234AI}
 		\category{PC}
 		\stream{CS}
-		\commonto{Common to Common to CS, CD and CY}
+		\commonto{Common to CS, CD and CY}
 		\bos{CS}
 		\coursetitle[LP]{Applied Digital Logic Design and Computer Organization }
 	\end{definecourse}
 	\begin{definecourse}{CS235AT}
 		\category{PC}
 		\stream{CS}
-		\commonto{Common to Common to CS, CD and CI}
+		\commonto{Common to CS, CD and CI}
 		\bos{CS}
 		\coursetitle[LO]{Operating Systems }
 	\end{definecourse}
 	\begin{definecourse}{CS236AT}
 		\category{PC}
 		\stream{CS}
-		\commonto{Common to Common to CS, CD and CI}
+		\commonto{Common to CS, CD and CI}
 		\bos{CS}
 		\coursetitle[LO]{Quantum Computing Essentials }
 	\end{definecourse}
 	\begin{definecourse}{CS238DL}
 		\category{PC}
 		\stream{CS}
-		\commonto{Common to Common to CS,CD,CY and CI Programs}
+		\commonto{Common to CS,CD,CY and CI Programs}
 		\bos{CS}
 		\coursetitle[PO]{Applied Design thinking lab }
 	\end{definecourse}
 	\begin{definecourse}{MAT149AT}
 		\category{BC}
 		\stream{CS}
-		\commonto{Common to Common to CS,CD,CY and CI Programs}
+		\commonto{Common to CS,CD,CY and CI Programs}
 		\bos{MA}
 		\coursetitle[LO]{Bridge Course Mathematics }
-	\end{definecourse}
-	\begin{definecourse}{SLCSP31A}
-		\category{SL}
-		\stream{CS}
-		\commonto{Common to Common to CS,CD,CY and CI Programs}
-		\bos{CS}
-		\coursetitle[PO]{Domain Engineering Skill Lab}
 	\end{definecourse}
 \end{semester}
 
@@ -104,6 +99,7 @@
 		\bos{CS}
 		\coursetitle[LO]{Discrete mathematical structures and combinatorics}
 	\end{definecourse}
+	
 	\begin{coregroup*}
 		\begin{definecourse}{CV232TA}
 			\category{PC}
@@ -127,6 +123,7 @@
 			\coursetitle[LO]{Bioinspired Engineering}
 		\end{definecourse}
 	\end{coregroup*}
+	
 	\begin{definecourse}{CD343AI}
 		\category{PC}
 		\stream{CS}
@@ -148,6 +145,7 @@
 		\bos{CS}
 		\coursetitle[LT]{Computer Networks}
 	\end{definecourse}	
+	
     \begin{electivegroup}{CS248ATX}{Professional Electives}{A}
     	\begin{definecourse}{CS248ATA}
 			\category{PE}
@@ -163,7 +161,7 @@
 			\bos{CS}
 			\coursetitle[LO]{Computer Graphics and Extended Reality}
 	  \end{definecourse}
-			\begin{definecourse}{CI248ATC}
+	  \begin{definecourse}{CI248ATC}
 			\category{PE}
 			\stream{EC}
 			\commonto{Common to CS, CI and CD Programs}
@@ -209,6 +207,24 @@
 			\coursetitle[PO]{National Cadet Corps}
 		\end{definecourse}			
 	\end{aegroup}
+	
+%	\begin{skgroup}{HS248LY}
+%		\begin{definecourse}{HS238LC}
+%			\category{AE}
+%			\stream{HS}
+%			\commonto{All programs}
+%			\bos{HS}
+%			\coursetitle[PO]{National Service Scheme}
+%		\end{definecourse}
+%		\begin{definecourse}{HS238LD}
+%			\category{AE}
+%			\stream{HS}
+%			\commonto{All programs}
+%			\bos{HS}
+%			\coursetitle[PO]{National Cadet Corps}
+%		\end{definecourse}			
+%	\end{skgroup}
+	
 	\begin{definecourse}{CS139AT}
 		\category{BC}
 		\stream{CS}
@@ -217,5 +233,23 @@
 		\coursetitle[LO]{Bridge Course C Programming }
 	\end{definecourse}
 \end{semester}
+
+\begin{sklabs}
+	\sklabfootnote{\textbf{Important Note:} It is mandatory for all students to complete the Domain Engineering Skill Lab (SLCSP31A \& SLCSP31B) in both III and IV Semesters.}
+	\begin{definecourse}{SLCSP31A}
+		\category{SL}
+		\stream{CS}
+		\commonto{Common to CS,CD,CY and CI Programs}
+		\bos{CS}
+		\coursetitle[PO]{Domain Engineering Skill Lab}
+	\end{definecourse}
+	\begin{definecourse}{SLCSP31B}
+		\category{SL}
+		\stream{CS}
+		\commonto{Common to CS,CD,CY and CI Programs}
+		\bos{CS}
+		\coursetitle[PO]{Domain Engineering Skill Lab}
+	\end{definecourse}
+\end{sklabs}
 
 \end{document}
