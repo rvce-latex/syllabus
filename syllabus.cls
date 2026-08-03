@@ -19,6 +19,7 @@
 \RequirePackage{ifthen}
 \RequirePackage{longtable}
 \RequirePackage{graphicx}
+\RequirePackage{xcolor}
 \RequirePackage{pgf}
 \RequirePackage{pgffor}
 \RequirePackage{fancyhdr}
@@ -37,9 +38,9 @@
 \setlength{\topmargin}{0in}
 \addtolength{\topmargin}{-\headheight}
 \addtolength{\topmargin}{-\headsep}
-\setlength{\footskip}{29pt}
+\setlength{\footskip}{18pt}
 \setlength{\textheight}{\paperheight}
-\addtolength{\textheight}{-2.2in}
+\addtolength{\textheight}{-1.8in}
 \setlength{\marginparwidth}{.5in}
 \setlength{\marginparsep}{5pt}
 
@@ -76,6 +77,11 @@
 \newcounter{numof@cos}
 \newcounter{numof@refs}
 \newcounter{temp@counter}
+
+% counters for total L T P calculations per sem
+\newcounter{tot@semester@L}
+\newcounter{tot@semester@T}
+\newcounter{tot@semester@P}
 
 \newcounter{semester@loop@ctr}
 \newcounter{semester@temp@ctr}
@@ -240,7 +246,12 @@
 		\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@bos}{\temp@bos}}%
 		\fi
 		
-		\ifincoregroupstar
+		% --- THE FIX: SHARED BYPASS FLAG ---
+		\def\@skipcoursegen{0}%
+		\ifincoregroupstar \def\@skipcoursegen{1} \fi
+		\ifinskgroup \def\@skipcoursegen{1} \fi
+		
+		\ifnum\@skipcoursegen=1\relax
 		\if@filesw
 		\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@isstar}{true}}%
 		\fi
@@ -333,40 +344,40 @@
 			\ClassWarningNoLine{syllabus}{Created template file \course@code.tex. Edit and rerun.}%
 			\syllabus@readyfalse
 		}
-	\fi
+		\fi
 		
 		\ifincoregroup
-			\def\emptyVal{}%
-			\ifx\temp@bos\emptyVal \@ifundefined{@departmentSF}{\def\safe@bos{ECE}}{\edef\safe@bos{\@departmentSF}}\else\edef\safe@bos{\temp@bos}\fi
-			
-			\ifincoregroupstar
-				\edef\origsem{\@ifundefined{course@originsem@\course@code}{1}{\@nameuse{course@originsem@\course@code}}}%
-				\edef\origcidx{\@ifundefined{course@origincidx@\course@code}{i}{\@nameuse{course@origincidx@\course@code}}}%
-				\edef\newpageval{\noexpand\hyperlink{course\origsem\origcidx}{\noexpand\PgnumOrig{\origsem}{\origcidx}}}%
-			\else
-				\edef\newpageval{\noexpand\hyperlink{course\sem\romannumeral\value{numof@courses}}{\noexpand\Pgnum{\arabic{numof@courses}}}}%
-			\fi
+		\def\emptyVal{}%
+		\ifx\temp@bos\emptyVal \@ifundefined{@departmentSF}{\def\safe@bos{ECE}}{\edef\safe@bos{\@departmentSF}}\else\edef\safe@bos{\temp@bos}\fi
 		
-			\ifnum\core@leader@index=0\relax
-				\xdef\core@leader@index{\arabic{numof@courses}}%
-				\xdef\core@acc@codes{\noexpand\MakeTextUppercase{\unexpanded\expandafter{\course@code}}}%
-				\xdef\core@acc@titles{\unexpanded\expandafter{\current@course@title}}%
-				\xdef\core@acc@boses{\unexpanded\expandafter{\safe@bos}}%
-				\xdef\core@acc@pages{\noexpand\hyperlink{course\sem\romannumeral\value{numof@courses}}{\noexpand\Pgnum{\arabic{numof@courses}}}}%
-				\if@filesw \immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@cg@role}{leader}}\fi
-			\else
-				\xdef\core@acc@codes{\unexpanded\expandafter{\core@acc@codes}\space / \noexpand\newline \noexpand\MakeTextUppercase{\unexpanded\expandafter{\course@code}}}%
-				\xdef\core@acc@titles{\unexpanded\expandafter{\core@acc@titles}\space / \noexpand\newline \unexpanded\expandafter{\current@course@title}}%
-				\xdef\core@acc@boses{\unexpanded\expandafter{\core@acc@boses}\space / \noexpand\newline \unexpanded\expandafter{\safe@bos}}%
-				\xdef\core@acc@pages{\unexpanded\expandafter{\core@acc@pages}\space / \noexpand\newline \noexpand\hyperlink{course\sem\romannumeral\value{numof@courses}}{\noexpand\Pgnum{\arabic{numof@courses}}}}%
-				\if@filesw \immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@cg@role}{follower}}\fi
-			\fi
+		\ifincoregroupstar
+		\edef\origsem{\@ifundefined{course@originsem@\course@code}{1}{\@nameuse{course@originsem@\course@code}}}%
+		\edef\origcidx{\@ifundefined{course@origincidx@\course@code}{i}{\@nameuse{course@origincidx@\course@code}}}%
+		\edef\newpageval{\noexpand\hyperlink{course\origsem\origcidx}{\noexpand\PgnumOrig{\origsem}{\origcidx}}}%
+		\else
+		\edef\newpageval{\noexpand\hyperlink{course\sem\romannumeral\value{numof@courses}}{\noexpand\Pgnum{\arabic{numof@courses}}}}%
+		\fi
+		
+		\ifnum\core@leader@index=0\relax
+		\xdef\core@leader@index{\arabic{numof@courses}}%
+		\xdef\core@acc@codes{\noexpand\MakeTextUppercase{\unexpanded\expandafter{\course@code}}}%
+		\xdef\core@acc@titles{\unexpanded\expandafter{\current@course@title}}%
+		\xdef\core@acc@boses{\unexpanded\expandafter{\safe@bos}}%
+		\xdef\core@acc@pages{\noexpand\hyperlink{course\sem\romannumeral\value{numof@courses}}{\noexpand\Pgnum{\arabic{numof@courses}}}}%
+		\if@filesw \immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@cg@role}{leader}}\fi
+		\else
+		\xdef\core@acc@codes{\unexpanded\expandafter{\core@acc@codes}\space / \noexpand\newline \noexpand\MakeTextUppercase{\unexpanded\expandafter{\course@code}}}%
+		\xdef\core@acc@titles{\unexpanded\expandafter{\core@acc@titles}\space / \noexpand\newline \unexpanded\expandafter{\current@course@title}}%
+		\xdef\core@acc@boses{\unexpanded\expandafter{\core@acc@boses}\space / \noexpand\newline \unexpanded\expandafter{\safe@bos}}%
+		\xdef\core@acc@pages{\unexpanded\expandafter{\core@acc@pages}\space / \noexpand\newline \noexpand\hyperlink{course\sem\romannumeral\value{numof@courses}}{\noexpand\Pgnum{\arabic{numof@courses}}}}%
+		\if@filesw \immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@cg@role}{follower}}\fi
+		\fi
 		\fi
 		
 		\ifinelectivegroup
 		\stepcounter{eg@course@id}%
 		\ifnum\value{eg@course@id}=1\relax
-
+		
 		\if@filesw 
 		\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@cg@role}{egleader}}%
 		\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@cg@codes}{\eg@common@code}}%
@@ -376,11 +387,11 @@
 		\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@cg@boses}{\safe@bos}}%
 		\fi
 		\else
-
+		
 		\if@filesw \immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@cg@role}{follower}}\fi
 		\fi
 		
-
+		
 		\if@filesw
 		\immediate\write\@mainaux{\string\global\string\@namedef{semester@sem\sem @eg@\roman{eg@id}@course@\romannumeral\value{eg@course@id}@code}{\noexpand\MakeTextUppercase{\unexpanded\expandafter{\course@code}}}}%
 		\immediate\write\@mainaux{\string\global\string\@namedef{semester@sem\sem @eg@\roman{eg@id}@course@\romannumeral\value{eg@course@id}@title}{\unexpanded\expandafter{\current@course@title}}}%
@@ -411,6 +422,25 @@
 		\immediate\write\@mainaux{\string\global\string\@namedef{semester@sem\sem @ae@\roman{ae@id}@course@\romannumeral\value{ae@course@id}@page}{\noexpand\hyperlink{course\sem\romannumeral\value{numof@courses}}{\noexpand\Pgnum{\arabic{numof@courses}}}}}%
 		\fi
 		\fi
+		
+		% --- NEW: SKGROUP LOGIC INJECTION WITH NEW ROLES ---
+		\ifinskgroup
+		\stepcounter{sk@course@id}%
+		\ifnum\value{sk@course@id}=1\relax
+		\if@filesw 
+		\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@cg@role}{skleader}}%
+		\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@cg@codes}{\sk@common@code}}%
+		\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@cg@titles}{Skill Lab Courses}}%
+		\def\emptyVal{}%
+		\ifx\temp@bos\emptyVal \@ifundefined{@departmentSF}{\def\safe@bos{ECE}}{\edef\safe@bos{\temp@bos}}\else\edef\safe@bos{\temp@bos}\fi
+		\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@cg@boses}{\safe@bos}}%
+		\fi
+		\else
+		\if@filesw \immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@cg@role}{skfollower}}\fi
+		\fi
+		\fi
+		% ------------------------------------
+		
 	} % <--- The closing brace of definecourse
 }
 {
@@ -418,6 +448,7 @@
 	\immediate\write\@mainaux{\string\global\string\@namedef{semester@sem\sem @numofcourses}{\arabic{numof@courses}}}% 
 	\fi
 }
+
 
 \newcounter{courseindex}
 
@@ -641,6 +672,208 @@
 	\immediate\write\@mainaux{\string\global\string\@namedef{semester@sem\sem @ae@\roman{ae@id}@count}{\arabic{ae@course@id}}}%
 	\fi
 	\inaegroupfalse
+}
+
+% ==========================================
+% MUTUAL EXCLUSION & SKILL LABS ARCHITECTURE
+% ==========================================
+
+\newcounter{sklab@print@ctr}
+\gdef\sklabtablecontent{}
+
+% --- MUTUAL EXCLUSION FLAGS ---
+\newif\if@sklabs@used
+\global\@sklabs@usedfalse
+\newif\if@skgroup@used
+\global\@skgroup@usedfalse
+
+% --- 1. SKLABS ENVIRONMENT ---
+\DeclareDocumentEnvironment{sklabs}{}{%
+	\if@skgroup@used
+	\ClassError{syllabus}{'sklabs' and 'skgroup' are mutually exclusive!}{}%
+	\fi
+	\global\@sklabs@usedtrue
+	
+	% ISOLATION FIX: Save the global TOC loops before Semester 0 injects itself
+	\let\orig@toc@loop\syllabus@toc@loop
+	\let\orig@group@toc@loop\syllabus@group@toc@loop
+	
+	% Open the semester to inherit the local course commands
+	\begin{semester}{0}%
+		
+		% ISOLATION FIX: Globally restore the TOC loops, instantly erasing the ghost table!
+		\global\let\syllabus@toc@loop\orig@toc@loop
+		\global\let\syllabus@group@toc@loop\orig@group@toc@loop
+		
+		% Reset the course index
+		\setcounter{courseindex}{0}% 
+		
+		% Safely hook the END of the course to force SK and PO
+		\let\orig@enddefinecourse\enddefinecourse
+		\def\enddefinecourse{%
+			\edef\croman{\romannumeral\value{courseindex}}%
+			\if@filesw
+			\immediate\write\@mainaux{\string\global\string\@namedef{course@sem0@\croman @category}{SK}}%
+			\immediate\write\@mainaux{\string\global\string\@namedef{course@sem0@\croman @coursetype}{PO}}%
+			\fi
+			\global\@namedef{course@sem0@\croman @category}{SK}%
+			\global\@namedef{course@sem0@\croman @coursetype}{PO}%
+			\orig@enddefinecourse
+		}%
+		
+		% Collect the instruction and write it globally to the .aux file
+		\def\sklabfootnote##1{%
+			\if@filesw
+			\immediate\write\@mainaux{\string\gdef\string\global@sklabinstruction{\unexpanded{##1}}}%
+			\fi
+		}%
+	}{%
+	\end{semester}%
+}
+
+% --- 2. SKGROUP ENVIRONMENT ---
+\newcounter{sk@id}
+\newcounter{sk@course@id}
+\newif\ifinskgroup
+\inskgroupfalse
+
+\DeclareDocumentEnvironment{skgroup}{ m }{%
+	\if@sklabs@used
+	\ClassError{syllabus}{'sklabs' and 'skgroup' are mutually exclusive!}{}%
+	\fi
+	\ifnum\sem=8\relax\else
+	\ClassError{syllabus}{'skgroup' is only permitted in the 8th semester!}{}%
+	\fi
+	\global\@skgroup@usedtrue
+	\inskgrouptrue
+	
+	\stepcounter{sk@id}%
+	\setcounter{sk@course@id}{0}%
+	\gdef\sk@common@code{#1}%
+	\if@filesw
+	\immediate\write\@mainaux{\string\global\string\@namedef{semester@sem\sem @sk@\roman{sk@id}@code}{#1}}%
+	\fi
+}{%
+	\if@filesw
+	\immediate\write\@mainaux{\string\global\string\@namedef{semester@sem\sem @sk@\roman{sk@id}@count}{\arabic{sk@course@id}}}%
+	\fi
+	\inskgroupfalse
+}
+
+% --- 3. SAFE TOKEN-REGISTER SKILL LABS TOC LOOP ---
+\newcounter{sklab@toc@ctr}
+\gdef\sklabtablecontent{} % Global container to hold the rows
+
+\def\sklabtocloop{%
+	\stepcounter{sklab@toc@ctr}%
+	\edef\croman{\romannumeral\value{sklab@toc@ctr}}%
+	
+	% Check if the course exists in memory
+	\@ifundefined{course@sem0@\croman @coursecode}{}{%
+		
+		% Safely extract the exact text into temporary macros so they aren't empty
+		\expandafter\let\expandafter\rawccode\csname course@sem0@\croman @coursecode\endcsname
+		\expandafter\let\expandafter\ctitle\csname course@sem0@\croman @coursetitle\endcsname
+		
+		% Append the new row to our global container
+		\toks0=\expandafter{\sklabtablecontent}%
+		\toks1=\expandafter{\rawccode}%
+		\toks2=\expandafter{\ctitle}%
+		
+		\edef\temp{\the\toks0 \arabic{sklab@toc@ctr} & \noexpand\MakeTextUppercase{\the\toks1} & \the\toks2 & \noexpand\pageref{course0\croman} \noexpand\\ \noexpand\hline}%
+		\global\let\sklabtablecontent\temp
+		
+		% Recursively call for the next course
+		\expandafter\sklabtocloop
+	}%
+}
+
+\newcommand{\printsklabstoc}{%
+	% Automatically draws the table if at least the first course ('i') is found
+	\@ifundefined{course@sem0@i@coursecode}{}{%
+		
+		% 1. Build the rows IN THE BACKGROUND first
+		\setcounter{sklab@toc@ctr}{0}%
+		\gdef\sklabtablecontent{}% Clear previous data
+		\sklabtocloop % Run the loop
+		
+		% 2. Draw the table and instantly dump the pre-built rows
+		\vspace{0.5em}\noindent
+		\begin{longtable}{|>{\centering\arraybackslash}p{0.08\linewidth}|>{\centering\arraybackslash}p{0.18\linewidth}|p{0.55\linewidth}|>{\centering\arraybackslash}p{0.12\linewidth}|}
+			\hline
+			\multicolumn{4}{|c|}{SKILL LABS}\\
+			\hline
+			\textbf{Sl.} & \textbf{Course Code} & \multicolumn{1}{c|}{\textbf{Course Title}} & \textbf{Page No.} \\ \hline
+			\endfirsthead
+			\hline
+			\textbf{Sl.} & \textbf{Course Code} & \multicolumn{1}{c|}{\textbf{Course Title}} & \textbf{Page No.} \\ \hline
+			\endhead
+			\hline
+			\endfoot
+			
+			\sklabtablecontent % Dumps exactly the completed rows. Zero invisible tokens!
+			
+		\end{longtable}\par
+	}
+}
+
+% --- 4. PAGE GENERATOR ---
+\def\sklabsprintloop{%
+	\stepcounter{sklab@print@ctr}%
+	\edef\croman{\romannumeral\value{sklab@print@ctr}}%
+	\@ifundefined{course@sem0@\croman @coursecode}{}{% 
+		\edef\course@code{\@nameuse{course@sem0@\croman @coursecode}}%
+		
+		\gdef\lsem{0}%
+		\gdef\printsemester{0}% 
+		
+		\IfFileExists{\course@code.tex}{%
+			\input{\course@code.tex}%
+			
+			% --- THE FIX: FIRST-RUN SAFETY NETS ---
+			\expandafter\ifx\csname course@sem0@\croman @category\endcsname\relax
+			\expandafter\gdef\csname course@sem0@\croman @category\endcsname{Category Pending}%
+			\fi
+			\expandafter\ifx\csname course@sem0@\croman @stream\endcsname\relax
+			\expandafter\gdef\csname course@sem0@\croman @stream\endcsname{Stream Pending}%
+			\fi
+			\expandafter\ifx\csname course@sem0@\croman @coursetitle\endcsname\relax
+			\expandafter\gdef\csname course@sem0@\croman @coursetitle\endcsname{Course Title Pending}%
+			\fi
+			\expandafter\ifx\csname course@sem0@\croman @commonto\endcsname\relax
+			\expandafter\gdef\csname course@sem0@\croman @commonto\endcsname{Common Pending}%
+			\fi
+			
+			\edef\lecturestatus{\@ifundefined{course@sem0@\croman @lecturestatus}{0}{\@nameuse{course@sem0@\croman @lecturestatus}}}%
+			\edef\practicestatus{\@ifundefined{course@sem0@\croman @practicestatus}{0}{\@nameuse{course@sem0@\croman @practicestatus}}}%
+			\edef\tutorialstatus{\@ifundefined{course@sem0@\croman @tutorialstatus}{0}{\@nameuse{course@sem0@\croman @tutorialstatus}}}%
+			
+			\ifnum\lecturestatus=1\relax \global\lecturetrue \else \global\lecturefalse \fi
+			\ifnum\practicestatus=1\relax \global\practicetrue \else \global\practicefalse \fi
+			\ifnum\tutorialstatus=1\relax \global\tutorialtrue \else \global\tutorialfalse \fi
+			
+			\edef\nsemester{0}%
+			\edef\nlec{\@ifundefined{course@sem0@\croman @numoflectureunits}{1}{\@nameuse{course@sem0@\croman @numoflectureunits}}}%
+			\edef\nprac{\@ifundefined{course@sem0@\croman @numofpracticeunits}{1}{\@nameuse{course@sem0@\croman @numofpracticeunits}}}%
+			\edef\npel{\@ifundefined{course@sem0@\croman @numofpracticeelunits}{1}{\@nameuse{course@sem0@\croman @numofpracticeelunits}}}%
+			\edef\nref{\@ifundefined{course@sem0@\croman @numofreferences}{1}{\@nameuse{course@sem0@\croman @numofreferences}}}%
+			\edef\nco{\@ifundefined{course@sem0@\croman @numofcourseoutcomes}{1}{\@nameuse{course@sem0@\croman @numofcourseoutcomes}}}%
+			
+			\clearpage
+			
+			\xpandtable{\nsemester}{\thesklab@print@ctr}{\nlec}{\nprac}{\npel}{\nref}{\nco}%
+		}{%
+			\ClassWarning{syllabus}{SKILL LAB ERROR: Could not find \course@code.tex!}%
+		}%
+		\sklabsprintloop 
+	}%
+}
+
+\newcommand{\printsklabspages}{%
+	\@ifundefined{course@sem0@i@coursecode}{}{% 
+		\setcounter{sklab@print@ctr}{0}%
+		\sklabsprintloop
+	}%
 }
 
 %% Credit Environment
@@ -1061,6 +1294,8 @@
 	\xdef\lsem{\@ifundefined{semester@\current@semester @val}{1}{\@nameuse{semester@\current@semester @val}}}
 	\gdef\printsemester{\MakeTextUppercase{\romannumeral\lsem}}
 	
+	\ifnum\lsem=0\relax
+	\else
 	\setcounter{eg@id}{1}%
 	\@whilesw\ifcsname semester@sem\lsem @eg@\roman{eg@id}@code\endcsname\fi{%
 		\PrintElectiveGroupTable{\roman{eg@id}}%
@@ -1074,11 +1309,13 @@
 		\vspace{2em}%
 		\stepcounter{ae@id}%
 	}%
+	\fi
 	
 	\stepcounter{semester@loop@ctr}%
 	\expandafter\syllabus@group@toc@loop
 	\fi
 }
+
 
 \newcommand{\PrintElectiveGroupTable}[1]{%
 	\begingroup
@@ -1160,6 +1397,52 @@
 	\endgroup
 }
 
+\newcommand{\PrintSKGroupTable}[1]{%
+	\begingroup
+	\edef\skcode{\@nameuse{semester@sem\lsem @sk@#1@code}}%
+	\edef\skcount{\@nameuse{semester@sem\lsem @sk@#1@count}}%
+	
+	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|>{\centering\arraybackslash}p{0.2\textwidth}|>{\raggedright\arraybackslash}p{0.54\textwidth}|>{\centering\arraybackslash}p{0.08\textwidth}|}
+		\hline
+		\multicolumn{4}{|c|}{\textbf{Semester - \printsemester}} \\ \hline
+		\multicolumn{4}{|c|}{\textbf{Skill Lab Courses}} \\ \hline % <--- FIXED HEADING
+		\textbf{Sl. No.} & \textbf{Course Code} & \multicolumn{1}{c|}{\textbf{Course Title}} & \textbf{Page No.} \\ \hline
+		\endfirsthead
+		
+		\hline
+		\multicolumn{4}{|c|}{\textbf{Semester - \printsemester\space (Continued)}} \\ \hline
+		\multicolumn{4}{|c|}{\textbf{Skill Lab Courses}} \\ \hline
+		\textbf{Sl. No.} & \textbf{Course Code} & \multicolumn{1}{c|}{\textbf{Course Title}} & \textbf{Page No.} \\ \hline
+		\endhead
+		
+		\hline
+		\endfoot
+		\endlastfoot
+		
+		\ifnum\skcount<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
+		{\expandafter\@sk@tocloop\expandafter{\number\numexpr(1)\expandafter\relax\expandafter}{\skcount}{#1}}
+	\end{longtable}
+	\endgroup
+}
+
+\def\@sk@tocloop#1#2#3{%
+	\ifnum#1>#2 \expandafter\@gobble\else\expandafter\@firstofone\fi{%
+		\PrintSKTOCRow{#1}{#3}%
+		\expandafter\@sk@tocloop\expandafter{\number\numexpr#1+1}{#2}{#3}%
+	}%
+}
+
+\newcommand{\PrintSKTOCRow}[2]{%
+	\@ifundefined{semester@sem\lsem @sk@#2@course@\romannumeral#1@code}{\def\ccode{---}}{\expandafter\let\expandafter\ccode\csname semester@sem\lsem @sk@#2@course@\romannumeral#1@code\endcsname}%
+	\@ifundefined{semester@sem\lsem @sk@#2@course@\romannumeral#1@title}{\def\ctitle{---}}{\expandafter\let\expandafter\ctitle\csname semester@sem\lsem @sk@#2@course@\romannumeral#1@title\endcsname}%
+	\@ifundefined{semester@sem\lsem @sk@#2@course@\romannumeral#1@page}{\def\cpage{---}}{\expandafter\let\expandafter\cpage\csname semester@sem\lsem @sk@#2@course@\romannumeral#1@page\endcsname}%
+	
+	\edef\rowout{%
+		#1 \noexpand& \unexpanded\expandafter{\ccode} \noexpand& \unexpanded\expandafter{\ctitle} \noexpand& \unexpanded\expandafter{\cpage} \noexpand\\ \noexpand\hline
+	}%
+	\rowout
+}
+
 \def\@ae@tocloop#1#2#3{%
 	\ifnum#1>#2 \expandafter\@gobble\else\expandafter\@firstofone\fi{%
 		\PrintAETOCRow{#1}{#3}%
@@ -1187,22 +1470,12 @@
 	\pagestyle{emptypg} % Standard header for TOC, no footer line
 	\setcounter{semester@loop@ctr}{1}%
 	\syllabus@toc@loop
+	\setcounter{semester@loop@ctr}{0}%
+	\printsklabstoc % <--- INJECTED HERE! Automatically draws the table if sklabs was used.
 	
 	\clearpage
 	\pagestyle{fplain}%
 	\begin{landscape}
-		\noindent
-		\hspace*{-0.5cm} % Shifts Logos left with the table
-		\begin{minipage}{\linewidth}
-			\begin{minipage}[c]{0.15\linewidth}
-				\includegraphics[height=1.5cm]{./Images/LogoL}
-			\end{minipage}\hfill
-			\begin{minipage}[c]{0.75\linewidth}
-				\raggedleft\includegraphics[height=1.5cm]{./Images/LogoR}
-			\end{minipage}
-		\end{minipage}
-		\vspace{1.5em}
-		
 		\setcounter{semester@loop@ctr}{1}%
 		\syllabus@index@loop
 	\end{landscape}
@@ -1221,6 +1494,11 @@
 	\pagestyle{mplain}%
 	\setcounter{semester@loop@ctr}{1}%
 	\syllabus@outer@loop
+	
+	% --- PRINTS THE SKILL LAB PAGES AT THE VERY END ---
+	\ifstandalone\else
+	\printsklabspages
+	\fi
 }
 
 \newcommand*{\syllabus@toc@loop}{%
@@ -1235,15 +1513,21 @@
 		\setcounter{course@temp@ctr}{\@nameuse{semester@sem\lsem @numofcourses}}%
 	}
 	
+	% THE FIX: Check the semester number BEFORE drawing the table
+	\ifnum\lsem=0\relax
+	% Do nothing. Completely skip drawing the TOC table for Skill Labs.
+	\else
 	\ifnum\value{course@temp@ctr}>0
 	\tocindextable{\arabic{course@temp@ctr}}%
 	\vspace{2em} 
 	\fi
+	\fi
 	
 	\stepcounter{semester@loop@ctr}%
-	\expandafter\syllabus@toc@loop
+	\expandafter\syllabus@toc@loop % Safely continue looping
 	\fi
 }
+
 
 \newcommand*{\syllabus@index@loop}{%
 	\ifnum\value{semester@loop@ctr}<\numexpr\arabic{semester@temp@ctr}+1\relax
@@ -1258,15 +1542,21 @@
 		\setcounter{course@temp@ctr}{\@nameuse{semester@sem\lsem @numofcourses}}%
 	}
 	
+	% THE SHIELD: Prevents the landscape credit table from drawing for Semester 0
+	\ifnum\lsem=0\relax
+	% Skip main index table for Skill Labs
+	\else
 	\ifnum\value{course@temp@ctr}>0
 	\mainindextable{\arabic{course@temp@ctr}}%
 	\vspace{2em}
+	\fi
 	\fi
 	
 	\stepcounter{semester@loop@ctr}%
 	\expandafter\syllabus@index@loop
 	\fi
 }
+
 
 \newcommand*{\syllabus@outer@loop}{%
 	\ifnum\value{semester@loop@ctr}<\numexpr\arabic{semester@temp@ctr}+1\relax
@@ -1280,7 +1570,6 @@
 	
 	\gdef\printsemester{\MakeTextUppercase{\romannumeral\lsem}}%
 	
-	% --- THE FIX: DECOUPLE STANDALONE BOUNDARIES FROM MAIN.AUX ---
 	\ifstandalone
 	\setcounter{course@temp@ctr}{\standalone@course@index}% Forces the loop to reach the target course
 	\else
@@ -1291,8 +1580,16 @@
 	}
 	\fi
 	
+	% THE SHIELD: Prevents duplicate pages, but allows Standalone Skill Labs
+	\ifnum\lsem=0\relax
+	\ifstandalone
 	\setcounter{course@loop@ctr}{1}%
 	\syllabus@inner@loop
+	\fi
+	\else
+	\setcounter{course@loop@ctr}{1}%
+	\syllabus@inner@loop
+	\fi
 	
 	\ifstandalone
 	\setcounter{semester@loop@ctr}{\numexpr\value{semester@temp@ctr}+1\relax}%
@@ -1542,6 +1839,15 @@
 	\ifx\cCIEP\zeroval \edef\cCIEDisplay{\cCIEL} \else \edef\cCIEDisplay{\cCIEL\space + \cCIEP} \fi
 	\ifx\cSEEP\zeroval \edef\cSEEDisplay{\cSEEL} \else \edef\cSEEDisplay{\cSEEL\space + \cSEEP} \fi
 	
+	% --- BRIDGE COURSE OVERRIDE ---
+	\edef\checkCat{\@ifundefined{course@sem\lsem @\romannumeral#2@category}{}{\@nameuse{course@sem\lsem @\romannumeral#2@category}}}%
+	\def\targetCat{Category: Bridge Course}%
+	\ifx\checkCat\targetCat
+	\def\cSEEDisplay{---}%
+	\def\cSEEDur{---}%
+	\fi
+	% ------------------------------
+	
 	\edef\cStr{\@ifundefined{course@sem\lsem @\romannumeral#2@stream}{}{\@nameuse{course@sem\lsem @\romannumeral#2@stream}}}%
 	\edef\cCommon{\@ifundefined{course@sem\lsem @\romannumeral#2@commonto}{}{\@nameuse{course@sem\lsem @\romannumeral#2@commonto}}}%
 	\def\emptyVal{}%
@@ -1564,7 +1870,7 @@
 	\def\CombinedRowOut{}%
 	\else
 	\def\CombinedRowOut{% 
-		\unexpanded{\\ \multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}}%
+		\unexpanded{\\[-0.5em] \multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}}%
 		{\unexpanded{\centering}{\unexpanded{\textbf}{\unexpanded\expandafter{\CombinedStr}}}}%
 	}%
 	\fi
@@ -1583,7 +1889,7 @@
 	\def\TypeRowOut{}%
 	\else
 	\def\TypeRowOut{% 
-		\unexpanded{\\ \multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}}%
+		\unexpanded{\\[-0.5em] \multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}}%
 		{\unexpanded{\centering}{\unexpanded{\textbf}{\unexpanded\expandafter{\cTypeStr}}}}%
 	}%
 	\fi
@@ -1646,10 +1952,22 @@
 			} \\
 		}%%
 	}%% End of scartctable
+	
+	% --- NEW: CONDITIONAL SEMESTER ROW ---
+	\def\zeroVal{0}%
+	\ifx\lsem\zeroVal
+	\def\SemesterRowOut{}% Removes row if lsem is 0
+	\else
+	\def\SemesterRowOut{%
+		\unexpanded{\multicolumn{7}{|c|}{\textbf{Semester - \printsemester}} \\ \hline}%
+	}%
+	\fi
+	
 	\expanded{%%
 		\endgroup
 		\unexpanded{%%
-			\begin{longtable}{|p{0.22\textwidth}|p{0.02\textwidth}|p{0.12\textwidth}|p{0.12\textwidth}|p{0.18\textwidth}|p{0.02\textwidth}|p{0.15\textwidth}|}%%
+			\vspace*{-2.5em}
+			\begin{longtable}{|p{0.32\textwidth}|p{0.01\textwidth}|p{0.12\textwidth}p{0.02\textwidth}|p{0.18\textwidth}|p{0.01\textwidth}|p{0.15\textwidth}|}%%
 				\hline
 				\endfirsthead
 				\hline
@@ -1658,8 +1976,9 @@
 				\endfoot
 				\hline
 				\endlastfoot
-				\multicolumn{7}{|c|}{\textbf{Semester - \printsemester}} \\
-				\hline
+			}%
+			\SemesterRowOut
+			\unexpanded{%%
 				\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}%
 			}%
 			{
@@ -1674,7 +1993,7 @@
 				}%% centering
 			}%% for multicolumn
 			\unexpanded{%%
-				\\%%
+				\\[-0.5em]%%
 				\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}%%
 			}%%
 			{
@@ -1695,9 +2014,9 @@
 				\hline%%
 				\textbf{Course Code}&\textbf{:}&\space\MakeTextUppercase{\csname course@sem\lsem @\romannumeral#2@coursecode\endcsname} & & \textbf{CIE} & \textbf{:}&\space}\cCIEDisplay\unexpanded{\space Marks\\%%
 				\hline%%
-				\textbf{Credit distribution:}\newline\textbf{L:T:P}&\textbf{:}&\space}\cL:\cT:\cP\unexpanded{ & & \textbf{SEE} & \textbf{:}&\space}\cSEEDisplay\unexpanded{\space Marks\\%%
+				\textbf{Credit distribution L:T:P}&\textbf{:}&\space}\cL:\cT:\cP\unexpanded{ & & \textbf{SEE} & \textbf{:}&\space}\cSEEDisplay\unexpanded{\space Marks\\%%
 				\hline%%
-				\textbf{Pedagogical Hours}\newline\textbf{(L:T:P:S)}&\textbf{:}&\space}\cLdur:\cTdur:\cPdur:\cSdur\unexpanded{ & & \textbf{CIE Duration} & \textbf{:}&\space}\cCIEDur\unexpanded{\space Hours\\%%
+				\textbf{Pedagogical Hours (L:T:P:S)}&\textbf{:}&\space}\cLdur:\cTdur:\cPdur:\cSdur\unexpanded{ & & \textbf{CIE Duration} & \textbf{:}&\space}\cCIEDur\unexpanded{\space Hours\\%%
 				\hline%%
 				\textbf{Total credits:}& \textbf{:}&\space}\cTotCreds\unexpanded{ & & \textbf{SEE Duration} & \textbf{:}&\space}\cSEEDur\unexpanded{\space Hours\\%%
 				\hline%%
@@ -1842,8 +2161,11 @@
 	\edef\croman{\romannumeral#1}%
 	\edef\cgrole{\@ifundefined{course@sem\lsem @\croman @cg@role}{none}{\@nameuse{course@sem\lsem @\croman @cg@role}}}%
 	\def\rolef{follower}%
+	\def\roleskf{skfollower}%
+	\def\roleskl{skleader}%
 	\ifx\cgrole\rolef
-	% Skip row drawing entirely
+	\else\ifx\cgrole\roleskf
+	\else\ifx\cgrole\roleskl
 	\else
 	\stepcounter{toc@print@ctr}%
 	
@@ -1910,8 +2232,9 @@
 	\toks2=\expandafter{\ctitle}%
 	\edef\temp{\the\toks0 \arabic{toc@print@ctr} & \noexpand\MakeTextUppercase{\the\toks1} & \the\toks2 & \cpage \noexpand\\ \noexpand\hline}%
 	\global\let\toctablecontent\temp
-	\fi
+	\fi\fi\fi
 }
+
 \newcounter{tot@semester@credits}
 \def\@calcCrdloop#1#2{\ifnum#1>#2 \expandafter\@gobble\else\expandafter\@firstofone\fi{\CalcCourseRow{#1}\expandafter\@calcCrdloop\expandafter{\number\numexpr#1+1}{#2}}}
 
@@ -1919,8 +2242,9 @@
 	\edef\croman{\romannumeral#1}%
 	\edef\cgrole{\@ifundefined{course@sem\lsem @\croman @cg@role}{none}{\@nameuse{course@sem\lsem @\croman @cg@role}}}%
 	\def\rolef{follower}%
+	\def\roleskf{skfollower}%
 	\ifx\cgrole\rolef
-	% Skip followers, they share the credit pool
+	\else\ifx\cgrole\roleskf
 	\else
 	\@ifundefined{course@sem\lsem @\croman @coursetype}{\def\ctype{UNKNOWN}}{\edef\ctype{\@nameuse{course@sem\lsem @\croman @coursetype}}}% 
 	\@ifundefined{type@\ctype @L}{\def\cL{0}}{\edef\cL{\@nameuse{type@\ctype @L}}}%
@@ -1936,15 +2260,43 @@
 	\global\addtocounter{tot@semester@credits}{\cT}%
 	\global\addtocounter{tot@semester@credits}{\cP}%
 	\fi
-	\fi
+	\fi\fi
 }
+
+%\newcommand{\CalcCourseRow}[1]{%
+%	\edef\croman{\romannumeral#1}%
+%	\edef\cgrole{\@ifundefined{course@sem\lsem @\croman @cg@role}{none}{\@nameuse{course@sem\lsem @\croman @cg@role}}}%
+%	\def\rolef{follower}%
+%	\ifx\cgrole\rolef
+%	% Skip followers, they share the credit pool
+%	\else
+%	\@ifundefined{course@sem\lsem @\croman @coursetype}{\def\ctype{UNKNOWN}}{\edef\ctype{\@nameuse{course@sem\lsem @\croman @coursetype}}}% 
+%	\@ifundefined{type@\ctype @L}{\def\cL{0}}{\edef\cL{\@nameuse{type@\ctype @L}}}%
+%	\@ifundefined{type@\ctype @T}{\def\cT{0}}{\edef\cT{\@nameuse{type@\ctype @T}}}%
+%	\@ifundefined{type@\ctype @P}{\def\cP{0}}{\edef\cP{\@nameuse{type@\ctype @P}}}%
+%	
+%	\edef\checkCat{\@ifundefined{course@sem\lsem @\croman @category}{}{\@nameuse{course@sem\lsem @\croman @category}}}%
+%	\def\targetCat{Category: Bridge Course}%
+%	\ifx\checkCat\targetCat
+%	% Skip adding credits for BC
+%	\else
+%	\global\addtocounter{tot@semester@credits}{\cL}%
+%	\global\addtocounter{tot@semester@credits}{\cT}%
+%	\global\addtocounter{tot@semester@credits}{\cP}%
+%	\fi
+%	\fi
+%}
 
 \gdef\maintablecontent{}
 
 \newcommand{\mainindextable}[1]{%%
 	\setcounter{tot@semester@credits}{0}%
+	\setcounter{tot@semester@L}{0}%
+	\setcounter{tot@semester@T}{0}%
+	\setcounter{tot@semester@P}{0}%
 	\setcounter{main@print@ctr}{0}%
 	\gdef\maintablecontent{}%
+	\gdef\hasaudit{0}% <--- Initializes the Audit tracker
 	
 	\ifnum#1<1\relax\else
 	\@calcCrdloop{1}{#1}%
@@ -1954,74 +2306,61 @@
 	\begingroup
 	\small
 	\setlength{\tabcolsep}{3pt}% 
-	\setlength{\LTleft}{-1cm}%
+	\setlength{\LTleft}{-1.5cm}% 
 	\setlength{\LTright}{0pt plus 1fill}%
-	\renewcommand{\thefootnote}{\fnsymbol{footnote}}% 
+	\renewcommand{\thefootnote}{\ensuremath{\dagger}}% 
 	
-	\hspace*{-1cm}
-	\begin{longtable}{|>{\centering\arraybackslash}p{0.03\linewidth}|>{\centering\arraybackslash}p{0.1\linewidth}|>{\raggedright\arraybackslash}p{0.30\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|}
+	\pagestyle{fancy} %
+	\clearpage
+	\begin{longtable}{|>{\centering\arraybackslash}p{0.03\linewidth}|>{\centering\arraybackslash}p{0.1\linewidth}|>{\centering\arraybackslash}p{0.28\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.02\linewidth}|>{\centering\arraybackslash}p{0.02\linewidth}|>{\centering\arraybackslash}p{0.02\linewidth}|>{\centering\arraybackslash}p{0.03\linewidth}|>{\centering\arraybackslash}p{0.09\linewidth}|>{\centering\arraybackslash}p{0.065\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.065\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|}
+		\multicolumn{15}{c}{%
+			\begin{minipage}{\linewidth}
+				\begin{minipage}[c]{0.15\linewidth}
+					\includegraphics[height=1.5cm]{./Images/LogoL}
+				\end{minipage}\hfill
+%				\begin{minipage}[c]{0.5\linewidth}
+%				\textcolor{white}{p narashimaraja}%	\raggedleft\includegraphics[height=1.5cm]{./Images/LogoR}
+%				\end{minipage}\hfill
+				\begin{minipage}[c]{0.95\linewidth}
+					\raggedleft\includegraphics[height=1.5cm]{./Images/LogoR}
+				\end{minipage}
+			\end{minipage}
+		} \\[2ex]
+	\end{longtable}
+	\begin{longtable}{|>{\centering\arraybackslash}p{0.03\linewidth}|>{\centering\arraybackslash}p{0.1\linewidth}|>{\centering\arraybackslash}p{0.28\linewidth}|>{\centering\arraybackslash}p{0.04\linewidth}|>{\centering\arraybackslash}p{0.02\linewidth}|>{\centering\arraybackslash}p{0.02\linewidth}|>{\centering\arraybackslash}p{0.02\linewidth}|>{\centering\arraybackslash}p{0.03\linewidth}|>{\centering\arraybackslash}p{0.09\linewidth}|>{\centering\arraybackslash}p{0.065\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.065\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|>{\centering\arraybackslash}p{0.05\linewidth}|}
 		\hline
-		\multicolumn{14}{|c|}{\textbf{\@schemeYear\space Scheme template -- \@graduateLabel\space Programs}} \\ \hline
-		\multicolumn{14}{|c|}{\textbf{B.E in \@departmentLF\space (\@departmentSF)}} \\ \hline
-		\multicolumn{14}{|c|}{\textbf{\printsemester\space SEMESTER}} \\ \hline
+		\multicolumn{15}{|c|}{\textbf{\@schemeYear\space Scheme template -- \@graduateLabel\space Programs}} \\ \hline
+		\multicolumn{15}{|c|}{\textbf{B.E in \@departmentLF\space (\@departmentSF)}} \\ \hline
+		\multicolumn{15}{|c|}{\textbf{\printsemester\space SEMESTER}} \\ \hline
 		
-		\multirow{3}{*}{\textbf{Sl}} & 
-		\multirow{3}{*}{\textbf{Course Code}} & 
-		\multicolumn{1}{c|}{\multirow{3}{*}{\textbf{Course Title}}} & 
-		\multirow{3}{*}{\textbf{BoS}} & 
-		\multicolumn{4}{c|}{\rule[-0.15cm]{0pt}{0.5cm}\textbf{Teaching \& Learning Scheme}} & 
-		\multirow{3}{*}{\rotatebox{90}{\parbox{2.5cm}{\centering \textbf{Total Hrs per Sem}}}} & 
-		\multicolumn{4}{c|}{\textbf{Examination}} & 
-		\multirow{3}{*}{\rotatebox[origin=b]{90}{\parbox{2.5cm}{\centering\textbf{Total Credits}}}} \\ \cline{5-8} \cline{10-13}
+		\multirow{2}{*}{\textbf{Sl.}} & 
+		\multirow{2}{*}{\textbf{Course Code}} & 
+		\multirow{2}{*}{\textbf{Course Title}} & 
+		\multirow{2}{*}{\textbf{BoS}} & 
+		\multicolumn{4}{c|}{\textbf{Credit Allocation}} & 
+		\multirow{2}{*}{\textbf{Category}} & 
+		\multirow{2}{*}{\shortstack{\textbf{CIE}\\\textbf{Duration}\\\textbf{(Hrs)}}} & 
+		\multicolumn{2}{c|}{\textbf{Max Marks CIE}} & 
+		\multirow{2}{*}{\shortstack{\textbf{SEE}\\\textbf{Duration}\\\textbf{(Hrs)}}} & 
+		\multicolumn{2}{c|}{\textbf{Max Marks SEE}} \\ \cline{5-8} \cline{11-12} \cline{14-15}
 		
-		& & & & 
-		\multicolumn{2}{c|}{\rule[-0.1cm]{0pt}{1cm}\textbf{CI}} & 
-		\textbf{LI} & 
-		\textbf{TW \& SL} & 
-		& 
-		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering \textbf{CIE/SEE Dur.(Hrs)}}}} & 
-		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering \textbf{CIE Marks}}}} & 
-		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering\textbf{SEE Marks}}}} & 
-		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering\textbf{Total Marks}}}} & 
-		\\ \cline{5-8}
-		
-		& & & & 
-		\rule[-0.1cm]{0pt}{0.5cm}\textbf{L} & 
-		\textbf{T} & 
-		\textbf{P} & 
-		\textbf{S} & 
-		& & & & & \\ \hline
-		
+		& & & & \textbf{L} & \textbf{T} & \textbf{P} & \textbf{Total} & & & \textbf{Theory} & \textbf{Lab} & & \textbf{Theory} & \textbf{Lab} \\ \hline
 		\endfirsthead
 		
 		\hline
-		\multicolumn{14}{|c|}{\textbf{\printsemester\space SEMESTER (Continued)}} \\ \hline
-		\multirow{3}{*}{\textbf{Sl}} & 
-		\multirow{3}{*}{\textbf{Course Code}} & 
-		\multicolumn{1}{c|}{\multirow{3}{*}{\textbf{Course Title}}} & 
-		\multirow{3}{*}{\textbf{BoS}} & 
-		\multicolumn{4}{c|}{\rule[-0.15cm]{0pt}{0.5cm}\textbf{Teaching \& Learning Scheme}} & 
-		\multirow{3}{*}{\rotatebox{90}{\parbox{2.5cm}{\centering \textbf{Total Hrs per Sem}}}} & 
-		\multicolumn{4}{c|}{\textbf{Examination}} & 
-		\multirow{3}{*}{\rotatebox[origin=b]{90}{\parbox{2.5cm}{\centering\textbf{Total Credits}}}} \\ \cline{5-8} \cline{10-13}
+		\multicolumn{15}{|c|}{\textbf{\printsemester\space SEMESTER (Continued)}} \\ \hline
+		\multirow{2}{*}{\textbf{Sl.}} & 
+		\multirow{2}{*}{\textbf{Course Code}} & 
+		\multirow{2}{*}{\textbf{Course Title}} & 
+		\multirow{2}{*}{\textbf{BoS}} & 
+		\multicolumn{4}{c|}{\textbf{Credit Allocation}} & 
+		\multirow{2}{*}{\textbf{Category}} & 
+		\multirow{2}{*}{\shortstack{\textbf{CIE}\\\textbf{Duration}\\\textbf{(H)}}} & 
+		\multicolumn{2}{c|}{\textbf{Max Marks CIE}} & 
+		\multirow{2}{*}{\shortstack{\textbf{SEE}\\\textbf{Duration}\\\textbf{(Hrs)}}} & 
+		\multicolumn{2}{c|}{\textbf{Max Marks SEE}} \\ \cline{5-8} \cline{11-12} \cline{14-15}
 		
-		& & & & 
-		\multicolumn{2}{c|}{\rule[-0.1cm]{0pt}{1cm}\textbf{CI}} & 
-		\textbf{LI} & 
-		\textbf{TW \& SL} & 
-		& 
-		\multirow{2}{*}{\rotatebox[origin=bl]{90}{\parbox{1.5cm}{\centering \textbf{CIE/SEE Dur.(Hrs)}}}} & 
-		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering \textbf{CIE Marks}}}} & 
-		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering\textbf{SEE Marks}}}} & 
-		\multirow{2}{*}{\rotatebox[origin=b]{90}{\parbox{1.5cm}{\centering\textbf{Total Marks}}}} & 
-		\\ \cline{5-8}
-		
-		& & & & 
-		\rule[-0.1cm]{0pt}{0.5cm}\textbf{L} & 
-		\textbf{T} & 
-		\textbf{P} & 
-		\textbf{S} & 
-		& & & & & \\ \hline
+		& & & & \textbf{L} & \textbf{T} & \textbf{P} & \textbf{Total} & & & \textbf{Theory} & \textbf{Lab} & & \textbf{Theory} & \textbf{Lab} \\ \hline
 		\endhead
 		
 		\hline
@@ -2030,8 +2369,41 @@
 		
 		\maintablecontent
 		
-		\multicolumn{13}{|r|}{\textbf{Total}} & \textbf{\arabic{tot@semester@credits}} \\ \hline
+		\multicolumn{4}{|r|}{\textbf{Total}} & \textbf{\arabic{tot@semester@L}} & \textbf{\arabic{tot@semester@T}} & \textbf{\arabic{tot@semester@P}} & \textbf{\arabic{tot@semester@credits}} & \multicolumn{7}{c|}{} \\ \hline
 	\end{longtable}
+	
+	% --- DYNAMIC FOOTNOTE BLOCK ---
+	\vfill % Pushes everything below this to the very bottom of the page
+	\noindent\makebox[\linewidth][l]{%
+		\raisebox{-0.4cm}[0pt][0pt]{% <--- THIS IS THE MAGIC SHIFT! 
+			\begin{minipage}{\linewidth}
+				\noindent\rule{5cm}{0.4pt}\par\vspace{0.5em}
+				
+				\ifnum\hasaudit=1
+				\noindent $^{\dagger}$ Audit\par\vspace{0.5em}
+				\fi
+				
+				\noindent
+				\edef\valL{\the\numexpr \global@Lcredmul * \global@wkspercred \relax}%
+				\edef\valT{\the\numexpr \global@Tcredmul * \global@wkspercred \relax}%
+				\edef\valP{\the\numexpr \global@Pcredmul * \global@wkspercred \relax}%
+				\begin{tabular}{|>{\centering\arraybackslash}p{0.18\linewidth}|>{\centering\arraybackslash}p{0.18\linewidth}|>{\centering\arraybackslash}p{0.18\linewidth}|>{\centering\arraybackslash}p{0.4\linewidth}|}
+					\hline
+					L duration: \valL\ hrs/credit & T duration: \valT\ hrs/credit & P duration: \valP\ hrs/credit & S duration: Total credits * hrs/sem - (L + T + P) durations \\
+					\hline
+				\end{tabular}%
+				
+				% --- NEW INSTRUCTION CHECK ---
+				\@ifundefined{global@sklabinstruction}{}{%
+					\ifx\global@sklabinstruction\@empty\else
+					\par\vspace{0.5em}\noindent
+					\global@sklabinstruction
+					\fi
+				}%
+			\end{minipage}%
+		}%
+	}\par
+	
 	\normalsize
 	\endgroup
 }
@@ -2042,7 +2414,9 @@
 	\edef\croman{\romannumeral#1}%
 	\edef\cgrole{\@ifundefined{course@sem\lsem @\croman @cg@role}{none}{\@nameuse{course@sem\lsem @\croman @cg@role}}}%
 	\def\rolef{follower}%
+	\def\roleskf{skfollower}%
 	\ifx\cgrole\rolef
+	\else\ifx\cgrole\roleskf
 	\else
 	\stepcounter{main@print@ctr}%
 	\@ifundefined{course@sem\lsem @\croman @coursetype}{\def\ctype{UNKNOWN}}{\edef\ctype{\@nameuse{course@sem\lsem @\croman @coursetype}}}% 
@@ -2051,11 +2425,9 @@
 	\@ifundefined{type@\ctype @T}{\def\cT{0}}{\edef\cT{\@nameuse{type@\ctype @T}}}%
 	\@ifundefined{type@\ctype @P}{\def\cP{0}}{\edef\cP{\@nameuse{type@\ctype @P}}}%
 	
-	\@ifundefined{type@\ctype @Ldur}{\def\cLdur{0}}{\edef\cLdur{\@nameuse{type@\ctype @Ldur}}}%
-	\@ifundefined{type@\ctype @Tdur}{\def\cTdur{0}}{\edef\cTdur{\@nameuse{type@\ctype @Tdur}}}%
-	\@ifundefined{type@\ctype @Pdur}{\def\cPdur{0}}{\edef\cPdur{\@nameuse{type@\ctype @Pdur}}}%
-	\@ifundefined{type@\ctype @Sdur}{\def\cSdur{0}}{\edef\cSdur{\@nameuse{type@\ctype @Sdur}}}%
-	\@ifundefined{type@\ctype @TotalHrs}{\def\cTotalHrs{0}}{\edef\cTotalHrs{\@nameuse{type@\ctype @TotalHrs}}}%
+	\addtocounter{tot@semester@L}{\cL}%
+	\addtocounter{tot@semester@T}{\cT}%
+	\addtocounter{tot@semester@P}{\cP}%
 	
 	\@ifundefined{type@\ctype @CIELmarks}{\@ifundefined{type@\ctype @CIEL}{\def\cCIEL{0}}{\edef\cCIEL{\@nameuse{type@\ctype @CIEL}}}}{\edef\cCIEL{\@nameuse{type@\ctype @CIELmarks}}}%
 	\@ifundefined{type@\ctype @CIEPmarks}{\@ifundefined{type@\ctype @CIEP}{\def\cCIEP{0}}{\edef\cCIEP{\@nameuse{type@\ctype @CIEP}}}}{\edef\cCIEP{\@nameuse{type@\ctype @CIEPmarks}}}%
@@ -2065,16 +2437,27 @@
 	\@ifundefined{type@\ctype @CIEdur}{\def\cCIEDur{---}}{\edef\cCIEDur{\@nameuse{type@\ctype @CIEdur}}}%
 	\@ifundefined{type@\ctype @SEEdur}{\def\cSEEDur{---}}{\edef\cSEEDur{\@nameuse{type@\ctype @SEEdur}}}%
 	
-	\edef\cCIETotMarks{\the\numexpr \cCIEL + \cCIEP \relax}%
-	\edef\cSEETotMarks{\the\numexpr \cSEEL + \cSEEP \relax}%
-	\edef\cTotalMarks{\the\numexpr \cCIETotMarks + \cSEETotMarks \relax}%
+	% --- DYNAMIC CATEGORY DETECTION ---
+	\ifnum\cP>0
+	\ifnum\cL>0 \def\CatStr{Theory+Lab}\else \def\CatStr{Lab}\fi
+	\else
+	\def\CatStr{Theory}%
+	\fi
+	
+	% --- ZERO TO STAR CONVERSION ---
+	\def\zeroval{0}%
+	\ifx\cCIEL\zeroval \def\cCIELstr{***}\else\def\cCIELstr{\cCIEL}\fi
+	\ifx\cCIEP\zeroval \def\cCIEPstr{***}\else\def\cCIEPstr{\cCIEP}\fi
+	\ifx\cSEEL\zeroval \def\cSEELstr{***}\else\def\cSEELstr{\cSEEL}\fi
+	\ifx\cSEEP\zeroval \def\cSEEPstr{***}\else\def\cSEEPstr{\cSEEP}\fi
 	
 	\edef\checkCat{\@ifundefined{course@sem\lsem @\croman @category}{}{\@nameuse{course@sem\lsem @\croman @category}}}%
 	\def\targetCat{Category: Bridge Course}%
 	\ifx\checkCat\targetCat
-	\def\cTot{0\unexpanded{\footnote[2]{Audit}}}% 
-	\def\cSEETotMarks{---}%
-	\def\cTotalMarks{\cCIETotMarks}%
+	\def\cTot{0\unexpanded{\ensuremath{^{\dagger}}}}%
+	\gdef\hasaudit{1}% <--- Triggers the Audit flag for the footnote block!
+	\def\cSEELstr{***}%
+	\def\cSEEPstr{***}%
 	\def\cSEEDur{---}% 
 	\else
 	\edef\cTot{\the\numexpr\cL+\cT+\cP\relax}%
@@ -2082,11 +2465,19 @@
 	
 	\def\rolel{leader}%
 	\def\roleegl{egleader}%
+	\def\roleskl{skleader}%
 	\ifx\cgrole\rolel
 	\expandafter\let\expandafter\ccode\csname course@sem\lsem @\croman @cg@codes\endcsname
 	\expandafter\let\expandafter\ctitle\csname course@sem\lsem @\croman @cg@titles\endcsname
 	\expandafter\let\expandafter\cBoS\csname course@sem\lsem @\croman @cg@boses\endcsname
 	\else\ifx\cgrole\roleegl
+	\expandafter\let\expandafter\rawccode\csname course@sem\lsem @\croman @cg@codes\endcsname
+	\edef\ccode{\noexpand\MakeTextUppercase{\unexpanded\expandafter{\rawccode}}}%
+	\expandafter\let\expandafter\ctitle\csname course@sem\lsem @\croman @cg@titles\endcsname
+	\expandafter\let\expandafter\tempBoS\csname course@sem\lsem @\croman @cg@boses\endcsname
+	\def\emptyBoS{}%
+	\ifx\tempBoS\emptyBoS \edef\cBoS{\cDept}\else \expandafter\let\expandafter\cBoS\csname course@sem\lsem @\croman @cg@boses\endcsname\fi
+	\else\ifx\cgrole\roleskl
 	\expandafter\let\expandafter\rawccode\csname course@sem\lsem @\croman @cg@codes\endcsname
 	\edef\ccode{\noexpand\MakeTextUppercase{\unexpanded\expandafter{\rawccode}}}%
 	\expandafter\let\expandafter\ctitle\csname course@sem\lsem @\croman @cg@titles\endcsname
@@ -2102,21 +2493,16 @@
 	}%
 	\@ifundefined{course@sem\lsem @\croman @coursecode}{\def\ccode{---}}{\expandafter\let\expandafter\rawccode\csname course@sem\lsem @\croman @coursecode\endcsname \edef\ccode{\noexpand\MakeTextUppercase{\unexpanded\expandafter{\rawccode}}}}%
 	\@ifundefined{course@sem\lsem @\croman @coursetitle}{\def\ctitle{---}}{\expandafter\let\expandafter\ctitle\csname course@sem\lsem @\croman @coursetitle\endcsname}%
-	\fi\fi
+	\fi\fi\fi
 	
 	\toks0=\expandafter{\maintablecontent}%
 	\toks1=\expandafter{\ccode}%
 	\toks2=\expandafter{\ctitle}%
 	\toks3=\expandafter{\cBoS}%
 	\toks4=\expandafter{\cTot}%
-	\edef\temp{\the\toks0 \arabic{main@print@ctr} & \noexpand\MakeTextUppercase{\the\toks1} & \the\toks2 & \the\toks3 & %
-		\noexpand\begin{tabular}{@{}c@{}}\cL \noexpand\\ (\cLdur)\noexpand\end{tabular} & %
-		\noexpand\begin{tabular}{@{}c@{}}\cT \noexpand\\ (\cTdur)\noexpand\end{tabular} & %
-		\noexpand\begin{tabular}{@{}c@{}}\cP \noexpand\\ (\cPdur)\noexpand\end{tabular} & %
-		\noexpand\begin{tabular}{@{}c@{}}-- \noexpand\\ (\cSdur)\noexpand\end{tabular} & %
-		\cTotalHrs & \cCIEDur/\cSEEDur & \cCIETotMarks & \cSEETotMarks & \cTotalMarks & \the\toks4 \noexpand\\ \noexpand\hline}%
+	\edef\temp{\the\toks0 \arabic{main@print@ctr} & \noexpand\MakeTextUppercase{\the\toks1} & \the\toks2 & \the\toks3 & \cL & \cT & \cP & \the\toks4 & \CatStr & \cCIEDur & \cCIELstr & \cCIEPstr & \cSEEDur & \cSEELstr & \cSEEPstr \noexpand\\ \noexpand\hline}%
 	\global\let\maintablecontent\temp
-	\fi
+	\fi\fi
 }
 
 \AtEndDocument{
@@ -2129,17 +2515,18 @@
 		\setcounter{page}{1}
 		\setcounter{section}{0}
 		\renewcommand{\thesection}{\arabic{section}}
+		\fancyfoot[L] {\@departmentLF}%%
 		\fancyfoot[R] {\thepage}%%
 		\fancyhead[L] {%%
 			\begin{minipage}{0.35\textwidth}
-				\vspace{-2em}
+				\vspace{-4em}
 				\includegraphics[width=\textwidth]{./Images/LogoL}%%
 			\end{minipage}%%
 		}%%
 		\fancyhead[R] {%%
 			\begin{minipage}{0.65\textwidth}
 				\vspace{-4em}
-				\hfill \includegraphics[width=\textwidth]{./Images/LogoR}%%
+				\raggedleft\includegraphics[width=5cm]{./Images/LogoR}%%
 			\end{minipage}%%
 		}%%
 	}
