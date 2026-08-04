@@ -798,7 +798,7 @@
 		\sklabtocloop % Run the loop
 		
 		% 2. Draw the table and instantly dump the pre-built rows
-		\vspace{0.5em}\noindent
+		\noindent
 		\begin{longtable}{|>{\centering\arraybackslash}p{0.08\linewidth}|>{\centering\arraybackslash}p{0.18\linewidth}|p{0.55\linewidth}|>{\centering\arraybackslash}p{0.12\linewidth}|}
 			\hline
 			\multicolumn{4}{|c|}{SKILL LABS}\\
@@ -827,45 +827,57 @@
 		\gdef\lsem{0}%
 		\gdef\printsemester{0}% 
 		
-		\IfFileExists{\course@code.tex}{%
-			\input{\course@code.tex}%
-			
-			% --- THE FIX: FIRST-RUN SAFETY NETS ---
-			\expandafter\ifx\csname course@sem0@\croman @category\endcsname\relax
-			\expandafter\gdef\csname course@sem0@\croman @category\endcsname{Category Pending}%
-			\fi
-			\expandafter\ifx\csname course@sem0@\croman @stream\endcsname\relax
-			\expandafter\gdef\csname course@sem0@\croman @stream\endcsname{Stream Pending}%
-			\fi
-			\expandafter\ifx\csname course@sem0@\croman @coursetitle\endcsname\relax
-			\expandafter\gdef\csname course@sem0@\croman @coursetitle\endcsname{Course Title Pending}%
-			\fi
-			\expandafter\ifx\csname course@sem0@\croman @commonto\endcsname\relax
-			\expandafter\gdef\csname course@sem0@\croman @commonto\endcsname{Common Pending}%
-			\fi
-			
-			\edef\lecturestatus{\@ifundefined{course@sem0@\croman @lecturestatus}{0}{\@nameuse{course@sem0@\croman @lecturestatus}}}%
-			\edef\practicestatus{\@ifundefined{course@sem0@\croman @practicestatus}{0}{\@nameuse{course@sem0@\croman @practicestatus}}}%
-			\edef\tutorialstatus{\@ifundefined{course@sem0@\croman @tutorialstatus}{0}{\@nameuse{course@sem0@\croman @tutorialstatus}}}%
-			
-			\ifnum\lecturestatus=1\relax \global\lecturetrue \else \global\lecturefalse \fi
-			\ifnum\practicestatus=1\relax \global\practicetrue \else \global\practicefalse \fi
-			\ifnum\tutorialstatus=1\relax \global\tutorialtrue \else \global\tutorialfalse \fi
-			
-			\edef\nsemester{0}%
-			\edef\nlec{\@ifundefined{course@sem0@\croman @numoflectureunits}{1}{\@nameuse{course@sem0@\croman @numoflectureunits}}}%
-			\edef\nprac{\@ifundefined{course@sem0@\croman @numofpracticeunits}{1}{\@nameuse{course@sem0@\croman @numofpracticeunits}}}%
-			\edef\npel{\@ifundefined{course@sem0@\croman @numofpracticeelunits}{1}{\@nameuse{course@sem0@\croman @numofpracticeelunits}}}%
-			\edef\nref{\@ifundefined{course@sem0@\croman @numofreferences}{1}{\@nameuse{course@sem0@\croman @numofreferences}}}%
-			\edef\nco{\@ifundefined{course@sem0@\croman @numofcourseoutcomes}{1}{\@nameuse{course@sem0@\croman @numofcourseoutcomes}}}%
-			
-			\clearpage
-			
-			\xpandtable{\nsemester}{\thesklab@print@ctr}{\nlec}{\nprac}{\npel}{\nref}{\nco}%
-		}{%
-			\ClassWarning{syllabus}{SKILL LAB ERROR: Could not find \course@code.tex!}%
-		}%
-		\sklabsprintloop 
+		% --- THE FIX: ISOLATE SKILL LAB CITATIONS ---
+		\@ifundefined{c@refsection}{}{%
+			\IfFileExists{\course@code.bib}{%
+				\begin{refsection}[\course@code.bib]%
+				}{%
+					\begin{refsection}%
+					}%
+				}
+				
+			\IfFileExists{\course@code.tex}{%
+				\input{\course@code.tex}%
+				
+				\expandafter\ifx\csname course@sem0@\croman @category\endcsname\relax
+				\expandafter\gdef\csname course@sem0@\croman @category\endcsname{Category Pending}%
+				\fi
+				\expandafter\ifx\csname course@sem0@\croman @stream\endcsname\relax
+				\expandafter\gdef\csname course@sem0@\croman @stream\endcsname{Stream Pending}%
+				\fi
+				\expandafter\ifx\csname course@sem0@\croman @coursetitle\endcsname\relax
+				\expandafter\gdef\csname course@sem0@\croman @coursetitle\endcsname{Course Title Pending}%
+				\fi
+				\expandafter\ifx\csname course@sem0@\croman @commonto\endcsname\relax
+				\expandafter\gdef\csname course@sem0@\croman @commonto\endcsname{Common Pending}%
+				\fi
+				
+				\edef\lecturestatus{\@ifundefined{course@sem0@\croman @lecturestatus}{0}{\@nameuse{course@sem0@\croman @lecturestatus}}}%
+				\edef\practicestatus{\@ifundefined{course@sem0@\croman @practicestatus}{0}{\@nameuse{course@sem0@\croman @practicestatus}}}%
+				\edef\tutorialstatus{\@ifundefined{course@sem0@\croman @tutorialstatus}{0}{\@nameuse{course@sem0@\croman @tutorialstatus}}}%
+				
+				\ifnum\lecturestatus=1\relax \global\lecturetrue \else \global\lecturefalse \fi
+				\ifnum\practicestatus=1\relax \global\practicetrue \else \global\practicefalse \fi
+				\ifnum\tutorialstatus=1\relax \global\tutorialtrue \else \global\tutorialfalse \fi
+				
+				\edef\nsemester{0}%
+				\edef\nlec{\@ifundefined{course@sem0@\croman @numoflectureunits}{1}{\@nameuse{course@sem0@\croman @numoflectureunits}}}%
+				\edef\nprac{\@ifundefined{course@sem0@\croman @numofpracticeunits}{1}{\@nameuse{course@sem0@\croman @numofpracticeunits}}}%
+				\edef\npel{\@ifundefined{course@sem0@\croman @numofpracticeelunits}{1}{\@nameuse{course@sem0@\croman @numofpracticeelunits}}}%
+				\edef\nref{\@ifundefined{course@sem0@\croman @numofreferences}{1}{\@nameuse{course@sem0@\croman @numofreferences}}}%
+				\edef\nco{\@ifundefined{course@sem0@\croman @numofcourseoutcomes}{1}{\@nameuse{course@sem0@\croman @numofcourseoutcomes}}}%
+				
+				\clearpage
+				
+				\xpandtable{\nsemester}{\thesklab@print@ctr}{\nlec}{\nprac}{\npel}{\nref}{\nco}%
+			}{%
+				\ClassWarning{syllabus}{SKILL LAB ERROR: Could not find \course@code.tex!}%
+			}%
+				
+		% --- THE FIX: CLOSE REFSECTION ---
+		\@ifundefined{c@refsection}{}{\end{refsection}}
+	
+		\sklabsprintloop
 	}%
 }
 
@@ -1068,7 +1080,8 @@
 \NewDocumentEnvironment{CIErubrics}{}{%
 	\setcounter{cie@total}{0}%
 	\setcounter{cie@row}{0}%
-	\vspace{1em}\noindent
+%	\vspace{0.25em}
+	\noindent
 	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|p{\dimexpr0.83\textwidth-6\tabcolsep-4\arrayrulewidth\relax}|>{\centering\arraybackslash}p{0.09\textwidth}|}
 		\hline
 		\multicolumn{3}{|l|}{\textbf{RUBRICS FOR THE CONTINUOUS INTERNAL EVALUATION}} \\ \hline
@@ -1087,7 +1100,8 @@
 
 \NewDocumentEnvironment{SEE@Theory@rubrics}{O{THEORY}}{%
 	\setcounter{see@total}{0}%
-	\vspace{1em}\noindent
+	\vspace{0.25em}
+	\noindent
 	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|p{\dimexpr0.83\textwidth-6\tabcolsep-4\arrayrulewidth\relax}|>{\centering\arraybackslash}p{0.09\textwidth}|}
 		\hline
 		\multicolumn{3}{|l|}{\textbf{RUBRICS FOR SEMESTER END EXAMINATION (#1)}} \\ \hline%
@@ -1107,7 +1121,8 @@
 \NewDocumentEnvironment{SEE@Practical@rubrics}{}{%
 	\setcounter{see@total}{0}%
 	\setcounter{see@row}{0}%
-	\vspace{1em}\noindent
+	\vspace{0.25em}
+	\noindent
 	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|p{\dimexpr0.83\textwidth-6\tabcolsep-4\arrayrulewidth\relax}|>{\centering\arraybackslash}p{0.09\textwidth}|}
 		\hline
 		\multicolumn{3}{|l|}{\textbf{RUBRICS FOR SEMESTER END EXAMINATION (LAB)}} \\ \hline
@@ -1397,33 +1412,33 @@
 	\endgroup
 }
 
-\newcommand{\PrintSKGroupTable}[1]{%
-	\begingroup
-	\edef\skcode{\@nameuse{semester@sem\lsem @sk@#1@code}}%
-	\edef\skcount{\@nameuse{semester@sem\lsem @sk@#1@count}}%
-	
-	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|>{\centering\arraybackslash}p{0.2\textwidth}|>{\raggedright\arraybackslash}p{0.54\textwidth}|>{\centering\arraybackslash}p{0.08\textwidth}|}
-		\hline
-		\multicolumn{4}{|c|}{\textbf{Semester - \printsemester}} \\ \hline
-		\multicolumn{4}{|c|}{\textbf{Skill Lab Courses}} \\ \hline % <--- FIXED HEADING
-		\textbf{Sl. No.} & \textbf{Course Code} & \multicolumn{1}{c|}{\textbf{Course Title}} & \textbf{Page No.} \\ \hline
-		\endfirsthead
-		
-		\hline
-		\multicolumn{4}{|c|}{\textbf{Semester - \printsemester\space (Continued)}} \\ \hline
-		\multicolumn{4}{|c|}{\textbf{Skill Lab Courses}} \\ \hline
-		\textbf{Sl. No.} & \textbf{Course Code} & \multicolumn{1}{c|}{\textbf{Course Title}} & \textbf{Page No.} \\ \hline
-		\endhead
-		
-		\hline
-		\endfoot
-		\endlastfoot
-		
-		\ifnum\skcount<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
-		{\expandafter\@sk@tocloop\expandafter{\number\numexpr(1)\expandafter\relax\expandafter}{\skcount}{#1}}
-	\end{longtable}
-	\endgroup
-}
+%\newcommand{\PrintSKGroupTable}[1]{%
+%	\begingroup
+%	\edef\skcode{\@nameuse{semester@sem\lsem @sk@#1@code}}%
+%	\edef\skcount{\@nameuse{semester@sem\lsem @sk@#1@count}}%
+%	
+%	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|>{\centering\arraybackslash}p{0.2\textwidth}|>{\raggedright\arraybackslash}p{0.54\textwidth}|>{\centering\arraybackslash}p{0.08\textwidth}|}
+%		\hline
+%		\multicolumn{4}{|c|}{\textbf{Semester - \printsemester}} \\ \hline
+%		\multicolumn{4}{|c|}{\textbf{Skill Lab Courses}} \\ \hline % <--- FIXED HEADING
+%		\textbf{Sl. No.} & \textbf{Course Code} & \multicolumn{1}{c|}{\textbf{Course Title}} & \textbf{Page No.} \\ \hline
+%		\endfirsthead
+%		
+%		\hline
+%		\multicolumn{4}{|c|}{\textbf{Semester - \printsemester\space (Continued)}} \\ \hline
+%		\multicolumn{4}{|c|}{\textbf{Skill Lab Courses}} \\ \hline
+%		\textbf{Sl. No.} & \textbf{Course Code} & \multicolumn{1}{c|}{\textbf{Course Title}} & \textbf{Page No.} \\ \hline
+%		\endhead
+%		
+%		\hline
+%		\endfoot
+%		\endlastfoot
+%		
+%		\ifnum\skcount<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
+%		{\expandafter\@sk@tocloop\expandafter{\number\numexpr(1)\expandafter\relax\expandafter}{\skcount}{#1}}
+%	\end{longtable}
+%	\endgroup
+%}
 
 \def\@sk@tocloop#1#2#3{%
 	\ifnum#1>#2 \expandafter\@gobble\else\expandafter\@firstofone\fi{%
@@ -1765,7 +1780,7 @@
 		\edef\maxrows{\@nameuse{master@\cfulltype @CIE@totalcount}}%
 		\@CIEloop{1}{\maxrows}{\croman}{\cfulltype}%
 		%
-		\vspace{1.5em}\noindent
+		\vspace{0.5em}\noindent
 		\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|p{\dimexpr0.83\textwidth-6\tabcolsep-4\arrayrulewidth\relax}|>{\centering\arraybackslash}p{0.09\textwidth}|}
 			\hline
 			\multicolumn{3}{|l|}{\textbf{RUBRICS FOR THE CONTINUOUS INTERNAL EVALUATION}} \\ \hline
@@ -2091,7 +2106,6 @@
 				\hline
 			\end{longtable}%%
 		}
-		
 		\unexpanded{%
 			\drawCIEtable{#2}%
 			\drawSEEtable{#2}%
@@ -2133,7 +2147,8 @@
 	\ifnum#1<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
 	{\expandafter\@tocloop\expandafter{\number\numexpr(1)\expandafter\relax\expandafter}{#1}}
 	
-	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|>{\centering\arraybackslash}p{0.2\textwidth}|>{\raggedright\arraybackslash}p{0.54\textwidth}|>{\centering\arraybackslash}p{0.08\textwidth}|}
+%	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|>{\centering\arraybackslash}p{0.2\textwidth}|>{\raggedright\arraybackslash}p{0.54\textwidth}|>{\centering\arraybackslash}p{0.08\textwidth}|}
+	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\linewidth}|>{\centering\arraybackslash}p{0.18\linewidth}|p{0.55\linewidth}|>{\centering\arraybackslash}p{0.12\linewidth}|}
 		\hline
 		\multicolumn{4}{|c|}{\textbf{Semester - \printsemester}} \\ \hline
 		\textbf{Sl. No.} & \textbf{Course Code} & \multicolumn{1}{c|}{\textbf{Course Title}} & \textbf{Page No.} \\ \hline
@@ -2263,30 +2278,6 @@
 	\fi\fi
 }
 
-%\newcommand{\CalcCourseRow}[1]{%
-%	\edef\croman{\romannumeral#1}%
-%	\edef\cgrole{\@ifundefined{course@sem\lsem @\croman @cg@role}{none}{\@nameuse{course@sem\lsem @\croman @cg@role}}}%
-%	\def\rolef{follower}%
-%	\ifx\cgrole\rolef
-%	% Skip followers, they share the credit pool
-%	\else
-%	\@ifundefined{course@sem\lsem @\croman @coursetype}{\def\ctype{UNKNOWN}}{\edef\ctype{\@nameuse{course@sem\lsem @\croman @coursetype}}}% 
-%	\@ifundefined{type@\ctype @L}{\def\cL{0}}{\edef\cL{\@nameuse{type@\ctype @L}}}%
-%	\@ifundefined{type@\ctype @T}{\def\cT{0}}{\edef\cT{\@nameuse{type@\ctype @T}}}%
-%	\@ifundefined{type@\ctype @P}{\def\cP{0}}{\edef\cP{\@nameuse{type@\ctype @P}}}%
-%	
-%	\edef\checkCat{\@ifundefined{course@sem\lsem @\croman @category}{}{\@nameuse{course@sem\lsem @\croman @category}}}%
-%	\def\targetCat{Category: Bridge Course}%
-%	\ifx\checkCat\targetCat
-%	% Skip adding credits for BC
-%	\else
-%	\global\addtocounter{tot@semester@credits}{\cL}%
-%	\global\addtocounter{tot@semester@credits}{\cT}%
-%	\global\addtocounter{tot@semester@credits}{\cP}%
-%	\fi
-%	\fi
-%}
-
 \gdef\maintablecontent{}
 
 \newcommand{\mainindextable}[1]{%%
@@ -2306,9 +2297,9 @@
 	\begingroup
 	\small
 	\setlength{\tabcolsep}{3pt}% 
-	\setlength{\LTleft}{-1.5cm}% 
+	\setlength{\LTleft}{-1cm}% 
 	\setlength{\LTright}{0pt plus 1fill}%
-	\renewcommand{\thefootnote}{\ensuremath{\dagger}}% 
+	\renewcommand{\thefootnote}{\ensuremath{\star}}% 
 	
 	\pagestyle{fancy} %
 	\clearpage
@@ -2375,12 +2366,12 @@
 	% --- DYNAMIC FOOTNOTE BLOCK ---
 	\vfill % Pushes everything below this to the very bottom of the page
 	\noindent\makebox[\linewidth][l]{%
-		\raisebox{-0.4cm}[0pt][0pt]{% <--- THIS IS THE MAGIC SHIFT! 
+		\raisebox{-0.2cm}[0pt][0pt]{% <--- THIS IS THE MAGIC SHIFT! 
 			\begin{minipage}{\linewidth}
 				\noindent\rule{5cm}{0.4pt}\par\vspace{0.5em}
 				
 				\ifnum\hasaudit=1
-				\noindent $^{\dagger}$ Audit\par\vspace{0.5em}
+				\noindent $^{\star}$ Audit\par\vspace{0.5em}
 				\fi
 				
 				\noindent
@@ -2389,7 +2380,7 @@
 				\edef\valP{\the\numexpr \global@Pcredmul * \global@wkspercred \relax}%
 				\begin{tabular}{|>{\centering\arraybackslash}p{0.18\linewidth}|>{\centering\arraybackslash}p{0.18\linewidth}|>{\centering\arraybackslash}p{0.18\linewidth}|>{\centering\arraybackslash}p{0.4\linewidth}|}
 					\hline
-					L duration: \valL\ hrs/credit & T duration: \valT\ hrs/credit & P duration: \valP\ hrs/credit & S duration: Total credits * hrs/sem - (L + T + P) durations \\
+					L duration: \valL\ hrs/credit & T duration: \valT\ hrs/credit & P duration: \valP\ hrs/credit & S duration: Total credits $\times$ hrs/sem $-$ (L + T + P) duration \\
 					\hline
 				\end{tabular}%
 				
@@ -2454,11 +2445,11 @@
 	\edef\checkCat{\@ifundefined{course@sem\lsem @\croman @category}{}{\@nameuse{course@sem\lsem @\croman @category}}}%
 	\def\targetCat{Category: Bridge Course}%
 	\ifx\checkCat\targetCat
-	\def\cTot{0\unexpanded{\ensuremath{^{\dagger}}}}%
+	\def\cTot{0\unexpanded{\ensuremath{^{\star}}}}%
 	\gdef\hasaudit{1}% <--- Triggers the Audit flag for the footnote block!
 	\def\cSEELstr{***}%
 	\def\cSEEPstr{***}%
-	\def\cSEEDur{---}% 
+	\def\cSEEDur{***}% 
 	\else
 	\edef\cTot{\the\numexpr\cL+\cT+\cP\relax}%
 	\fi
