@@ -101,8 +101,8 @@
 	\gdef\@schemeYear{#2}}
 
 % --- DEFAULT FALLBACKS ---
-\gdef\@departmentSF{ECE}
-\gdef\@departmentLF{Electronics and Communication Engineering}
+\gdef\@departmentSF{CH}
+\gdef\@departmentLF{Chemical Engineering}
 \gdef\@graduateLabel{UG}
 \gdef\@schemeYear{2025}
 
@@ -975,13 +975,13 @@
 		\gdef\captured@SEE{}%
 		\RenewDocumentCommand{\SrubricA}{ m m m }{%
 			\addtocounter{see@theory@total}{####3}%
-			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricA{####1}{####2}{####3}}%
+			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricA{\unexpanded{####1}}{\unexpanded{####2}}{\unexpanded{####3}}}%
 		}%
 		\RenewDocumentCommand{\SrubricB}{ O{L} m m m }{%
 			\def\arg{####1}\def\labtype{P}% 
 			\ifx\arg\labtype \addtocounter{see@lab@total}{####4}%
 			\else \addtocounter{see@theory@total}{####4}\fi
-			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricB[####1]{####2}{####3}{####4}}%
+			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricB[\unexpanded{####1}]{\unexpanded{####2}}{\unexpanded{####3}}{\unexpanded{####4}}}%
 		}%
 	}{%
 		\edef\fulltype{\current@cred@type\current@variant}%
@@ -995,17 +995,17 @@
 		\gdef\captured@SEE{}%
 		\RenewDocumentCommand{\Srubric}{ m m m }{%
 			\addtocounter{see@lab@total}{####3}%
-			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\Srubric{####1}{####2}{####3}}%
+			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\Srubric{\unexpanded{####1}}{\unexpanded{####2}}{\unexpanded{####3}}}%
 		}%
 		\RenewDocumentCommand{\SrubricA}{ m m m }{%
 			\addtocounter{see@theory@total}{####3}%
-			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricA{####1}{####2}{####3}}%
+			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricA{\unexpanded{####1}}{\unexpanded{####2}}{\unexpanded{####3}}}%
 		}%
 		\RenewDocumentCommand{\SrubricB}{ O{L} m m m }{%
 			\def\arg{####1}\def\labtype{P}% 
 			\ifx\arg\labtype \addtocounter{see@lab@total}{####4}%
 			\else \addtocounter{see@theory@total}{####4}\fi
-			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricB[####1]{####2}{####3}{####4}}%
+			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricB[\unexpanded{####1}]{\unexpanded{####2}}{\unexpanded{####3}}{\unexpanded{####4}}}%
 		}%
 	}{%
 		\edef\fulltype{\current@cred@type\current@variant}%
@@ -1015,7 +1015,7 @@
 	\else
 	\par\vspace{1em}\noindent\textbf{Course Credits \& Rubrics (#1)}\par
 	\fi
-}{%
+	}{%
 	\if@in@definecredits
 	\edef\fulltype{\current@cred@type\current@variant}%
 	
@@ -1069,7 +1069,108 @@
 	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEEPmarks}{\temp@seepmarks}}%
 	\endgroup
 	\fi
-}
+	}
+	
+%	\RenewDocumentEnvironment{SEE@Theory@rubrics}{ O{THEORY} }{%
+%		\gdef\current@SEE@arg{##1}%
+%		\gdef\captured@SEE{}%
+%		\RenewDocumentCommand{\SrubricA}{ m m m }{%
+%			\addtocounter{see@theory@total}{####3}%
+%			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricA{####1}{####2}{####3}}%
+%		}%
+%		\RenewDocumentCommand{\SrubricB}{ O{L} m m m }{%
+%			\def\arg{####1}\def\labtype{P}% 
+%			\ifx\arg\labtype \addtocounter{see@lab@total}{####4}%
+%			\else \addtocounter{see@theory@total}{####4}\fi
+%			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricB[####1]{####2}{####3}{####4}}%
+%		}%
+%	}{%
+%		\edef\fulltype{\current@cred@type\current@variant}%
+%		\global\expandafter\let\csname master@\fulltype @SEE@Theory\endcsname\captured@SEE
+%		\global\expandafter\let\csname master@\fulltype @SEE@Theory@Arg\endcsname\current@SEE@arg
+%		\immediate\write\@mainaux{\string\global\string\@namedef{master@\fulltype @SEE@Theory}{\unexpanded\expandafter{\captured@SEE}}}%
+%		\immediate\write\@mainaux{\string\global\string\@namedef{master@\fulltype @SEE@Theory@Arg}{\current@SEE@arg}}%
+%	}
+%	
+%	\RenewDocumentEnvironment{SEE@Practical@rubrics}{ }{%
+%		\gdef\captured@SEE{}%
+%		\RenewDocumentCommand{\Srubric}{ m m m }{%
+%			\addtocounter{see@lab@total}{####3}%
+%			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\Srubric{####1}{####2}{####3}}%
+%		}%
+%		\RenewDocumentCommand{\SrubricA}{ m m m }{%
+%			\addtocounter{see@theory@total}{####3}%
+%			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricA{####1}{####2}{####3}}%
+%		}%
+%		\RenewDocumentCommand{\SrubricB}{ O{L} m m m }{%
+%			\def\arg{####1}\def\labtype{P}% 
+%			\ifx\arg\labtype \addtocounter{see@lab@total}{####4}%
+%			\else \addtocounter{see@theory@total}{####4}\fi
+%			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricB[####1]{####2}{####3}{####4}}%
+%		}%
+%	}{%
+%		\edef\fulltype{\current@cred@type\current@variant}%
+%		\global\expandafter\let\csname master@\fulltype @SEE@Practical\endcsname\captured@SEE
+%		\immediate\write\@mainaux{\string\global\string\@namedef{master@\fulltype @SEE@Practical}{\unexpanded\expandafter{\captured@SEE}}}%
+%	}
+%	\else
+%	\par\vspace{1em}\noindent\textbf{Course Credits \& Rubrics (#1)}\par
+%	\fi
+%}{%
+%	\if@in@definecredits
+%	\edef\fulltype{\current@cred@type\current@variant}%
+%	
+%	% --- MATH CALCULATIONS ---
+%	\edef\calc@Ldur{\the\numexpr \value{cred@L@tot} * \global@Lcredmul * \global@wkspercred \relax}%
+%	\edef\calc@Tdur{\the\numexpr \value{cred@T@tot} * \global@Tcredmul * \global@wkspercred \relax}%
+%	\edef\calc@Pdur{\the\numexpr \value{cred@P@tot} * \global@Pcredmul * \global@wkspercred \relax}%
+%	\edef\calc@TotalCred{\the\numexpr \value{cred@L@tot} + \value{cred@T@tot} + \value{cred@P@tot} \relax}%
+%	\edef\calc@BaseTotDur{\the\numexpr \calc@TotalCred * \global@hrspercred \relax}%
+%	\edef\calc@Sdur{\the\numexpr \calc@BaseTotDur - (\calc@Ldur + \calc@Tdur + \calc@Pdur) \relax}%
+%	\edef\calc@TotalHrs{\the\numexpr \calc@Ldur + \calc@Tdur + \calc@Pdur + \calc@Sdur \relax}%
+%	
+%	\expandafter\xdef\csname master@\fulltype @CIE@totalcount\endcsname{\the\value{master@cie@count}}%
+%	\expandafter\xdef\csname type@\fulltype @L\endcsname{\the\value{cred@L@tot}}%
+%	\expandafter\xdef\csname type@\fulltype @T\endcsname{\the\value{cred@T@tot}}%
+%	\expandafter\xdef\csname type@\fulltype @P\endcsname{\the\value{cred@P@tot}}%
+%	
+%	\expandafter\xdef\csname type@\fulltype @Ldur\endcsname{\calc@Ldur}%
+%	\expandafter\xdef\csname type@\fulltype @Tdur\endcsname{\calc@Tdur}%
+%	\expandafter\xdef\csname type@\fulltype @Pdur\endcsname{\calc@Pdur}%
+%	\expandafter\xdef\csname type@\fulltype @Sdur\endcsname{\calc@Sdur}%
+%	\expandafter\xdef\csname type@\fulltype @TotalHrs\endcsname{\calc@TotalHrs}%
+%	
+%	\expandafter\xdef\csname type@\fulltype @CIEL\endcsname{\the\value{cie@theory@total}}%
+%	\expandafter\xdef\csname type@\fulltype @CIEP\endcsname{\the\value{cie@lab@total}}%
+%	\expandafter\xdef\csname type@\fulltype @SEEL\endcsname{\the\value{see@theory@total}}%
+%	\expandafter\xdef\csname type@\fulltype @SEEP\endcsname{\the\value{see@lab@total}}%
+%	\expandafter\xdef\csname type@\fulltype @CIEdur\endcsname{\temp@ciedur}%
+%	\expandafter\xdef\csname type@\fulltype @SEEdur\endcsname{\temp@seedur}%
+%	
+%	\immediate\write\@mainaux{\string\global\string\@namedef{master@\fulltype @CIE@totalcount}{\the\value{master@cie@count}}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @L}{\the\value{cred@L@tot}}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @T}{\the\value{cred@T@tot}}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @P}{\the\value{cred@P@tot}}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @CIEL}{\the\value{cie@theory@total}}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @CIEP}{\the\value{cie@lab@total}}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEEL}{\the\value{see@theory@total}}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEEP}{\the\value{see@lab@total}}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @CIEdur}{\temp@ciedur}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEEdur}{\temp@seedur}}%
+%	
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @Ldur}{\calc@Ldur}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @Tdur}{\calc@Tdur}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @Pdur}{\calc@Pdur}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @Sdur}{\calc@Sdur}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @TotalHrs}{\calc@TotalHrs}}%
+%	
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @CIELmarks}{\temp@cielmarks}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @CIEPmarks}{\temp@ciepmarks}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEELmarks}{\temp@seelmarks}}%
+%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEEPmarks}{\temp@seepmarks}}%
+%	\endgroup
+%	\fi
+%}
 
 \providecommand{\variantchar}[1]{\textbf{Variant:} #1\par}
 \providecommand{\Lcredit}[1]{\textbf{L:} #1\quad}
@@ -1851,8 +1952,8 @@
 	\edef\cSEEP{\@ifundefined{type@\ctype @SEEPmarks}{\@ifundefined{type@\ctype @SEEP}{0}{\@nameuse{type@\ctype @SEEP}}}{\@nameuse{type@\ctype @SEEPmarks}}}%
 	
 	\def\zeroval{0}%
-	\ifx\cCIEP\zeroval \edef\cCIEDisplay{\cCIEL} \else \edef\cCIEDisplay{\cCIEL\space + \cCIEP} \fi
-	\ifx\cSEEP\zeroval \edef\cSEEDisplay{\cSEEL} \else \edef\cSEEDisplay{\cSEEL\space + \cSEEP} \fi
+	\ifx\cCIEP\zeroval \edef\cCIEDisplay{\cCIEL} \else \edef\cCIEDisplay{ \cCIEP} \fi
+	\ifx\cSEEP\zeroval \edef\cSEEDisplay{\cSEEL} \else \edef\cSEEDisplay{\cSEEP} \fi
 	
 	% --- BRIDGE COURSE OVERRIDE ---
 	\edef\checkCat{\@ifundefined{course@sem\lsem @\romannumeral#2@category}{}{\@nameuse{course@sem\lsem @\romannumeral#2@category}}}%
@@ -1892,7 +1993,7 @@
 	
 	\def\cTypeStr{}%
 	\ifx\course@basetype\lo \def\cTypeStr{(Theory)}\fi
-	\ifx\course@basetype\lt \def\cTypeStr{(Theory \& Tutorial)}\fi
+	\ifx\course@basetype\lt \def\cTypeStr{(Theory)}\fi
 	\ifx\course@basetype\po \def\cTypeStr{(Practical)}\fi
 	\ifx\course@basetype\lp \def\cTypeStr{(Theory \& Practical)}\fi
 	
@@ -2366,23 +2467,22 @@
 	% --- DYNAMIC FOOTNOTE BLOCK ---
 	\vfill % Pushes everything below this to the very bottom of the page
 	\noindent\makebox[\linewidth][l]{%
-		\raisebox{-0.2cm}[0pt][0pt]{% <--- THIS IS THE MAGIC SHIFT! 
+		\raisebox{-0.4cm}[0pt][0pt]{% <--- THIS IS THE MAGIC SHIFT! 
 			\begin{minipage}{\linewidth}
-				\noindent\rule{5cm}{0.4pt}\par\vspace{0.5em}
-				
-				\ifnum\hasaudit=1
-				\noindent $^{\star}$ Audit\par\vspace{0.5em}
-				\fi
-				
-				\noindent
+				\noindent\rule{5cm}{0.2pt}\par\vspace{0.25em}
+				\noindent\textbf{Note:}\space
 				\edef\valL{\the\numexpr \global@Lcredmul * \global@wkspercred \relax}%
 				\edef\valT{\the\numexpr \global@Tcredmul * \global@wkspercred \relax}%
 				\edef\valP{\the\numexpr \global@Pcredmul * \global@wkspercred \relax}%
-				\begin{tabular}{|>{\centering\arraybackslash}p{0.18\linewidth}|>{\centering\arraybackslash}p{0.18\linewidth}|>{\centering\arraybackslash}p{0.18\linewidth}|>{\centering\arraybackslash}p{0.4\linewidth}|}
-					\hline
-					L duration: \valL\ hrs/credit & T duration: \valT\ hrs/credit & P duration: \valP\ hrs/credit & S duration: Total credits $\times$ hrs/sem $-$ (L + T + P) duration \\
-					\hline
-				\end{tabular}%
+				1 Credit = \valT\ hrs (L:T:P)\par\vspace{0.5em}
+				\ifnum\hasaudit=1
+				\noindent $^{\star}$ Audit\par\vspace{0.25em}
+				\fi
+%				\begin{tabular}{|>{\centering\arraybackslash}p{0.18\linewidth}|>{\centering\arraybackslash}p{0.18\linewidth}|>{\centering\arraybackslash}p{0.18\linewidth}|>{\centering\arraybackslash}p{0.4\linewidth}|}
+%					\hline
+%					L duration: \valL\ hrs/credit & T duration: \valT\ hrs/credit & P duration: \valP\ hrs/credit & S duration: Total credits * hrs/sem - (L + T + P) durations \\
+%					\hline
+%				\end{tabular}%
 				
 				% --- NEW INSTRUCTION CHECK ---
 				\@ifundefined{global@sklabinstruction}{}{%
@@ -2449,7 +2549,7 @@
 	\gdef\hasaudit{1}% <--- Triggers the Audit flag for the footnote block!
 	\def\cSEELstr{***}%
 	\def\cSEEPstr{***}%
-	\def\cSEEDur{***}% 
+	\def\cSEEDur{---}% 
 	\else
 	\edef\cTot{\the\numexpr\cL+\cT+\cP\relax}%
 	\fi
