@@ -1999,7 +1999,7 @@
 	
 	\edef\checkCat{\@ifundefined{course@sem\lsem @\romannumeral#2@category}{}{\@nameuse{course@sem\lsem @\romannumeral#2@category}}}%
 	\def\targetAE{Category: AE}%
-	\ifx\checkCat\targetAE \def\PrintCat{Ability Enhancement Course}\else\let\PrintCat\checkCat\fi
+	\ifx\checkCat\targetAE \def\PrintCat{Category: AE Course}\else\let\PrintCat\checkCat\fi
 	
 	\ifx\cTypeStr\emptyVal
 	\def\TypeRowOut{}%
