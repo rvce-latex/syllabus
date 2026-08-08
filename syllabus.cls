@@ -28,7 +28,26 @@
 \RequirePackage{enumitem}
 \RequirePackage{multirow} 
 \RequirePackage{pdflscape}
-\RequirePackage[hidelinks]{hyperref} 
+\RequirePackage[hidelinks]{hyperref}
+\RequirePackage{mfirstuc}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\uncaseword}{ m }{
+	\clist_map_inline:nn { #1 } {
+		\MFUnocap{##1}
+	}
+}
+
+% --- NEW: THE SMART LOWERCASE-FIRST WRAPPER ---
+\NewDocumentCommand{\SmartTitleCase}{ m }{
+	\tl_set:Nx \l_tmpa_tl { \text_lowercase:n { #1 } }
+	\exp_args:NV \capitalisewords \l_tmpa_tl
+}
+\ExplSyntaxOff
+
+% Default list of words to strictly keep lowercase in titles
+\uncaseword{a, an, the, and, but, or, for, nor, on, at, to, from, by, in, of, with, into}
+
 \setlength{\textwidth}{\paperwidth}
 \addtolength{\textwidth}{-2in}
 \setlength{\oddsidemargin}{0pt}
@@ -186,7 +205,10 @@
 	\fi
 	\newenvironment{definecourse}[1]{%
 		\addtocounter{numof@courses}{1}
-		\gdef\course@code{##1}
+		% --- THE FIX: FORCE UPPERCASE FOR ALL COURSE CODES ---
+		\protected@edef\temp@code{##1}%
+		\expandafter\uppercase\expandafter{\expandafter\gdef\expandafter\course@code\expandafter{\temp@code}}%
+		% -----------------------------------------------------
 		\practiceelfalse
 		\gdef\temp@category{}%
 		\gdef\temp@commonto{}%
@@ -279,6 +301,7 @@
 			\immediate\write\coursefile{\space}
 			\immediate\write\coursefile{\string\begin{course}{\sem}{\arabic{numof@courses}}} 
 				\immediate\write\coursefile{ \@percentchar\string\prerequisites{}}
+				\immediate\write\coursefile{ \@percentchar\string\SLduration{}}
 				\iflecture
 				\immediate\write\coursefile{\space\string\begin{units}}
 					\immediate\write\coursefile{\space\space\string\unit[4]{sample}}
@@ -541,9 +564,15 @@
 	\setcounter{prac@sub@ctr}{0}%
 }{}
 
+\newcommand*{\SLduration}[1]{%
+	\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\c@sem @\roman{courseindex}@Sdur}{#1}}%
+}
+
 \newenvironment{course}[2]{% 
 	\gdef\c@sem{#1}% 
 	\setcounter{courseindex}{#2}%
+	\global\prerequisitefalse
+	\gdef\captured@prerequest{}
 	\setcounter{numof@lectureunits}{0}
 	\setcounter{numof@practiceunits}{0}
 	\setcounter{numof@practiceelunits}{0}
@@ -562,8 +591,14 @@
 	\newcommand*{\prerequisites}[1]{%
 		\def\@temp{##1}%
 		\def\@spaces{ }%
-		\ifx\@temp\@empty\global\prerequisitefalse\else
-		\ifx\@temp\@spaces\global\prerequisitefalse\else\global\prerequisitetrue\def\@prerequisites{##1} \fi\fi
+		\ifx\@temp\@empty
+		\global\prerequisitefalse
+		\else\ifx\@temp\@spaces
+		\global\prerequisitefalse
+		\else
+		\global\prerequisitetrue
+		\gdef\@prerequisites{##1}% <-- Just saves the raw text for the .aux file!
+		\fi\fi
 	}
 	\newenvironment{courseoutcomes}{%
 		\def\co{\ifhmode\unskip\unskip \par\fi \@doco}%
@@ -1070,107 +1105,6 @@
 	\endgroup
 	\fi
 	}
-	
-%	\RenewDocumentEnvironment{SEE@Theory@rubrics}{ O{THEORY} }{%
-%		\gdef\current@SEE@arg{##1}%
-%		\gdef\captured@SEE{}%
-%		\RenewDocumentCommand{\SrubricA}{ m m m }{%
-%			\addtocounter{see@theory@total}{####3}%
-%			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricA{####1}{####2}{####3}}%
-%		}%
-%		\RenewDocumentCommand{\SrubricB}{ O{L} m m m }{%
-%			\def\arg{####1}\def\labtype{P}% 
-%			\ifx\arg\labtype \addtocounter{see@lab@total}{####4}%
-%			\else \addtocounter{see@theory@total}{####4}\fi
-%			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricB[####1]{####2}{####3}{####4}}%
-%		}%
-%	}{%
-%		\edef\fulltype{\current@cred@type\current@variant}%
-%		\global\expandafter\let\csname master@\fulltype @SEE@Theory\endcsname\captured@SEE
-%		\global\expandafter\let\csname master@\fulltype @SEE@Theory@Arg\endcsname\current@SEE@arg
-%		\immediate\write\@mainaux{\string\global\string\@namedef{master@\fulltype @SEE@Theory}{\unexpanded\expandafter{\captured@SEE}}}%
-%		\immediate\write\@mainaux{\string\global\string\@namedef{master@\fulltype @SEE@Theory@Arg}{\current@SEE@arg}}%
-%	}
-%	
-%	\RenewDocumentEnvironment{SEE@Practical@rubrics}{ }{%
-%		\gdef\captured@SEE{}%
-%		\RenewDocumentCommand{\Srubric}{ m m m }{%
-%			\addtocounter{see@lab@total}{####3}%
-%			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\Srubric{####1}{####2}{####3}}%
-%		}%
-%		\RenewDocumentCommand{\SrubricA}{ m m m }{%
-%			\addtocounter{see@theory@total}{####3}%
-%			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricA{####1}{####2}{####3}}%
-%		}%
-%		\RenewDocumentCommand{\SrubricB}{ O{L} m m m }{%
-%			\def\arg{####1}\def\labtype{P}% 
-%			\ifx\arg\labtype \addtocounter{see@lab@total}{####4}%
-%			\else \addtocounter{see@theory@total}{####4}\fi
-%			\xdef\captured@SEE{\unexpanded\expandafter{\captured@SEE}\noexpand\SrubricB[####1]{####2}{####3}{####4}}%
-%		}%
-%	}{%
-%		\edef\fulltype{\current@cred@type\current@variant}%
-%		\global\expandafter\let\csname master@\fulltype @SEE@Practical\endcsname\captured@SEE
-%		\immediate\write\@mainaux{\string\global\string\@namedef{master@\fulltype @SEE@Practical}{\unexpanded\expandafter{\captured@SEE}}}%
-%	}
-%	\else
-%	\par\vspace{1em}\noindent\textbf{Course Credits \& Rubrics (#1)}\par
-%	\fi
-%}{%
-%	\if@in@definecredits
-%	\edef\fulltype{\current@cred@type\current@variant}%
-%	
-%	% --- MATH CALCULATIONS ---
-%	\edef\calc@Ldur{\the\numexpr \value{cred@L@tot} * \global@Lcredmul * \global@wkspercred \relax}%
-%	\edef\calc@Tdur{\the\numexpr \value{cred@T@tot} * \global@Tcredmul * \global@wkspercred \relax}%
-%	\edef\calc@Pdur{\the\numexpr \value{cred@P@tot} * \global@Pcredmul * \global@wkspercred \relax}%
-%	\edef\calc@TotalCred{\the\numexpr \value{cred@L@tot} + \value{cred@T@tot} + \value{cred@P@tot} \relax}%
-%	\edef\calc@BaseTotDur{\the\numexpr \calc@TotalCred * \global@hrspercred \relax}%
-%	\edef\calc@Sdur{\the\numexpr \calc@BaseTotDur - (\calc@Ldur + \calc@Tdur + \calc@Pdur) \relax}%
-%	\edef\calc@TotalHrs{\the\numexpr \calc@Ldur + \calc@Tdur + \calc@Pdur + \calc@Sdur \relax}%
-%	
-%	\expandafter\xdef\csname master@\fulltype @CIE@totalcount\endcsname{\the\value{master@cie@count}}%
-%	\expandafter\xdef\csname type@\fulltype @L\endcsname{\the\value{cred@L@tot}}%
-%	\expandafter\xdef\csname type@\fulltype @T\endcsname{\the\value{cred@T@tot}}%
-%	\expandafter\xdef\csname type@\fulltype @P\endcsname{\the\value{cred@P@tot}}%
-%	
-%	\expandafter\xdef\csname type@\fulltype @Ldur\endcsname{\calc@Ldur}%
-%	\expandafter\xdef\csname type@\fulltype @Tdur\endcsname{\calc@Tdur}%
-%	\expandafter\xdef\csname type@\fulltype @Pdur\endcsname{\calc@Pdur}%
-%	\expandafter\xdef\csname type@\fulltype @Sdur\endcsname{\calc@Sdur}%
-%	\expandafter\xdef\csname type@\fulltype @TotalHrs\endcsname{\calc@TotalHrs}%
-%	
-%	\expandafter\xdef\csname type@\fulltype @CIEL\endcsname{\the\value{cie@theory@total}}%
-%	\expandafter\xdef\csname type@\fulltype @CIEP\endcsname{\the\value{cie@lab@total}}%
-%	\expandafter\xdef\csname type@\fulltype @SEEL\endcsname{\the\value{see@theory@total}}%
-%	\expandafter\xdef\csname type@\fulltype @SEEP\endcsname{\the\value{see@lab@total}}%
-%	\expandafter\xdef\csname type@\fulltype @CIEdur\endcsname{\temp@ciedur}%
-%	\expandafter\xdef\csname type@\fulltype @SEEdur\endcsname{\temp@seedur}%
-%	
-%	\immediate\write\@mainaux{\string\global\string\@namedef{master@\fulltype @CIE@totalcount}{\the\value{master@cie@count}}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @L}{\the\value{cred@L@tot}}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @T}{\the\value{cred@T@tot}}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @P}{\the\value{cred@P@tot}}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @CIEL}{\the\value{cie@theory@total}}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @CIEP}{\the\value{cie@lab@total}}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEEL}{\the\value{see@theory@total}}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEEP}{\the\value{see@lab@total}}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @CIEdur}{\temp@ciedur}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEEdur}{\temp@seedur}}%
-%	
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @Ldur}{\calc@Ldur}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @Tdur}{\calc@Tdur}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @Pdur}{\calc@Pdur}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @Sdur}{\calc@Sdur}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @TotalHrs}{\calc@TotalHrs}}%
-%	
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @CIELmarks}{\temp@cielmarks}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @CIEPmarks}{\temp@ciepmarks}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEELmarks}{\temp@seelmarks}}%
-%	\immediate\write\@mainaux{\string\global\string\@namedef{type@\fulltype @SEEPmarks}{\temp@seepmarks}}%
-%	\endgroup
-%	\fi
-%}
 
 \providecommand{\variantchar}[1]{\textbf{Variant:} #1\par}
 \providecommand{\Lcredit}[1]{\textbf{L:} #1\quad}
@@ -1289,14 +1223,18 @@
 	\gdef\@current@type{#1}
 	\def\@type{#1}
 	\checkcoursetype{\@type}
-	\gdef\current@course@title{#2}% 
+	
+	% --- THE FIX: APPLY SMART TITLE CASE ---
+	\gdef\current@course@title{\SmartTitleCase{#2}}% 
+	
 	\if@filesw
 	\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@coursesem}{\sem}} 
 	\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@coursecode}{\course@code}}
 	\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@coursetype}{#1}}
-	\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@coursetitle}{#2}}
+	\immediate\write\@mainaux{\string\global\string\@namedef{course@sem\sem @\romannumeral\value{numof@courses}@coursetitle}{\noexpand\SmartTitleCase{\unexpanded{#2}}}}
 	\fi
 }
+
 \def\@readunits[#1]#2{
 	\def\@type{#1}
 	\checkunithour{\@type}
@@ -1512,34 +1450,6 @@
 	\end{longtable}
 	\endgroup
 }
-
-%\newcommand{\PrintSKGroupTable}[1]{%
-%	\begingroup
-%	\edef\skcode{\@nameuse{semester@sem\lsem @sk@#1@code}}%
-%	\edef\skcount{\@nameuse{semester@sem\lsem @sk@#1@count}}%
-%	
-%	\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|>{\centering\arraybackslash}p{0.2\textwidth}|>{\raggedright\arraybackslash}p{0.54\textwidth}|>{\centering\arraybackslash}p{0.08\textwidth}|}
-%		\hline
-%		\multicolumn{4}{|c|}{\textbf{Semester - \printsemester}} \\ \hline
-%		\multicolumn{4}{|c|}{\textbf{Skill Lab Courses}} \\ \hline % <--- FIXED HEADING
-%		\textbf{Sl. No.} & \textbf{Course Code} & \multicolumn{1}{c|}{\textbf{Course Title}} & \textbf{Page No.} \\ \hline
-%		\endfirsthead
-%		
-%		\hline
-%		\multicolumn{4}{|c|}{\textbf{Semester - \printsemester\space (Continued)}} \\ \hline
-%		\multicolumn{4}{|c|}{\textbf{Skill Lab Courses}} \\ \hline
-%		\textbf{Sl. No.} & \textbf{Course Code} & \multicolumn{1}{c|}{\textbf{Course Title}} & \textbf{Page No.} \\ \hline
-%		\endhead
-%		
-%		\hline
-%		\endfoot
-%		\endlastfoot
-%		
-%		\ifnum\skcount<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
-%		{\expandafter\@sk@tocloop\expandafter{\number\numexpr(1)\expandafter\relax\expandafter}{\skcount}{#1}}
-%	\end{longtable}
-%	\endgroup
-%}
 
 \def\@sk@tocloop#1#2#3{%
 	\ifnum#1>#2 \expandafter\@gobble\else\expandafter\@firstofone\fi{%
@@ -1940,7 +1850,11 @@
 	\@ifundefined{type@\ctype @Ldur}{\def\cLdur{0}}{\edef\cLdur{\@nameuse{type@\ctype @Ldur}}}%
 	\@ifundefined{type@\ctype @Tdur}{\def\cTdur{0}}{\edef\cTdur{\@nameuse{type@\ctype @Tdur}}}%
 	\@ifundefined{type@\ctype @Pdur}{\def\cPdur{0}}{\edef\cPdur{\@nameuse{type@\ctype @Pdur}}}%
-	\@ifundefined{type@\ctype @Sdur}{\def\cSdur{0}}{\edef\cSdur{\@nameuse{type@\ctype @Sdur}}}%
+	\@ifundefined{course@sem\c@sem @\roman{courseindex}@Sdur}{%
+		\@ifundefined{type@\ctype @Sdur}{\def\cSdur{0}}{\edef\cSdur{\@nameuse{type@\ctype @Sdur}}}%
+	}{%
+		\edef\cSdur{\@nameuse{course@sem\c@sem @\roman{courseindex}@Sdur}}%
+	}%
 	\edef\cTotCreds{\the\numexpr \cL + \cT + \cP \relax}%
 	
 	\@ifundefined{type@\ctype @CIEdur}{\def\cCIEDur{---}}{\edef\cCIEDur{\@nameuse{type@\ctype @CIEdur}}}%
@@ -2012,6 +1926,23 @@
 	
 	\@ifundefined{course@sem\lsem @\romannumeral#2@allunits}{\def\cAllUnits{}}{\expandafter\let\expandafter\cAllUnits\csname course@sem\lsem @\romannumeral#2@allunits\endcsname}%
 	\@ifundefined{course@sem\lsem @\romannumeral#2@allpracticals}{\def\cAllPracs{\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{\textbf{??}} \\ }}{\expandafter\let\expandafter\cAllPracs\csname course@sem\lsem @\romannumeral#2@allpracticals\endcsname}%
+	
+	% --- NEW: DYNAMIC PREREQUISITE ROW BUILDER ---
+	\@ifundefined{course@sem\lsem @\romannumeral#2@prerequisites}{%
+		\def\captured@prerequest{}%
+	}{%
+		\expandafter\let\expandafter\cPrereq\csname course@sem\lsem @\romannumeral#2@prerequisites\endcsname
+		
+		% --- THE FIX: SAFELY BUILD THE ROW USING TOKENS ---
+		\toks0={\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}}%
+		\toks1={\textbf{Pre-Requisites: } }%
+		\toks2=\expandafter{\cPrereq}%
+		
+		\edef\captured@prerequest{%
+			\the\toks0 {\the\toks1 \the\toks2} \unexpanded{ \\ }%
+		}%
+	}%
+	% ---------------------------------------------
 	
 	\hypertarget{course\lsem\romannumeral#2}{}% 
 	\label{course\lsem\romannumeral#2}%
@@ -2137,6 +2068,7 @@
 				\textbf{Total credits:}& \textbf{:}&\space}\cTotCreds\unexpanded{ & & \textbf{SEE Duration} & \textbf{:}&\space}\cSEEDur\unexpanded{\space Hours\\%%
 				\hline%%
 			}
+			\unexpanded\expandafter{\captured@prerequest}
 			\iflecture%%
 			\ifnum#3<1 \expandafter\@gobble\else\expandafter\@firstofone\fi
 			{
