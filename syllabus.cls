@@ -7,8 +7,8 @@
 %% syllabus.dtx  (with options: `class')
 %% This syllabus class is for typesetting syllabus book for RV College of Engineering. 
 %% Copyright (C) 2026 by P Narashimaraja <narashimaraja@gmail.com>
-\def\fileversion{1.0}
-\def\filedate{2026-07-16}
+\def\fileversion{6.0}
+\def\filedate{2026-08-08}
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesClass{syllabus}[\filedate\space v\fileversion\space by P Narashimaraja]
 \DeclareOption*{%
@@ -111,19 +111,33 @@
 \gdef\current@variant@suffix{}
 \gdef\lsem{1} 
 
-\newcommand*{\department}[2][ECE]{%
-	\gdef\@departmentSF{#1}%
-	\gdef\@departmentLF{#2}}
-
-\newcommand*{\schemeYear}[2][UG]{%
-	\gdef\@graduateLabel{#1}%
-	\gdef\@schemeYear{#2}}
-
-% --- DEFAULT FALLBACKS ---
-\gdef\@departmentSF{CH}
-\gdef\@departmentLF{Chemical Engineering}
+% 1. Declare the global defaults normally (No \AtBeginDocument needed here)
+\gdef\@departmentSF{ECE}
+\gdef\@departmentLF{Electronics and Communication Engineering}
 \gdef\@graduateLabel{UG}
 \gdef\@schemeYear{2025}
+
+% 2. Update \department to wait until the .aux file is open
+\newcommand*{\department}[2][ECE]{%
+	\gdef\@departmentSF{#1}%
+	\gdef\@departmentLF{#2}%
+	
+	\AtBeginDocument{%
+		\immediate\write\@mainaux{\string\gdef\string\@departmentSF{#1}}%
+		\immediate\write\@mainaux{\string\gdef\string\@departmentLF{#2}}%
+	}%
+}
+
+% 3. Update \schemeYear to wait until the .aux file is open
+\newcommand*{\schemeYear}[2][UG]{%
+	\gdef\@graduateLabel{#1}%
+	\gdef\@schemeYear{#2}%
+	
+	\AtBeginDocument{%
+		\immediate\write\@mainaux{\string\gdef\string\@graduateLabel{#1}}%
+		\immediate\write\@mainaux{\string\gdef\string\@schemeYear{#2}}%
+	}%
+}
 
 \newcommand\checkint[1]{%
 	\ifnum#1=\numexpr#1\relax
@@ -1869,12 +1883,16 @@
 	\ifx\cCIEP\zeroval \edef\cCIEDisplay{\cCIEL} \else \edef\cCIEDisplay{ \cCIEP} \fi
 	\ifx\cSEEP\zeroval \edef\cSEEDisplay{\cSEEL} \else \edef\cSEEDisplay{\cSEEP} \fi
 	
+	\def\cSEEMarksLabel{\space Marks} % <--- Default state
+	\def\cSEEHrsLabel{\space Hours} % <--- Default state
 	% --- BRIDGE COURSE OVERRIDE ---
 	\edef\checkCat{\@ifundefined{course@sem\lsem @\romannumeral#2@category}{}{\@nameuse{course@sem\lsem @\romannumeral#2@category}}}%
 	\def\targetCat{Category: Bridge Course}%
 	\ifx\checkCat\targetCat
 	\def\cSEEDisplay{---}%
 	\def\cSEEDur{---}%
+	\def\cSEEMarksLabel{} % <--- Empties the word "Marks" for Bridge Courses
+	\def\cSEEHrsLabel{} % <--- Empties the word "Marks" for Bridge Courses
 	\fi
 	% ------------------------------
 	
@@ -2061,11 +2079,11 @@
 				\hline%%
 				\textbf{Course Code}&\textbf{:}&\space\MakeTextUppercase{\csname course@sem\lsem @\romannumeral#2@coursecode\endcsname} & & \textbf{CIE} & \textbf{:}&\space}\cCIEDisplay\unexpanded{\space Marks\\%%
 				\hline%%
-				\textbf{Credit distribution L:T:P}&\textbf{:}&\space}\cL:\cT:\cP\unexpanded{ & & \textbf{SEE} & \textbf{:}&\space}\cSEEDisplay\unexpanded{\space Marks\\%%
+				\textbf{Credit distribution L:T:P}&\textbf{:}&\space}\cL:\cT:\cP\unexpanded{ & & \textbf{SEE} & \textbf{:}&\space}\cSEEDisplay\unexpanded\expandafter{\cSEEMarksLabel}\unexpanded{\\%%
 				\hline%%
 				\textbf{Pedagogical Hours (L:T:P:S)}&\textbf{:}&\space}\cLdur:\cTdur:\cPdur:\cSdur\unexpanded{ & & \textbf{CIE Duration} & \textbf{:}&\space}\cCIEDur\unexpanded{\space Hours\\%%
 				\hline%%
-				\textbf{Total credits:}& \textbf{:}&\space}\cTotCreds\unexpanded{ & & \textbf{SEE Duration} & \textbf{:}&\space}\cSEEDur\unexpanded{\space Hours\\%%
+				\textbf{Total credits:}& \textbf{:}&\space}\cTotCreds\unexpanded{ & & \textbf{SEE Duration} & \textbf{:}&\space}\cSEEDur\unexpanded\expandafter{\cSEEHrsLabel}\unexpanded{\\%%
 				\hline%%
 			}
 			\unexpanded\expandafter{\captured@prerequest}
@@ -2599,5 +2617,29 @@
 		========================================================================^^J}%
 	\global\undef\syllabus@master@rerun@required
 	\fi
+	
+	\ClassWarningNoLine{syllabus}{^^J
+		>>> SYLLABUS CLASS COMPILED SUCCESSFULLY <<<^^J
+	}
+	\ClassWarningNoLine{syllabus}{
+		Architected & Lead Developed by:^^J
+		P Narashimaraja^^J
+		LaTeX Coordinator, RV College of Engineering, Bengaluru - 560059^^J
+	}
+	\ClassWarningNoLine{syllabus}{
+		With valuable suggestions provided by:^^J
+		N Ramavenkateshwaran^^J
+		LaTeX Coordinator, RV College of Engineering, Bengaluru - 560059^^J
+	}
+	\typeout{This >>> SYLLABUS CLASS COMPILED SUCCESSFULLY <<<}
+	\typeout{\space Architected & Lead Developed by:}
+	\typeout{\space P Narashimaraja}
+	\typeout{\space LaTeX Coordinator, RV College of Engineering, Bengaluru - 560059}
+	\typeout{\space}
+	\typeout{\space With valuable suggestions by:}
+	\typeout{\space N Ramavenkateshwaran}
+	\typeout{\space LaTeX Coordinator, RV College of Engineering, Bengaluru - 560059}
+	\typeout{\space}
+	\typeout{**********************************************************************}
 }%% EndDocument
 \endinput
