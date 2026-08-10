@@ -2006,7 +2006,7 @@
 	\def\@scartchoutcometable##1{%%
 		\unexpanded{%%
 			\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{%
-				\setlength{\leftskip}{1.5em}\noindent\hspace*{-1.5em}\makebox[1.1em][r]{##1.}\hspace{0.4em}{\getcourseco{#2}{##1}}\par
+				\setlength{\leftskip}{1.5em}\noindent\hspace*{-0.5em}\makebox[1.1em][r]{CO##1:}\hspace{0.4em}{\getcourseco{#2}{##1}}\par
 			} \\
 		}%%
 	}%% End of scartctable
