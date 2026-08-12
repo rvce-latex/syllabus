@@ -10,6 +10,7 @@ This is the class file meant to create syllabus book.
 
 ## Process Flow:
 The process flow to use this class is given below:
+![alt text](image.png)
 1. Different credit-types with variants must be first defined by Dean of Academics along with HODs and syllabus coordinators of the departments. This ensures common distribution of marks, rubrics required by different courses and all the variants necessary across departments.
 1. HOD of the respective departments with the subject experts and department syllabus coordinators define the courses in Main.tex file, with **course code**. Each course can be mapped to anyone of the predefined course-types with variants.
 ```
