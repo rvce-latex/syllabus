@@ -542,7 +542,7 @@
 \def\experiment{\@ifnextchar[{\@expw}{\@expno}}
 \def\@expw[#1]#2{%
 	\stepcounter{prac@item@ctr}%
-	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{\noexpand\hangindent=1.5em \noexpand\hangafter=1 \noexpand\noindent\noexpand\makebox[1.1em][r]{\arabic{prac@item@ctr}.}\noexpand\hspace{0.4em}\noexpand\textbf{[#1]} \unexpanded{#2}} \noexpand\\}%
+	\edef\temprow{\noexpand\multicolumn{7}{|p{\dimexpr 0.8\textwidth + 12\tabcolsep + 6\arrayrulewidth \relax}|}{\noexpand\hangindent=1.5em \noexpand\hangafter=1 \noexpand\noindent\noexpand\makebox[5.1em][r]{\noexpand\textbf{#1}\space\arabic{prac@item@ctr}:}\noexpand\hspace{0.4em}\unexpanded{#2}} \noexpand\\}%
 	\global\practok=\expandafter\expandafter\expandafter{\expandafter\the\expandafter\practok\temprow}%
 }
 \def\@expno#1{%
